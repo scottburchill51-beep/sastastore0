@@ -1,19 +1,41 @@
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-950 px-6 text-white">
-      <div className="text-center">
-        <p className="mb-3 text-sm font-medium uppercase tracking-[0.25em] text-emerald-400">
-          SastaStore
-        </p>
+    <main className="min-h-screen bg-background text-foreground">
+      <Section>
+        <Container>
+          <SectionHeading
+            eyebrow="SastaStore"
+            title="Design system preview"
+            description="This temporary page is only for checking our reusable styles before we build the real homepage."
+          />
 
-        <h1 className="text-3xl font-semibold sm:text-4xl">
-          Project initialized successfully.
-        </h1>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Badge>Popular</Badge>
+            <Badge variant="success">Available</Badge>
+            <Badge variant="muted">Digital Tool</Badge>
+          </div>
 
-        <p className="mt-4 text-zinc-400">
-          Premium Digital Tools at Sasta Prices
-        </p>
-      </div>
+          <Card className="mt-8 max-w-xl">
+            <p className="text-lg font-semibold">Premium Digital Tool</p>
+
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              This card is testing our surface, border, typography and spacing.
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button>Primary Button</Button>
+              <Button variant="secondary">Secondary Button</Button>
+            </div>
+          </Card>
+        </Container>
+      </Section>
     </main>
   );
 }
