@@ -5,33 +5,49 @@ import { useState } from "react";
 
 import { Container } from "@/components/ui/Container";
 import { siteConfig } from "@/config/site";
+import { createWhatsAppUrl } from "@/lib/whatsapp";
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const whatsappUrl = createWhatsAppUrl(
+    "Hello, I want to know more about SastaStore products and available subscriptions.",
+  );
+
   return (
     <header className="border-b border-border bg-background/95">
       <Container>
-        <div className="flex h-18 items-center justify-between">
+        <div className="flex h-18 items-center justify-between gap-4">
           <Link
             href="/"
-            className="text-xl font-bold tracking-tight text-foreground"
+            className="shrink-0 text-xl font-bold tracking-tight text-foreground"
             onClick={() => setMenuOpen(false)}
           >
             Sasta<span className="text-brand">Store</span>
           </Link>
 
-          <nav className="hidden items-center gap-7 md:flex">
-            {siteConfig.navigation.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
+          <div className="hidden items-center gap-7 md:flex">
+            <nav className="flex items-center gap-7">
+              {siteConfig.navigation.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-brand-hover"
+            >
+              WhatsApp Us
+            </a>
+          </div>
 
           <button
             type="button"
@@ -67,8 +83,8 @@ export function Header() {
         </div>
 
         {menuOpen ? (
-          <nav className="border-t border-border py-4 md:hidden">
-            <div className="flex flex-col gap-1">
+          <div className="border-t border-border py-4 md:hidden">
+            <nav className="flex flex-col gap-1">
               {siteConfig.navigation.map((item) => (
                 <Link
                   key={item.href}
@@ -79,8 +95,17 @@ export function Header() {
                   {item.label}
                 </Link>
               ))}
-            </div>
-          </nav>
+            </nav>
+
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-black transition-colors hover:bg-brand-hover"
+            >
+              WhatsApp Us
+            </a>
+          </div>
         ) : null}
       </Container>
     </header>

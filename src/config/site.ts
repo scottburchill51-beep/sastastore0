@@ -5,6 +5,11 @@ export const siteConfig = {
     "Digital tools, AI tools, apps and premium subscriptions at affordable prices in Pakistan.",
   url: "https://sastastore.store",
 
+whatsapp: {
+  number: "923136093501",
+  display: "+92 313 6093501",
+},
+
   navigation: [
     {
       label: "Home",
