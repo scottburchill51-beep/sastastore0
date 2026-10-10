@@ -18,6 +18,7 @@ export type Product = {
   description: string;
 
   logo: string;
+ logoReady?: boolean;
   coverImage: string;
 
   plans: ProductPlan[];

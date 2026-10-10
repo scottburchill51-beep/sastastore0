@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { Product } from "@/types/product";
+import { ProductLogo } from "@/components/product/ProductLogo";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 
@@ -13,7 +14,10 @@ function formatPrice(price: number) {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const lowestPrice = Math.min(...product.plans.map((plan) => plan.price));
+  const lowestPrice = Math.min(
+    ...product.plans.map((plan) => plan.price),
+  );
+
   const hasMultiplePlans = product.plans.length > 1;
 
   return (
@@ -23,11 +27,14 @@ export function ProductCard({ product }: ProductCardProps) {
     >
       <Card className="flex h-full flex-col transition-all duration-200 group-hover:-translate-y-1 group-hover:border-brand/30 group-hover:bg-surface-elevated">
         <div className="flex items-start justify-between gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-surface-elevated text-lg font-bold text-brand">
-            {product.name.charAt(0)}
-          </div>
+          <ProductLogo
+            name={product.name}
+            logo={product.logo}
+          />
 
-          {product.badge ? <Badge>{product.badge}</Badge> : null}
+          {product.badge ? (
+            <Badge>{product.badge}</Badge>
+          ) : null}
         </div>
 
         <div className="mt-5">

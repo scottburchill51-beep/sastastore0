@@ -224,15 +224,16 @@ export const products: Product[] = [
     },
   },
 
-  {
-    name: "ChatGPT Plus",
-    slug: "chatgpt-plus",
-    category: "ai-tools",
-    shortDescription: "ChatGPT Plus private and shared access options.",
-    description:
-      "Choose between private monthly ChatGPT Plus access or an affordable shared option.",
-    logo: "/products/chatgpt-plus/logo.webp",
-    coverImage: "/products/chatgpt-plus/cover.webp",
+ 
+    {
+  name: "ChatGPT Plus",
+  slug: "chatgpt-plus",
+  category: "ai-tools",
+  shortDescription: "ChatGPT Plus private and shared access options.",
+  description:
+    "Choose between private monthly ChatGPT Plus access or an affordable shared option.",
+  logo: "/products/chatgpt-plus/logo.png",
+  coverImage: "/products/chatgpt-plus/cover.webp",
     plans: [
       {
         id: "private-monthly",

@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { ProductLogo } from "@/components/product/ProductLogo";
 import { Badge } from "@/components/ui/Badge";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { Section } from "@/components/ui/Section";
+import { siteConfig } from "@/config/site";
 import { products } from "@/data/products";
 import { getProductBySlug } from "@/lib/products";
 import {
@@ -12,14 +15,18 @@ import {
 } from "@/lib/whatsapp";
 
 type ProductPageProps = {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: Promise<{ slug: string }>;
 };
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("en-PK").format(price);
 }
+
+const availabilityMap = {
+  available: "https://schema.org/InStock",
+  limited: "https://schema.org/LimitedAvailability",
+  "out-of-stock": "https://schema.org/OutOfStock",
+} as const;
 
 export function generateStaticParams() {
   return products.map((product) => ({
@@ -27,19 +34,55 @@ export function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: ProductPageProps) {
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
+
   const product = getProductBySlug(slug);
 
   if (!product) {
     return {
       title: "Product Not Found | SastaStore",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
+
+  const productUrl = `${siteConfig.url}/products/${product.slug}`;
 
   return {
     title: product.seo.title,
     description: product.seo.description,
+
+    alternates: {
+      canonical: productUrl,
+    },
+
+    openGraph: {
+      type: "website",
+      url: productUrl,
+      siteName: siteConfig.name,
+      title: product.seo.title,
+      description: product.seo.description,
+      images: [
+        {
+          url: `${siteConfig.url}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: `${product.name} - SastaStore`,
+        },
+      ],
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: product.seo.title,
+      description: product.seo.description,
+      images: [`${siteConfig.url}/opengraph-image`],
+    },
   };
 }
 
@@ -54,26 +97,69 @@ export default async function ProductPage({
     notFound();
   }
 
+  const productUrl = `${siteConfig.url}/products/${product.slug}`;
+
+  const logoPath = product.logo.replace(/\.webp$/i, ".png");
+
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: `${siteConfig.url}${logoPath}`,
+    category: product.category,
+    url: productUrl,
+
+    offers: product.plans.map((plan) => ({
+      "@type": "Offer",
+      name: plan.name,
+      url: productUrl,
+      priceCurrency: "PKR",
+      price: plan.price,
+      availability: availabilityMap[product.availability],
+      seller: {
+        "@type": "Organization",
+        name: siteConfig.name,
+        url: siteConfig.url,
+      },
+    })),
+  };
+
   return (
     <main className="flex-1 bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productJsonLd).replace(
+            /</g,
+            "\\u003c",
+          ),
+        }}
+      />
+
       <Section>
         <Container>
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
             <div>
               <div className="flex items-center gap-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-surface text-2xl font-bold text-brand">
-                  {product.name.charAt(0)}
-                </div>
+                <ProductLogo
+                  name={product.name}
+                  logo={product.logo}
+                  size="large"
+                />
 
                 <div>
-                  {product.badge ? <Badge>{product.badge}</Badge> : null}
+                  {product.badge ? (
+                    <Badge>{product.badge}</Badge>
+                  ) : null}
 
                   <p className="mt-2 text-sm text-muted-foreground">
                     {product.category
                       .split("-")
                       .map(
                         (word) =>
-                          word.charAt(0).toUpperCase() + word.slice(1),
+                          word.charAt(0).toUpperCase() +
+                          word.slice(1),
                       )
                       .join(" ")}
                   </p>
@@ -89,7 +175,9 @@ export default async function ProductPage({
               </p>
 
               <div className="mt-8">
-                <h2 className="text-lg font-semibold">What you get</h2>
+                <h2 className="text-lg font-semibold">
+                  What you get
+                </h2>
 
                 <ul className="mt-4 space-y-3">
                   {product.features.map((feature) => (
@@ -108,7 +196,10 @@ export default async function ProductPage({
               </div>
 
               <div className="mt-8">
-                <LinkButton href="/products" variant="secondary">
+                <LinkButton
+                  href="/products"
+                  variant="secondary"
+                >
                   ← Back to Products
                 </LinkButton>
               </div>
@@ -122,11 +213,12 @@ export default async function ProductPage({
 
                 <div className="mt-5 space-y-4">
                   {product.plans.map((plan) => {
-                    const whatsappMessage = createProductOrderMessage({
-                      productName: product.name,
-                      planName: plan.name,
-                      price: plan.price,
-                    });
+                    const whatsappMessage =
+                      createProductOrderMessage({
+                        productName: product.name,
+                        planName: plan.name,
+                        price: plan.price,
+                      });
 
                     const whatsappUrl =
                       createWhatsAppUrl(whatsappMessage);
@@ -179,8 +271,8 @@ export default async function ProductPage({
 
                 <div className="mt-6 rounded-xl border border-brand/20 bg-brand/5 p-4">
                   <p className="text-sm leading-6 text-muted-foreground">
-                    Need help choosing a plan? Message SastaStore on WhatsApp
-                    before ordering.
+                    Need help choosing a plan? Message SastaStore on
+                    WhatsApp before ordering.
                   </p>
                 </div>
               </div>
