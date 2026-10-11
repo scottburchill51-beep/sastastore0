@@ -13,7 +13,7 @@ const teamMembers = [
   {
     name: "Shaloom Victor",
     role: "CEO",
-    initials: "SVA",
+    initials: "SV",
     description:
       "Leading SastaStore with a focus on building a simple, reliable and affordable destination for digital tools and premium subscriptions.",
   },
@@ -29,7 +29,6 @@ const teamMembers = [
 export default function AboutPage() {
   return (
     <main className="flex-1 overflow-hidden bg-background text-foreground">
-      {/* About Intro */}
       <Section>
         <Container>
           <div className="max-w-3xl">
@@ -105,7 +104,6 @@ export default function AboutPage() {
         </Container>
       </Section>
 
-      {/* Leadership */}
       <Section className="border-t border-border">
         <Container>
           <Reveal>

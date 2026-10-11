@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductLogo } from "@/components/product/ProductLogo";
-import { TrackedWhatsAppOrderLink } from "@/components/analytics/TrackedWhatsAppOrderLink";
 import { Reveal } from "@/components/common/Reveal";
 import { Badge } from "@/components/ui/Badge";
 import { Container } from "@/components/ui/Container";
@@ -269,15 +268,14 @@ export default async function ProductPage({
                           </p>
                         </div>
 
-                        <TrackedWhatsAppOrderLink
+                        <a
                           href={whatsappUrl}
-                          productName={product.name}
-                          planName={plan.name}
-                          price={plan.price}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-hover"
                         >
                           Order on WhatsApp
-                        </TrackedWhatsAppOrderLink>
+                        </a>
                       </div>
                     );
                   })}
