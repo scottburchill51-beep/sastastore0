@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
+import { Analytics } from "@vercel/analytics/next";
 
+import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { siteConfig } from "@/config/site";
@@ -41,13 +43,7 @@ export const metadata: Metadata = {
     "software keys Pakistan",
   ],
 
-  authors: [
-    {
-      name: "SastaStore",
-      url: siteConfig.url,
-    },
-  ],
-
+  authors: [{ name: "SastaStore", url: siteConfig.url }],
   creator: "SastaStore",
   publisher: "SastaStore",
 
@@ -97,8 +93,14 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <Header />
+
         {children}
+
         <Footer />
+
+        <FloatingWhatsApp />
+
+        <Analytics />
       </body>
     </html>
   );

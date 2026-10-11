@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { ProductCard } from "@/components/product/ProductCard";
 import { ProductLogo } from "@/components/product/ProductLogo";
+import { Reveal } from "@/components/common/Reveal";
 import { Badge } from "@/components/ui/Badge";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { Section } from "@/components/ui/Section";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { siteConfig } from "@/config/site";
 import { products } from "@/data/products";
 import { getProductBySlug } from "@/lib/products";
@@ -101,6 +104,23 @@ export default async function ProductPage({
 
   const logoPath = product.logo.replace(/\.webp$/i, ".png");
 
+  const sameCategoryProducts = products.filter(
+    (item) =>
+      item.slug !== product.slug &&
+      item.category === product.category,
+  );
+
+  const otherProducts = products.filter(
+    (item) =>
+      item.slug !== product.slug &&
+      item.category !== product.category,
+  );
+
+  const relatedProducts = [
+    ...sameCategoryProducts,
+    ...otherProducts,
+  ].slice(0, 4);
+
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -137,6 +157,7 @@ export default async function ProductPage({
         }}
       />
 
+      {/* Product Details */}
       <Section>
         <Container>
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
@@ -205,6 +226,7 @@ export default async function ProductPage({
               </div>
             </div>
 
+            {/* Plans */}
             <div>
               <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
                 <p className="text-sm font-medium text-muted-foreground">
@@ -250,7 +272,7 @@ export default async function ProductPage({
                           href={whatsappUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-black transition-colors hover:bg-brand-hover"
+                          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-hover"
                         >
                           Order on WhatsApp
                         </a>
@@ -280,6 +302,42 @@ export default async function ProductPage({
           </div>
         </Container>
       </Section>
+
+      {/* Related Products */}
+      {relatedProducts.length > 0 ? (
+        <Section className="border-t border-border">
+          <Container>
+            <Reveal>
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+                <SectionHeading
+                  eyebrow="You May Also Like"
+                  title="Related products"
+                  description={`Explore more digital tools and subscriptions similar to ${product.name}.`}
+                />
+
+                <LinkButton
+                  href="/products"
+                  variant="secondary"
+                >
+                  View All Products →
+                </LinkButton>
+              </div>
+            </Reveal>
+
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {relatedProducts.map((relatedProduct, index) => (
+                <Reveal
+                  key={relatedProduct.slug}
+                  delay={index * 80}
+                  className="h-full"
+                >
+                  <ProductCard product={relatedProduct} />
+                </Reveal>
+              ))}
+            </div>
+          </Container>
+        </Section>
+      ) : null}
     </main>
   );
 }
