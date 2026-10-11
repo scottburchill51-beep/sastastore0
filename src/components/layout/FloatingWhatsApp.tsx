@@ -1,5 +1,7 @@
 "use client";
 
+import { track } from "@vercel/analytics";
+
 import { createWhatsAppUrl } from "@/lib/whatsapp";
 
 export function FloatingWhatsApp() {
@@ -7,12 +9,19 @@ export function FloatingWhatsApp() {
     "Hello, I want to know more about SastaStore products and services.",
   );
 
+  function handleWhatsAppClick() {
+    track("WhatsApp Click", {
+      source: "floating_button",
+    });
+  }
+
   return (
     <a
       href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with SastaStore on WhatsApp"
+      onClick={handleWhatsAppClick}
       className="group fixed bottom-5 right-5 z-[100] flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_35px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:bg-[#20bd5a] sm:bottom-6 sm:right-6 sm:h-16 sm:w-16"
     >
       <span className="absolute inset-0 rounded-full bg-[#25D366] opacity-25 group-hover:animate-ping" />

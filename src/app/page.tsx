@@ -321,7 +321,41 @@ export default function Home() {
       </Section>
 
       {/* Customer Reviews */}
-      <Section className="border-t border-border">
+      <Section className="overflow-hidden border-t border-border">
+        <style>{`
+          @keyframes sastastore-reviews-right {
+            from {
+              transform: translateX(-50%);
+            }
+
+            to {
+              transform: translateX(0);
+            }
+          }
+
+          .reviews-right-track {
+            animation: sastastore-reviews-right 42s linear infinite;
+            will-change: transform;
+          }
+
+          .reviews-right-marquee:hover .reviews-right-track {
+            animation-play-state: paused;
+          }
+
+          @media (max-width: 640px) {
+            .reviews-right-track {
+              animation-duration: 34s;
+            }
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .reviews-right-track {
+              animation: none;
+              transform: none;
+            }
+          }
+        `}</style>
+
         <Container>
           <Reveal>
             <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
@@ -337,27 +371,19 @@ export default function Home() {
               </div>
             </div>
           </Reveal>
+        </Container>
 
-          <Reveal>
-            <div className="mt-5 flex items-center justify-between gap-4">
-              <p className="text-sm text-muted-foreground">
-                Swipe or scroll to see more reviews
-              </p>
+        <div className="reviews-right-marquee relative mt-10 overflow-hidden">
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-10 bg-gradient-to-r from-background to-transparent sm:w-24" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-10 bg-gradient-to-l from-background to-transparent sm:w-24" />
 
-              <span className="text-sm font-medium text-brand">
-                Scroll →
-              </span>
-            </div>
-          </Reveal>
-
-          <div className="mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-5">
-            {reviews.map((review, index) => (
-              <Reveal
-                key={review.src}
-                delay={(index % 3) * 80}
-                className="min-w-[86%] snap-start sm:min-w-[410px] lg:min-w-[calc((100%-2.5rem)/3)]"
-              >
-                <article className="group premium-card flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface">
+          <div className="reviews-right-track flex w-max">
+            <div className="flex shrink-0 gap-5 pr-5">
+              {reviews.map((review) => (
+                <article
+                  key={`review-first-${review.src}`}
+                  className="group premium-card flex h-full w-[86vw] max-w-[410px] shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface sm:w-[410px] lg:w-[390px]"
+                >
                   <a
                     href={review.src}
                     target="_blank"
@@ -370,7 +396,7 @@ export default function Home() {
                       width={review.width}
                       height={review.height}
                       className="h-[390px] w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.025] sm:h-[430px]"
-                      sizes="(max-width: 640px) 86vw, (max-width: 1024px) 410px, 33vw"
+                      sizes="(max-width: 640px) 86vw, 410px"
                     />
 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-50" />
@@ -409,19 +435,86 @@ export default function Home() {
                           Shared via customer chat
                         </span>
 
-                        <span className="text-lg text-brand">
-                          ★
-                        </span>
+                        <span className="text-lg text-brand">★</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="h-px w-0 bg-brand transition-all duration-500 group-hover:w-full" />
                 </article>
-              </Reveal>
-            ))}
+              ))}
+            </div>
+
+            <div
+              className="flex shrink-0 gap-5 pr-5"
+              aria-hidden="true"
+            >
+              {reviews.map((review) => (
+                <article
+                  key={`review-second-${review.src}`}
+                  className="group premium-card flex h-full w-[86vw] max-w-[410px] shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface sm:w-[410px] lg:w-[390px]"
+                >
+                  <a
+                    href={review.src}
+                    tabIndex={-1}
+                    className="relative block overflow-hidden border-b border-border bg-surface-elevated"
+                  >
+                    <Image
+                      src={review.src}
+                      alt=""
+                      width={review.width}
+                      height={review.height}
+                      className="h-[390px] w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.025] sm:h-[430px]"
+                      sizes="(max-width: 640px) 86vw, 410px"
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-50" />
+
+                    <div className="absolute bottom-4 right-4 rounded-full border border-white/10 bg-black/70 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur">
+                      View Screenshot ↗
+                    </div>
+                  </a>
+
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-brand/20 bg-brand/10 text-sm font-bold text-brand">
+                        {review.name.charAt(0)}
+                      </div>
+
+                      <div>
+                        <p className="font-semibold text-foreground">
+                          {review.name}
+                        </p>
+
+                        <p className="mt-0.5 text-xs text-brand">
+                          ✓ Customer Feedback
+                        </p>
+                      </div>
+                    </div>
+
+                    <blockquote className="mt-5 text-sm leading-7 text-muted-foreground">
+                      “{review.quote}”
+                    </blockquote>
+
+                    <div className="mt-auto pt-5">
+                      <div className="h-px bg-border transition-colors duration-300 group-hover:bg-brand/25" />
+
+                      <div className="mt-4 flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">
+                          Shared via customer chat
+                        </span>
+
+                        <span className="text-lg text-brand">★</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="h-px w-0 bg-brand transition-all duration-500 group-hover:w-full" />
+                </article>
+              ))}
+            </div>
           </div>
-        </Container>
+        </div>
       </Section>
 
       {/* Digital Services */}
