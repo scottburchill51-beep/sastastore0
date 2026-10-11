@@ -67,20 +67,34 @@ export function WelcomePopup() {
         }
       }}
     >
-      <div className="animate-fade-up relative w-full max-w-lg overflow-hidden rounded-3xl border border-brand/20 bg-surface shadow-[0_25px_100px_rgba(0,0,0,0.65)]">
+      <div className="animate-fade-up relative max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-brand/20 bg-surface shadow-[0_25px_100px_rgba(0,0,0,0.65)]">
         <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-brand/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-20 h-52 w-52 rounded-full bg-brand/5 blur-3xl" />
 
-        <button
-          type="button"
-          onClick={closePopup}
-          aria-label="Close welcome message"
-          className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/80 text-xl text-muted-foreground transition-all duration-300 hover:rotate-90 hover:border-brand/30 hover:text-foreground"
-        >
-          ×
-        </button>
+        {/* Always-visible top close bar */}
+        <div className="sticky top-0 z-50 flex justify-end bg-gradient-to-b from-surface via-surface/95 to-transparent px-4 pt-4 pb-2">
+          <button
+            type="button"
+            onClick={closePopup}
+            aria-label="Close welcome popup"
+            title="Close"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black text-white shadow-xl transition-all duration-200 hover:scale-105 hover:border-brand hover:bg-brand hover:text-black focus:outline-none focus:ring-2 focus:ring-brand/60"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              className="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+            >
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+        </div>
 
-        <div className="relative p-6 sm:p-8">
+        <div className="relative px-6 pb-6 sm:px-8 sm:pb-8">
           <div className="mx-auto flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-brand/20 bg-background shadow-lg shadow-brand/5">
             <Image
               src="/icon.svg"
@@ -144,9 +158,7 @@ export function WelcomePopup() {
               href={WHATSAPP_CHANNEL_URL}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() =>
-                sessionStorage.setItem(SESSION_KEY, "true")
-              }
+              onClick={() => sessionStorage.setItem(SESSION_KEY, "true")}
               className="button-shine mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 py-3.5 text-sm font-bold text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#20bd5a]"
             >
               <svg
