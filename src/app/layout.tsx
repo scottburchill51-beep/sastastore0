@@ -29,7 +29,17 @@ export const metadata: Metadata = {
   description:
     "Buy affordable AI tools, premium subscriptions, creative software, productivity apps, VPN services and digital products in Pakistan.",
 
-  applicationName: "SastaStore",
+  applicationName: siteConfig.name,
+
+  authors: [
+    {
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+  ],
+
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
 
   keywords: [
     "SastaStore",
@@ -44,25 +54,10 @@ export const metadata: Metadata = {
     "software keys Pakistan",
   ],
 
-  authors: [{ name: "SastaStore", url: siteConfig.url }],
-  creator: "SastaStore",
-  publisher: "SastaStore",
+  category: "technology",
 
-  openGraph: {
-    type: "website",
-    locale: "en_PK",
-    url: siteConfig.url,
-    siteName: "SastaStore",
-    title: "SastaStore | Premium Digital Tools at Sasta Prices",
-    description:
-      "Affordable AI tools, premium subscriptions, creative software, productivity apps and digital services in Pakistan.",
-  },
-
-  twitter: {
-    card: "summary_large_image",
-    title: "SastaStore | Premium Digital Tools at Sasta Prices",
-    description:
-      "Affordable AI tools, subscriptions and digital services in Pakistan.",
+  alternates: {
+    canonical: "https://sastastore.store/",
   },
 
   robots: {
@@ -71,22 +66,35 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
+      "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
-      "max-video-preview": -1,
     },
   },
 
-  category: "technology",
-};
+  openGraph: {
+    title: "SastaStore | Premium Digital Tools at Sasta Prices",
+    description:
+      "Affordable AI tools, premium subscriptions, creative software, productivity apps and digital services in Pakistan.",
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    locale: "en_PK",
+    type: "website",
+  },
 
-type RootLayoutProps = {
-  children: ReactNode;
+  twitter: {
+    card: "summary_large_image",
+    title: "SastaStore | Premium Digital Tools at Sasta Prices",
+    description:
+      "Affordable AI tools, subscriptions and digital services in Pakistan.",
+  },
 };
 
 export default function RootLayout({
   children,
-}: RootLayoutProps) {
+}: Readonly<{
+  children: ReactNode;
+}>) {
   return (
     <html
       lang="en"
@@ -94,15 +102,12 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <Header />
-
         <WelcomePopup />
 
         {children}
 
         <Footer />
-
         <FloatingWhatsApp />
-
         <Analytics />
       </body>
     </html>
