@@ -90,6 +90,48 @@ export const metadata: Metadata = {
   },
 };
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://sastastore.store/#organization",
+      name: "SastaStore",
+      url: "https://sastastore.store/",
+      logo: "https://sastastore.store/icon.svg",
+      description:
+        "SastaStore provides affordable digital tools, premium subscriptions and professional digital services in Pakistan.",
+      areaServed: {
+        "@type": "Country",
+        name: "Pakistan",
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: "+92-313-6093501",
+        contactType: "customer support",
+        areaServed: "PK",
+        availableLanguage: ["English", "Urdu"],
+      },
+      sameAs: [
+        "https://www.facebook.com/share/1cbKHVxxJi/",
+        "https://whatsapp.com/channel/0029Vb7BXu2B4hdMiWIlwY1v",
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://sastastore.store/#website",
+      url: "https://sastastore.store/",
+      name: "SastaStore",
+      description:
+        "Premium digital tools, subscriptions and digital services at affordable prices in Pakistan.",
+      publisher: {
+        "@id": "https://sastastore.store/#organization",
+      },
+      inLanguage: "en-PK",
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -101,6 +143,13 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+          }}
+        />
+
         <Header />
         <WelcomePopup />
 

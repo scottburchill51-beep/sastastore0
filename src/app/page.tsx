@@ -461,7 +461,7 @@ export default function Home() {
                   >
                     <Image
                       src={review.src}
-                      alt=""
+                      alt={`${review.name} SastaStore customer review`}
                       width={review.width}
                       height={review.height}
                       className="h-[390px] w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.025] sm:h-[430px]"
