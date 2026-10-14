@@ -129,6 +129,11 @@ export default async function ProductPage({
     image: `${siteConfig.url}${logoPath}`,
     category: product.category,
     url: productUrl,
+    brand: {
+      "@type": "Brand",
+      name: siteConfig.name,
+    },
+    sku: product.slug,
 
     offers: product.plans.map((plan) => ({
       "@type": "Offer",
@@ -145,12 +150,47 @@ export default async function ProductPage({
     })),
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteConfig.url,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Products",
+        item: `${siteConfig.url}/products`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.name,
+        item: productUrl,
+      },
+    ],
+  };
+
   return (
     <main className="flex-1 bg-background text-foreground">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(productJsonLd).replace(
+            /</g,
+            "\\u003c",
+          ),
+        }}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd).replace(
             /</g,
             "\\u003c",
           ),
