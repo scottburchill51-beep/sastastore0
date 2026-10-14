@@ -56,10 +56,6 @@ export const metadata: Metadata = {
 
   category: "technology",
 
-  alternates: {
-    canonical: "https://sastastore.store/",
-  },
-
   robots: {
     index: true,
     follow: true,

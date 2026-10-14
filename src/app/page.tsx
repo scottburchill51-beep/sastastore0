@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -15,6 +16,12 @@ import {
   getPopularProducts,
 } from "@/lib/products";
 import { createWhatsAppUrl } from "@/lib/whatsapp";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
 
 const benefits = [
   {
