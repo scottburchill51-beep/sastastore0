@@ -150,6 +150,37 @@ export default async function ProductPage({
     })),
   };
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `How do I order ${product.name}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Choose your preferred plan and click Order on WhatsApp. Our team will confirm availability, payment details and delivery information.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: `Is ${product.name} available all the time?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Availability can change depending on the product and plan. Please confirm availability with SastaStore before ordering.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How is delivery completed?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Digital products are delivered after order confirmation. Exact delivery details are shared through WhatsApp support.",
+        },
+      },
+    ],
+  };
+
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -191,6 +222,16 @@ export default async function ProductPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(breadcrumbJsonLd).replace(
+            /</g,
+            "\\u003c",
+          ),
+        }}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqJsonLd).replace(
             /</g,
             "\\u003c",
           ),
