@@ -1,0 +1,1 @@
+import { AuthForm } from "@/components/auth/AuthForm"; export const metadata={title:"Log In | SastaStore",robots:{index:false,follow:false}}; export default function Page(){return <AuthForm mode="login"/>;}
