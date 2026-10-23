@@ -3,15 +3,12 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export function AuthForm({
   mode,
 }: {
   mode: "login" | "register";
 }) {
-  const router = useRouter();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -20,6 +17,9 @@ export function AuthForm({
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    if (loading) return;
+
     setLoading(true);
     setMessage("");
 
@@ -29,7 +29,12 @@ export function AuthForm({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        credentials: "same-origin",
+        cache: "no-store",
+        body: JSON.stringify({
+          email: email.trim(),
+          password,
+        }),
       });
 
       const data = await response.json();
@@ -44,27 +49,28 @@ export function AuthForm({
         setMessage(
           "Please check your email to verify your account."
         );
-      } else {
-        router.push("/account");
-        router.refresh();
+        setLoading(false);
+        return;
       }
+
+      // Perform a fresh server request after login.
+      // This avoids overlapping router.push and router.refresh.
+      window.location.replace("/account");
     } catch (error) {
       setMessage(
         error instanceof Error
           ? error.message
           : "Something went wrong."
       );
-    } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main className="min-h-screen bg-[#f6f7fb] px-4 py-12 flex items-center justify-center text-slate-900">
+    <main className="flex min-h-screen items-center justify-center bg-[#f6f7fb] px-4 py-12 text-slate-900">
       <div className="w-full max-w-[440px]">
-
-        <div className="text-center mb-8">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-600 text-white text-2xl font-black shadow-lg">
+        <div className="mb-8 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-600 text-2xl font-black text-white shadow-lg">
             S
           </div>
 
@@ -75,7 +81,7 @@ export function AuthForm({
 
         <form
           onSubmit={submit}
-          className="rounded-3xl border border-slate-200 bg-white p-7 sm:p-9 shadow-xl shadow-slate-200/60"
+          className="rounded-3xl border border-slate-200 bg-white p-7 shadow-xl shadow-slate-200/60 sm:p-9"
         >
           <h2 className="text-2xl font-bold">
             {mode === "login"
@@ -83,7 +89,7 @@ export function AuthForm({
               : "Create account"}
           </h2>
 
-          <p className="mt-2 mb-7 text-sm text-slate-500">
+          <p className="mb-7 mt-2 text-sm text-slate-500">
             {mode === "login"
               ? "Enter your details to continue."
               : "Get started with your SastaStore account."}
@@ -130,7 +136,7 @@ export function AuthForm({
                 <button
                   type="button"
                   onClick={() =>
-                    setShowPassword(!showPassword)
+                    setShowPassword((previous) => !previous)
                   }
                   className="absolute inset-y-0 right-4 text-xs font-semibold text-violet-600"
                 >
@@ -153,7 +159,7 @@ export function AuthForm({
 
           {message && (
             <p
-              role="alert"
+              role="status"
               className="mt-5 rounded-xl bg-violet-50 p-3 text-sm text-violet-700"
             >
               {message}
@@ -174,9 +180,11 @@ export function AuthForm({
 
           <div className="my-6 flex items-center gap-3">
             <div className="h-px flex-1 bg-slate-200" />
+
             <span className="text-xs text-slate-400">
               OR CONTINUE WITH
             </span>
+
             <div className="h-px flex-1 bg-slate-200" />
           </div>
 
@@ -187,7 +195,7 @@ export function AuthForm({
             <svg viewBox="0 0 48 48" className="h-5 w-5">
               <path
                 fill="#EA4335"
-                d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+                d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 5.38 6.51 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
               />
               <path
                 fill="#4285F4"
@@ -202,6 +210,7 @@ export function AuthForm({
                 d="M24 48c6.48 0 11.93-2.13 15.9-5.8l-7.73-6c-2.14 1.44-4.88 2.3-8.17 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
               />
             </svg>
+
             Continue with Google
           </a>
 
