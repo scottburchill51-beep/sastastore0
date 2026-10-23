@@ -4,20 +4,21 @@ import { backend, configured } from "@/lib/store-backend";
 
 export async function GET(request: NextRequest) {
   const origin = request.nextUrl.origin;
-
-  if (!configured) {
-    return NextResponse.redirect(
-      new URL("/login?error=configuration", origin)
-    );
-  }
-
   const code = request.nextUrl.searchParams.get("code");
   const error = request.nextUrl.searchParams.get("error");
 
-  if (error || !code) {
-    return NextResponse.redirect(
+  const verifier = request.cookies.get("ss_pkce_verifier")?.value;
+
+  function fail() {
+    const response = NextResponse.redirect(
       new URL("/login?error=google", origin)
     );
+    response.cookies.delete("ss_pkce_verifier");
+    return response;
+  }
+
+  if (!configured || error || !code || !verifier) {
+    return fail();
   }
 
   try {
@@ -27,6 +28,7 @@ export async function GET(request: NextRequest) {
         method: "POST",
         body: JSON.stringify({
           auth_code: code,
+          code_verifier: verifier,
         }),
       }
     );
@@ -34,9 +36,7 @@ export async function GET(request: NextRequest) {
     const data = await result.json();
 
     if (!result.ok || !data.access_token) {
-      return NextResponse.redirect(
-        new URL("/login?error=google", origin)
-      );
+      return fail();
     }
 
     const response = NextResponse.redirect(
@@ -63,10 +63,10 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    response.cookies.delete("ss_pkce_verifier");
+
     return response;
   } catch {
-    return NextResponse.redirect(
-      new URL("/login?error=google", origin)
-    );
+    return fail();
   }
 }
