@@ -1,7 +1,11 @@
 
 "use client";
 
-import { useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useState,
+  type FormEvent,
+} from "react";
 import Link from "next/link";
 
 export function AuthForm({
@@ -14,8 +18,44 @@ export function AuthForm({
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [returnTo, setReturnTo] = useState("");
 
-  async function submit(e: FormEvent<HTMLFormElement>) {
+  // Read the original product destination from URL.
+  useEffect(() => {
+    const params = new URLSearchParams(
+      window.location.search
+    );
+
+    const requestedPath = params.get("next") || "";
+
+    // Only allow internal product URLs.
+    // Never redirect to external websites.
+    if (
+      requestedPath.startsWith("/products/") &&
+      !requestedPath.startsWith("//") &&
+      !requestedPath.includes("\\")
+    ) {
+      setReturnTo(requestedPath);
+    }
+  }, []);
+
+  // Preserve selected product when switching
+  // between Login and Register.
+  const loginHref = returnTo
+    ? `/login?next=${encodeURIComponent(returnTo)}`
+    : "/login";
+
+  const registerHref = returnTo
+    ? `/register?next=${encodeURIComponent(returnTo)}`
+    : "/register";
+
+  const googleHref = returnTo
+    ? `/api/auth/google?next=${encodeURIComponent(returnTo)}`
+    : "/api/auth/google";
+
+  async function submit(
+    e: FormEvent<HTMLFormElement>
+  ) {
     e.preventDefault();
 
     if (loading) return;
@@ -24,18 +64,21 @@ export function AuthForm({
     setMessage("");
 
     try {
-      const response = await fetch(`/api/auth/${mode}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "same-origin",
-        cache: "no-store",
-        body: JSON.stringify({
-          email: email.trim(),
-          password,
-        }),
-      });
+      const response = await fetch(
+        `/api/auth/${mode}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "same-origin",
+          cache: "no-store",
+          body: JSON.stringify({
+            email: email.trim(),
+            password,
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -47,15 +90,18 @@ export function AuthForm({
 
       if (data.emailVerificationRequired) {
         setMessage(
-          "Please check your email to verify your account."
+          "Please check your email to verify your account. After verification, sign in to continue."
         );
         setLoading(false);
         return;
       }
 
-      // Perform a fresh server request after login.
-      // This avoids overlapping router.push and router.refresh.
-      window.location.replace("/account");
+      // If user came from a product purchase,
+      // return to that product and selected plan.
+      // Otherwise open the normal dashboard.
+      window.location.replace(
+        returnTo || "/account"
+      );
     } catch (error) {
       setMessage(
         error instanceof Error
@@ -90,9 +136,11 @@ export function AuthForm({
           </h2>
 
           <p className="mb-7 mt-2 text-sm text-slate-500">
-            {mode === "login"
-              ? "Enter your details to continue."
-              : "Get started with your SastaStore account."}
+            {returnTo
+              ? "Sign in or create an account to continue your purchase."
+              : mode === "login"
+                ? "Enter your details to continue."
+                : "Get started with your SastaStore account."}
           </p>
 
           <div className="space-y-5">
@@ -107,7 +155,9 @@ export function AuthForm({
                 autoComplete="email"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) =>
+                  setEmail(e.target.value)
+                }
                 className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
               />
             </label>
@@ -119,7 +169,11 @@ export function AuthForm({
 
               <div className="relative mt-2">
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type={
+                    showPassword
+                      ? "text"
+                      : "password"
+                  }
                   required
                   minLength={8}
                   autoComplete={
@@ -129,18 +183,24 @@ export function AuthForm({
                   }
                   placeholder="Enter your password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) =>
+                    setPassword(e.target.value)
+                  }
                   className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-20 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
                 />
 
                 <button
                   type="button"
                   onClick={() =>
-                    setShowPassword((previous) => !previous)
+                    setShowPassword(
+                      (previous) => !previous
+                    )
                   }
                   className="absolute inset-y-0 right-4 text-xs font-semibold text-violet-600"
                 >
-                  {showPassword ? "Hide" : "Show"}
+                  {showPassword
+                    ? "Hide"
+                    : "Show"}
                 </button>
               </div>
             </label>
@@ -189,10 +249,14 @@ export function AuthForm({
           </div>
 
           <a
-            href="/api/auth/google"
+            href={googleHref}
             className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
           >
-            <svg viewBox="0 0 48 48" className="h-5 w-5">
+            <svg
+              viewBox="0 0 48 48"
+              className="h-5 w-5"
+              aria-hidden="true"
+            >
               <path
                 fill="#EA4335"
                 d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 5.38 6.51 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
@@ -219,7 +283,7 @@ export function AuthForm({
               <>
                 Don't have an account?{" "}
                 <Link
-                  href="/register"
+                  href={registerHref}
                   className="font-bold text-violet-600 hover:underline"
                 >
                   Sign up
@@ -229,7 +293,7 @@ export function AuthForm({
               <>
                 Already have an account?{" "}
                 <Link
-                  href="/login"
+                  href={loginHref}
                   className="font-bold text-violet-600 hover:underline"
                 >
                   Sign in
