@@ -6,7 +6,6 @@ import { Analytics } from "@vercel/analytics/next";
 import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { WelcomePopup } from "@/components/layout/WelcomePopup";
 import { siteConfig } from "@/config/site";
 
 import "./globals.css";
