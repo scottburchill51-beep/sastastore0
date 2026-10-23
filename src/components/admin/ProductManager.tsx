@@ -1,8 +1,327 @@
-"use client";import {useEffect,useState} from "react";import type {Product} from "@/types/product";
-const blank:Product={name:"",slug:"",category:"ai-tools",shortDescription:"",description:"",logo:"",coverImage:"",plans:[],features:[],availability:"available",seo:{title:"",description:""}};
-export function ProductManager(){const [list,setList]=useState<Product[]>([]);const [form,setForm]=useState<Product>(blank);const [plans,setPlans]=useState("[]");const [features,setFeatures]=useState("");const [message,setMessage]=useState("");async function load(){const r=await fetch("/api/admin/products");if(r.ok){const rows: {payload:Product}[]=await r.json();setList(rows.map(x=>x.payload));}else setMessage("Unable to load products. Check database migration and admin role.");}useEffect(()=>{void load()},[]);
-function edit(p:Product){setForm(p);setPlans(JSON.stringify(p.plans,null,2));setFeatures(p.features.join("\n"));}
-async function save(){setMessage("");let parsed:Product["plans"];try{parsed=JSON.parse(plans);if(!Array.isArray(parsed))throw new Error();}catch{setMessage("Plans must be a JSON array");return;}const payload={...form,plans:parsed,features:features.split("\n").map(x=>x.trim()).filter(Boolean)};const r=await fetch("/api/admin/products",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const data=await r.json();setMessage(r.ok?"Product saved successfully":data.error||"Failed to save");if(r.ok)void load();}
-async function remove(slug:string){if(!confirm(`Delete ${slug}?`))return;const r=await fetch(`/api/admin/products?slug=${encodeURIComponent(slug)}`,{method:"DELETE"});setMessage(r.ok?"Deleted":"Delete failed");if(r.ok)void load();}
-const field=(key:keyof Product,label:string)=> <label className="block text-sm mb-3">{label}<input className="block w-full rounded-md border bg-transparent px-3 py-2 mt-1" value={String(form[key]??"")} onChange={e=>setForm({...form,[key]:e.target.value})}/></label>;
-return <div className="grid gap-8 lg:grid-cols-2"><section className="space-y-2"><h2 className="text-xl font-semibold">Product catalogue ({list.length})</h2><button className="rounded border px-3 py-2" onClick={()=>edit(blank)}>+ New product</button>{list.map(x=><div className="border rounded-lg p-3 flex justify-between gap-3" key={x.slug}><div><b>{x.name}</b><div className="text-xs opacity-60">{x.slug} · {x.plans.length} plans</div></div><div className="flex gap-2"><button className="underline" onClick={()=>edit(x)}>Edit</button><button className="underline" onClick={()=>remove(x.slug)}>Delete</button></div></div>)}</section><section className="rounded-xl border p-5"><h2 className="text-xl font-semibold mb-4">Product details</h2>{field("name","Product name")}{field("slug","URL slug (lowercase-hyphens)")}{field("category","Category slug")}{field("shortDescription","Short description")}{field("description","Full description")}{field("logo","Logo path (existing /products/... image)")}{field("coverImage","Cover path")}{field("badge","Badge")}{field("deliveryInfo","Delivery instructions")}{field("whatsappMessage","WhatsApp order message")}<label className="block text-sm mb-3">Availability<select value={form.availability} onChange={e=>setForm({...form,availability:e.target.value as Product["availability"]})} className="block w-full border rounded p-2 bg-background"><option value="available">Available</option><option value="limited">Limited</option><option value="out-of-stock">Out of stock</option></select></label>{["featured","popular","new"].map(k=><label className="mr-4" key={k}><input type="checkbox" checked={!!form[k as "featured"]} onChange={e=>setForm({...form,[k]:e.target.checked})}/> {k}</label>)}<label className="block text-sm my-3">Plans (JSON array with id, name, duration, price)<textarea rows={7} className="block w-full border rounded p-2 bg-transparent font-mono" value={plans} onChange={e=>setPlans(e.target.value)}/></label><label className="block text-sm my-3">Features (one per line)<textarea rows={4} className="block w-full border rounded p-2 bg-transparent" value={features} onChange={e=>setFeatures(e.target.value)}/></label><label className="block text-sm my-3">SEO title<input className="block w-full border rounded p-2 bg-transparent" value={form.seo.title} onChange={e=>setForm({...form,seo:{...form.seo,title:e.target.value}})}/></label><label className="block text-sm my-3">SEO description<input className="block w-full border rounded p-2 bg-transparent" value={form.seo.description} onChange={e=>setForm({...form,seo:{...form.seo,description:e.target.value}})}/></label>{message&&<p role="status" className="mb-3">{message}</p>}<button className="rounded bg-emerald-600 text-white px-5 py-3" onClick={save}>Save product</button></section></div>}
+
+"use client";
+
+import { useEffect, useState } from "react";
+import type { Product } from "@/types/product";
+
+async function uploadProductImage(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch("/api/admin/upload-image", {
+    method: "POST",
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok || !data.url) {
+    throw new Error(data.error || "Image upload failed");
+  }
+
+  return data.url;
+}
+
+const blank: Product = {
+  name: "",
+  slug: "",
+  category: "ai-tools",
+  shortDescription: "",
+  description: "",
+  logo: "",
+  coverImage: "",
+  plans: [],
+  features: [],
+  availability: "available",
+  seo: {
+    title: "",
+    description: "",
+  },
+};
+
+export function ProductManager() {
+  const [list, setList] = useState<Product[]>([]);
+  const [form, setForm] = useState<Product>(blank);
+  const [plans, setPlans] = useState("[]");
+  const [features, setFeatures] = useState("");
+  const [message, setMessage] = useState("");
+
+  async function load() {
+    const r = await fetch("/api/admin/products");
+
+    if (r.ok) {
+      const rows: { payload: Product }[] = await r.json();
+      setList(rows.map((x) => x.payload));
+    } else {
+      setMessage(
+        "Unable to load products. Check database migration and admin role."
+      );
+    }
+  }
+
+  useEffect(() => {
+    void load();
+  }, []);
+
+  function edit(p: Product) {
+    setForm(p);
+    setPlans(JSON.stringify(p.plans, null, 2));
+    setFeatures(p.features.join("\n"));
+  }
+
+  async function save() {
+    setMessage("");
+
+    let parsed: Product["plans"];
+
+    try {
+      parsed = JSON.parse(plans);
+
+      if (!Array.isArray(parsed)) {
+        throw new Error();
+      }
+    } catch {
+      setMessage("Plans must be a JSON array");
+      return;
+    }
+
+    const payload = {
+      ...form,
+      plans: parsed,
+      features: features
+        .split("\n")
+        .map((x) => x.trim())
+        .filter(Boolean),
+    };
+
+    const r = await fetch("/api/admin/products", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await r.json();
+
+    setMessage(
+      r.ok
+        ? "Product saved successfully"
+        : data.error || "Failed to save"
+    );
+
+    if (r.ok) {
+      void load();
+    }
+  }
+
+  async function remove(slug: string) {
+    if (!confirm(`Delete ${slug}?`)) {
+      return;
+    }
+
+    const r = await fetch(
+      `/api/admin/products?slug=${encodeURIComponent(slug)}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    setMessage(r.ok ? "Deleted" : "Delete failed");
+
+    if (r.ok) {
+      void load();
+    }
+  }
+
+  const field = (key: keyof Product, label: string) => (
+    <label className="mb-3 block text-sm">
+      {label}
+
+      <input
+        className="mt-1 block w-full rounded-md border bg-transparent px-3 py-2"
+        value={String(form[key] ?? "")}
+        onChange={(e) =>
+          setForm({
+            ...form,
+            [key]: e.target.value,
+          })
+        }
+      />
+    </label>
+  );
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-2">
+      <section className="space-y-2">
+        <h2 className="text-xl font-semibold">
+          Product catalogue ({list.length})
+        </h2>
+
+        <button
+          className="rounded border px-3 py-2"
+          onClick={() => edit(blank)}
+        >
+          + New product
+        </button>
+
+        {list.map((x) => (
+          <div
+            className="flex justify-between gap-3 rounded-lg border p-3"
+            key={x.slug}
+          >
+            <div>
+              <b>{x.name}</b>
+
+              <div className="text-xs opacity-60">
+                {x.slug} · {x.plans.length} plans
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                className="underline"
+                onClick={() => edit(x)}
+              >
+                Edit
+              </button>
+
+              <button
+                className="underline"
+                onClick={() => remove(x.slug)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </section>
+
+      <section className="rounded-xl border p-5">
+        <h2 className="mb-4 text-xl font-semibold">
+          Product details
+        </h2>
+
+        {field("name", "Product name")}
+        {field("slug", "URL slug (lowercase-hyphens)")}
+        {field("category", "Category slug")}
+        {field("shortDescription", "Short description")}
+        {field("description", "Full description")}
+
+        {field("logo", "Logo path (existing /products/... image)")}
+        {field("coverImage", "Cover path")}
+
+        {field("badge", "Badge")}
+        {field("deliveryInfo", "Delivery instructions")}
+        {field("whatsappMessage", "WhatsApp order message")}
+
+        <label className="mb-3 block text-sm">
+          Availability
+
+          <select
+            value={form.availability}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                availability:
+                  e.target.value as Product["availability"],
+              })
+            }
+            className="block w-full rounded border bg-background p-2"
+          >
+            <option value="available">Available</option>
+            <option value="limited">Limited</option>
+            <option value="out-of-stock">Out of stock</option>
+          </select>
+        </label>
+
+        {["featured", "popular", "new"].map((k) => (
+          <label className="mr-4" key={k}>
+            <input
+              type="checkbox"
+              checked={!!form[k as "featured"]}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  [k]: e.target.checked,
+                })
+              }
+            />{" "}
+            {k}
+          </label>
+        ))}
+
+        <label className="my-3 block text-sm">
+          Plans (JSON array with id, name, duration, price)
+
+          <textarea
+            rows={7}
+            className="block w-full rounded border bg-transparent p-2 font-mono"
+            value={plans}
+            onChange={(e) => setPlans(e.target.value)}
+          />
+        </label>
+
+        <label className="my-3 block text-sm">
+          Features (one per line)
+
+          <textarea
+            rows={4}
+            className="block w-full rounded border bg-transparent p-2"
+            value={features}
+            onChange={(e) => setFeatures(e.target.value)}
+          />
+        </label>
+
+        <label className="my-3 block text-sm">
+          SEO title
+
+          <input
+            className="block w-full rounded border bg-transparent p-2"
+            value={form.seo.title}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                seo: {
+                  ...form.seo,
+                  title: e.target.value,
+                },
+              })
+            }
+          />
+        </label>
+
+        <label className="my-3 block text-sm">
+          SEO description
+
+          <input
+            className="block w-full rounded border bg-transparent p-2"
+            value={form.seo.description}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                seo: {
+                  ...form.seo,
+                  description: e.target.value,
+                },
+              })
+            }
+          />
+        </label>
+
+        {message && (
+          <p role="status" className="mb-3">
+            {message}
+          </p>
+        )}
+
+        <button
+          className="rounded bg-emerald-600 px-5 py-3 text-white"
+          onClick={save}
+        >
+          Save product
+        </button>
+      </section>
+    </div>
+  );
+}
