@@ -2,7 +2,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import type { Product } from "@/types/product";
+
+const blank: Product = {
+  name: "",
+  slug: "",
+  category: "ai-tools",
+  shortDescription: "",
+  description: "",
+  logo: "",
+  coverImage: "",
+  plans: [],
+  features: [],
+  availability: "available",
+  seo: { title: "", description: "" },
+};
 
 async function uploadProductImage(file: File): Promise<string> {
   const formData = new FormData();
@@ -22,39 +37,34 @@ async function uploadProductImage(file: File): Promise<string> {
   return data.url;
 }
 
-const blank: Product = {
-  name: "",
-  slug: "",
-  category: "ai-tools",
-  shortDescription: "",
-  description: "",
-  logo: "",
-  coverImage: "",
-  plans: [],
-  features: [],
-  availability: "available",
-  seo: {
-    title: "",
-    description: "",
-  },
-};
-
 export function ProductManager() {
   const [list, setList] = useState<Product[]>([]);
-  const [form, setForm] = useState<Product>(blank);
+  const [form, setForm] = useState<Product>({ ...blank });
   const [plans, setPlans] = useState("[]");
   const [features, setFeatures] = useState("");
   const [message, setMessage] = useState("");
+  const [uploading, setUploading] = useState<
+    "logo" | "coverImage" | null
+  >(null);
+  const [saving, setSaving] = useState(false);
 
   async function load() {
-    const r = await fetch("/api/admin/products");
+    try {
+      const response = await fetch("/api/admin/products", {
+        cache: "no-store",
+      });
 
-    if (r.ok) {
-      const rows: { payload: Product }[] = await r.json();
-      setList(rows.map((x) => x.payload));
-    } else {
+      if (!response.ok) {
+        throw new Error("Unable to load products.");
+      }
+
+      const rows: { payload: Product }[] =
+        await response.json();
+
+      setList(rows.map((row) => row.payload));
+    } catch {
       setMessage(
-        "Unable to load products. Check database migration and admin role."
+        "Unable to load products. Check database and admin access."
       );
     }
   }
@@ -63,13 +73,71 @@ export function ProductManager() {
     void load();
   }, []);
 
-  function edit(p: Product) {
-    setForm(p);
-    setPlans(JSON.stringify(p.plans, null, 2));
-    setFeatures(p.features.join("\n"));
+  function edit(product: Product) {
+    setForm({
+      ...product,
+      seo: { ...product.seo },
+    });
+    setPlans(JSON.stringify(product.plans, null, 2));
+    setFeatures(product.features.join("\n"));
+    setMessage("");
+  }
+
+  async function handleImageUpload(
+    event: ChangeEvent<HTMLInputElement>,
+    key: "logo" | "coverImage"
+  ) {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    const allowed = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+    ];
+
+    if (!allowed.includes(file.type)) {
+      setMessage("Only JPG, PNG and WebP images are allowed.");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size === 0 || file.size > 5 * 1024 * 1024) {
+      setMessage("Image must be between 1 byte and 5 MB.");
+      event.target.value = "";
+      return;
+    }
+
+    setUploading(key);
+    setMessage("");
+
+    try {
+      const url = await uploadProductImage(file);
+
+      setForm((previous) => ({
+        ...previous,
+        [key]: url,
+      }));
+
+      setMessage(
+        "Image uploaded successfully. Click Save product to save it with this product."
+      );
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Image upload failed."
+      );
+    } finally {
+      setUploading(null);
+      event.target.value = "";
+    }
   }
 
   async function save() {
+    if (uploading || saving) return;
+
     setMessage("");
 
     let parsed: Product["plans"];
@@ -81,125 +149,229 @@ export function ProductManager() {
         throw new Error();
       }
     } catch {
-      setMessage("Plans must be a JSON array");
+      setMessage("Plans must be a JSON array.");
       return;
     }
 
-    const payload = {
+    const payload: Product = {
       ...form,
       plans: parsed,
       features: features
         .split("\n")
-        .map((x) => x.trim())
+        .map((value) => value.trim())
         .filter(Boolean),
     };
 
-    const r = await fetch("/api/admin/products", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    setSaving(true);
 
-    const data = await r.json();
+    try {
+      const response = await fetch("/api/admin/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    setMessage(
-      r.ok
-        ? "Product saved successfully"
-        : data.error || "Failed to save"
-    );
+      const data = await response.json();
 
-    if (r.ok) {
-      void load();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to save product.");
+      }
+
+      setMessage("Product saved successfully.");
+      await load();
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Failed to save product."
+      );
+    } finally {
+      setSaving(false);
     }
   }
 
   async function remove(slug: string) {
-    if (!confirm(`Delete ${slug}?`)) {
-      return;
-    }
+    if (!confirm(`Delete ${slug}?`)) return;
 
-    const r = await fetch(
-      `/api/admin/products?slug=${encodeURIComponent(slug)}`,
-      {
-        method: "DELETE",
+    try {
+      const response = await fetch(
+        `/api/admin/products?slug=${encodeURIComponent(slug)}`,
+        { method: "DELETE" }
+      );
+
+      if (!response.ok) {
+        throw new Error("Delete failed.");
       }
-    );
 
-    setMessage(r.ok ? "Deleted" : "Delete failed");
-
-    if (r.ok) {
-      void load();
+      setMessage("Product deleted successfully.");
+      await load();
+    } catch {
+      setMessage("Delete failed.");
     }
   }
 
   const field = (key: keyof Product, label: string) => (
-    <label className="mb-3 block text-sm">
+    <label className="mb-4 block text-sm font-medium text-slate-700">
       {label}
-
       <input
-        className="mt-1 block w-full rounded-md border bg-transparent px-3 py-2"
+        className="mt-2 block w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none focus:border-violet-500"
         value={String(form[key] ?? "")}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            [key]: e.target.value,
-          })
+        onChange={(event) =>
+          setForm((previous) => ({
+            ...previous,
+            [key]: event.target.value,
+          }))
         }
       />
     </label>
   );
 
+  function imageField(
+    key: "logo" | "coverImage",
+    title: string
+  ) {
+    const value = form[key];
+
+    return (
+      <div className="mb-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+        <h3 className="mb-3 font-semibold text-slate-900">
+          {title}
+        </h3>
+
+        {value ? (
+          <div className="mb-4 flex min-h-28 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-3">
+            <img
+              src={value}
+              alt={`${form.name || "Product"} ${title}`}
+              className="max-h-44 max-w-full object-contain"
+              onError={(event) => {
+                event.currentTarget.style.display = "none";
+              }}
+            />
+          </div>
+        ) : (
+          <div className="mb-4 flex h-28 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white text-sm text-slate-400">
+            No image selected
+          </div>
+        )}
+
+        <label className="block text-sm font-medium text-slate-700">
+          Upload from computer
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            disabled={uploading !== null || saving}
+            onChange={(event) =>
+              void handleImageUpload(event, key)
+            }
+            className="mt-2 block w-full cursor-pointer rounded-xl border border-slate-200 bg-white p-3 text-sm disabled:opacity-50"
+          />
+        </label>
+
+        {uploading === key && (
+          <p className="mt-3 text-sm font-medium text-violet-600">
+            Uploading image...
+          </p>
+        )}
+
+        <label className="mt-4 block text-sm font-medium text-slate-700">
+          Or enter an existing image path / URL
+          <input
+            type="text"
+            value={value || ""}
+            onChange={(event) =>
+              setForm((previous) => ({
+                ...previous,
+                [key]: event.target.value,
+              }))
+            }
+            className="mt-2 block w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm"
+            placeholder="/products/example.webp"
+          />
+        </label>
+
+        {value && (
+          <button
+            type="button"
+            onClick={() =>
+              setForm((previous) => ({
+                ...previous,
+                [key]: "",
+              }))
+            }
+            className="mt-3 text-sm font-semibold text-rose-600 hover:underline"
+          >
+            Remove image from product
+          </button>
+        )}
+
+        <p className="mt-3 text-xs text-slate-500">
+          JPG, PNG or WebP. Maximum 5 MB.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-8 lg:grid-cols-2">
-      <section className="space-y-2">
-        <h2 className="text-xl font-semibold">
-          Product catalogue ({list.length})
-        </h2>
+      <section className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-xl font-bold text-slate-900">
+            Product Catalogue ({list.length})
+          </h2>
 
-        <button
-          className="rounded border px-3 py-2"
-          onClick={() => edit(blank)}
-        >
-          + New product
-        </button>
-
-        {list.map((x) => (
-          <div
-            className="flex justify-between gap-3 rounded-lg border p-3"
-            key={x.slug}
+          <button
+            type="button"
+            onClick={() => edit({ ...blank })}
+            className="rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-violet-700"
           >
-            <div>
-              <b>{x.name}</b>
+            + New Product
+          </button>
+        </div>
 
-              <div className="text-xs opacity-60">
-                {x.slug} · {x.plans.length} plans
+        <div className="max-h-[750px] space-y-3 overflow-y-auto pr-1">
+          {list.map((product) => (
+            <div
+              key={product.slug}
+              className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4"
+            >
+              <div className="min-w-0">
+                <p className="font-semibold text-slate-900">
+                  {product.name}
+                </p>
+
+                <p className="mt-1 break-all text-xs text-slate-500">
+                  {product.slug} · {product.plans.length} plans
+                </p>
+              </div>
+
+              <div className="flex shrink-0 gap-3">
+                <button
+                  type="button"
+                  onClick={() => edit(product)}
+                  className="text-sm font-semibold text-violet-600 hover:underline"
+                >
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => void remove(product.slug)}
+                  className="text-sm font-semibold text-rose-600 hover:underline"
+                >
+                  Delete
+                </button>
               </div>
             </div>
-
-            <div className="flex gap-2">
-              <button
-                className="underline"
-                onClick={() => edit(x)}
-              >
-                Edit
-              </button>
-
-              <button
-                className="underline"
-                onClick={() => remove(x.slug)}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </section>
 
-      <section className="rounded-xl border p-5">
-        <h2 className="mb-4 text-xl font-semibold">
-          Product details
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7">
+        <h2 className="mb-6 text-xl font-bold text-slate-900">
+          Product Details
         </h2>
 
         {field("name", "Product name")}
@@ -208,26 +380,25 @@ export function ProductManager() {
         {field("shortDescription", "Short description")}
         {field("description", "Full description")}
 
-        {field("logo", "Logo path (existing /products/... image)")}
-        {field("coverImage", "Cover path")}
+        {imageField("logo", "Product Logo")}
+        {imageField("coverImage", "Product Cover Image")}
 
         {field("badge", "Badge")}
         {field("deliveryInfo", "Delivery instructions")}
         {field("whatsappMessage", "WhatsApp order message")}
 
-        <label className="mb-3 block text-sm">
+        <label className="mb-4 block text-sm font-medium text-slate-700">
           Availability
-
           <select
             value={form.availability}
-            onChange={(e) =>
-              setForm({
-                ...form,
+            onChange={(event) =>
+              setForm((previous) => ({
+                ...previous,
                 availability:
-                  e.target.value as Product["availability"],
-              })
+                  event.target.value as Product["availability"],
+              }))
             }
-            className="block w-full rounded border bg-background p-2"
+            className="mt-2 block w-full rounded-xl border border-slate-200 bg-white p-3"
           >
             <option value="available">Available</option>
             <option value="limited">Limited</option>
@@ -235,91 +406,99 @@ export function ProductManager() {
           </select>
         </label>
 
-        {["featured", "popular", "new"].map((k) => (
-          <label className="mr-4" key={k}>
-            <input
-              type="checkbox"
-              checked={!!form[k as "featured"]}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  [k]: e.target.checked,
-                })
-              }
-            />{" "}
-            {k}
-          </label>
-        ))}
+        <div className="my-5 flex flex-wrap gap-4">
+          {(["featured", "popular", "new"] as const).map(
+            (key) => (
+              <label
+                key={key}
+                className="flex items-center gap-2 text-sm capitalize"
+              >
+                <input
+                  type="checkbox"
+                  checked={!!form[key]}
+                  onChange={(event) =>
+                    setForm((previous) => ({
+                      ...previous,
+                      [key]: event.target.checked,
+                    }))
+                  }
+                />
+                {key}
+              </label>
+            )
+          )}
+        </div>
 
-        <label className="my-3 block text-sm">
+        <label className="my-4 block text-sm font-medium text-slate-700">
           Plans (JSON array with id, name, duration, price)
-
           <textarea
             rows={7}
-            className="block w-full rounded border bg-transparent p-2 font-mono"
             value={plans}
-            onChange={(e) => setPlans(e.target.value)}
+            onChange={(event) => setPlans(event.target.value)}
+            className="mt-2 block w-full rounded-xl border border-slate-200 bg-white p-3 font-mono text-sm"
           />
         </label>
 
-        <label className="my-3 block text-sm">
+        <label className="my-4 block text-sm font-medium text-slate-700">
           Features (one per line)
-
           <textarea
             rows={4}
-            className="block w-full rounded border bg-transparent p-2"
             value={features}
-            onChange={(e) => setFeatures(e.target.value)}
+            onChange={(event) => setFeatures(event.target.value)}
+            className="mt-2 block w-full rounded-xl border border-slate-200 bg-white p-3"
           />
         </label>
 
-        <label className="my-3 block text-sm">
+        <label className="my-4 block text-sm font-medium text-slate-700">
           SEO title
-
           <input
-            className="block w-full rounded border bg-transparent p-2"
             value={form.seo.title}
-            onChange={(e) =>
-              setForm({
-                ...form,
+            onChange={(event) =>
+              setForm((previous) => ({
+                ...previous,
                 seo: {
-                  ...form.seo,
-                  title: e.target.value,
+                  ...previous.seo,
+                  title: event.target.value,
                 },
-              })
+              }))
             }
+            className="mt-2 block w-full rounded-xl border border-slate-200 bg-white p-3"
           />
         </label>
 
-        <label className="my-3 block text-sm">
+        <label className="my-4 block text-sm font-medium text-slate-700">
           SEO description
-
           <input
-            className="block w-full rounded border bg-transparent p-2"
             value={form.seo.description}
-            onChange={(e) =>
-              setForm({
-                ...form,
+            onChange={(event) =>
+              setForm((previous) => ({
+                ...previous,
                 seo: {
-                  ...form.seo,
-                  description: e.target.value,
+                  ...previous.seo,
+                  description: event.target.value,
                 },
-              })
+              }))
             }
+            className="mt-2 block w-full rounded-xl border border-slate-200 bg-white p-3"
           />
         </label>
 
         {message && (
-          <p role="status" className="mb-3">
+          <p
+            role="status"
+            className="my-4 rounded-xl bg-violet-50 p-4 text-sm text-violet-800"
+          >
             {message}
           </p>
         )}
 
         <button
-          className="rounded bg-emerald-600 px-5 py-3 text-white"
-          onClick={save}
+          type="button"
+          disabled={uploading !== null || saving}
+          onClick={() => void save()}
+          className="w-full rounded-xl bg-violet-600 px-6 py-3.5 font-semibold text-white hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Save product
+          {saving ? "Saving..." : "Save Product"}
         </button>
       </section>
     </div>
