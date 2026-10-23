@@ -1,1 +1,24 @@
-import {redirect} from "next/navigation";import {getSession,isAdmin} from "@/lib/store-backend";import {ProductManager} from "@/components/admin/ProductManager";export const dynamic="force-dynamic";export default async function Page(){const {user,token}=await getSession();if(!user)redirect("/login");if(!await isAdmin(user.id,token))return <main className="p-12"><h1 className="text-2xl">Access denied</h1><p>This account is not an administrator.</p></main>;return <main className="flex-1 mx-auto w-full max-w-6xl p-8"><h1 className="text-3xl font-bold mb-3">SastaStore Admin</h1><p className="opacity-70 mb-8">Manage digital products and their pricing plans.</p><ProductManager/></main>;}
+
+import { redirect } from "next/navigation";
+import { getSession, isAdmin } from "@/lib/store-backend";
+
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const { user, token } = await getSession();
+
+  // Not logged in: show modern login page.
+  if (!user) {
+    redirect("/login");
+  }
+
+  // Admin: open admin dashboard.
+  const admin = await isAdmin(user.id, token);
+
+  if (admin) {
+    redirect("/admin");
+  }
+
+  // Customer: open customer dashboard.
+  redirect("/account");
+}
