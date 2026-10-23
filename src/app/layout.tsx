@@ -134,9 +134,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased bg-[#f6f7fb]`}
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-screen flex-col bg-[#f6f7fb] text-slate-900">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
