@@ -71,10 +71,6 @@ export function AuthForm({
           <h1 className="text-2xl font-bold tracking-tight">
             SastaStore
           </h1>
-
-          <p className="mt-2 text-sm text-slate-500">
-            Your digital tools, all in one place.
-          </p>
         </div>
 
         <form
