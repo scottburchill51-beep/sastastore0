@@ -1,6 +1,5 @@
 
 import { AuthForm } from "@/components/auth/AuthForm";
-import WelcomePopup from "@/components/WelcomePopup";
 
 export const metadata = {
   title: "Log In | SastaStore",
@@ -11,10 +10,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return (
-    <>
-      <WelcomePopup />
-      <AuthForm mode="login" />
-    </>
-  );
+  return <AuthForm mode="login" />;
 }
