@@ -4,9 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import { Analytics } from "@vercel/analytics/next";
 
-import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import { siteConfig } from "@/config/site";
 
 import "./globals.css";
@@ -142,16 +140,15 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+            __html: JSON.stringify(structuredData).replace(
+              /</g,
+              "\\u003c"
+            ),
           }}
         />
 
-        <Header />
+        <SiteChrome>{children}</SiteChrome>
 
-        {children}
-
-        <Footer />
-        <FloatingWhatsApp />
         <Analytics />
       </body>
     </html>
