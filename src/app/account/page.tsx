@@ -1,22 +1,27 @@
 
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { currentUser } from "@/lib/store-backend";
+import { getSession, isAdmin } from "@/lib/store-backend";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  const user = await currentUser();
+  const { user, token } = await getSession();
 
   if (!user) {
     redirect("/login");
   }
 
+  const admin = await isAdmin(user.id, token);
+
+  if (admin) {
+    redirect("/admin");
+  }
+
   return (
     <main className="min-h-screen flex-1 bg-[#f6f7fb] px-4 py-10 text-slate-900">
       <div className="mx-auto max-w-6xl space-y-8">
-
         <div>
           <p className="text-sm font-semibold text-violet-600">
             SASTASTORE ACCOUNT
@@ -89,26 +94,12 @@ export default async function Page() {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-4">
-          <Link
-            href="/products"
-            className="rounded-xl bg-violet-600 px-6 py-3 font-semibold text-white hover:bg-violet-700"
-          >
-            Browse Products
-          </Link>
-
-          <Link
-            href="/admin"
-            className="rounded-xl border border-slate-200 bg-white px-6 py-3 font-semibold text-slate-700 hover:bg-slate-50"
-          >
-            Admin Dashboard
-          </Link>
-        </div>
-
-        <p className="text-sm text-slate-500">
-          Existing WhatsApp ordering remains unchanged.
-          Admin access is restricted to authorised accounts.
-        </p>
+        <Link
+          href="/products"
+          className="inline-block rounded-xl bg-violet-600 px-6 py-3 font-semibold text-white hover:bg-violet-700"
+        >
+          Browse Products
+        </Link>
       </div>
     </main>
   );
