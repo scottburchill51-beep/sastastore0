@@ -1,127 +1,181 @@
 
 import Link from "next/link";
-import { getSession } from "@/lib/store-backend";
 import { redirect } from "next/navigation";
+import { backend, getSession } from "@/lib/store-backend";
+import CheckoutForm from "./CheckoutForm";
 
-type CheckoutPageProps = {
+export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: "Secure Checkout | SastaStore",
+  robots: { index: false, follow: false },
+};
+
+type Props = {
   searchParams: Promise<{
     product?: string;
     plan?: string;
   }>;
 };
 
-export const metadata = {
-  title: "Secure Checkout | SastaStore",
-  robots: {
-    index: false,
-    follow: false,
-  },
+type ProductData = {
+  name?: string;
+  availability?: string;
+  plans?: Array<{
+    id?: string | number;
+    name?: string;
+    price?: string | number;
+  }>;
 };
 
-export const dynamic = "force-dynamic";
+function Unavailable({
+  message,
+}: {
+  message: string;
+}) {
+  return (
+    <main className="min-h-[70vh] bg-slate-50 px-4 py-20">
+      <div className="mx-auto max-w-xl rounded-3xl border border-slate-200 bg-white p-10 text-center">
+        <h1 className="text-2xl font-extrabold text-slate-900">
+          Checkout Unavailable
+        </h1>
+        <p className="mt-4 text-slate-600">
+          {message}
+        </p>
+        <Link
+          href="/products"
+          className="mt-7 inline-flex rounded-xl bg-blue-600 px-6 py-3 font-bold text-white"
+        >
+          Browse Products
+        </Link>
+      </div>
+    </main>
+  );
+}
 
 export default async function CheckoutPage({
   searchParams,
-}: CheckoutPageProps) {
-  const { product, plan } = await searchParams;
+}: Props) {
+  const params = await searchParams;
 
-  const { user } = await getSession();
+  const slug = params.product || "";
+  const planId = params.plan || "";
 
-  const productSlug =
-    typeof product === "string" &&
-    /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(product)
-      ? product
-      : "";
-
-  const planId =
-    typeof plan === "string" &&
-    plan.length > 0 &&
-    plan.length <= 100
-      ? plan
-      : "";
-
-  if (!productSlug || !planId) {
+  if (
+    !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) ||
+    !planId ||
+    planId.length > 100
+  ) {
     return (
-      <main className="flex min-h-[70vh] items-center justify-center bg-[#F8FAFC] px-4 py-16">
-        <div className="w-full max-w-lg rounded-3xl border border-blue-100 bg-white p-10 text-center shadow-sm">
-          <h1 className="text-2xl font-bold text-slate-900">
-            Select a Product First
-          </h1>
-          <p className="mt-4 text-slate-500">
-            Please select your product and subscription plan
-            before continuing to checkout.
-          </p>
-          <Link
-            href="/products"
-            className="mt-7 inline-flex rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
-          >
-            Browse Products
-          </Link>
-        </div>
-      </main>
+      <Unavailable message="Please choose a product and plan first." />
     );
   }
 
-  if (!user) {
-    const returnTo =
-      `/checkout?product=${encodeURIComponent(productSlug)}` +
+  const { user, token } = await getSession();
+
+  if (!user || !token) {
+    const destination =
+      `/checkout?product=${encodeURIComponent(slug)}` +
       `&plan=${encodeURIComponent(planId)}`;
 
-    redirect(`/login?next=${encodeURIComponent(returnTo)}`);
+    redirect(
+      `/login?next=${encodeURIComponent(destination)}`,
+    );
+  }
+
+  let product: ProductData | undefined;
+
+  try {
+    const query = new URLSearchParams({
+      slug: `eq.${slug}`,
+      select: "payload",
+      limit: "1",
+    });
+
+    const response = await backend(
+      `/rest/v1/store_products?${query}`,
+      {},
+      token,
+    );
+
+    if (!response.ok) {
+      throw new Error("Product lookup failed");
+    }
+
+    const rows = await response.json();
+
+    product = Array.isArray(rows)
+      ? rows[0]?.payload
+      : undefined;
+  } catch {
+    return (
+      <Unavailable message="We could not verify this product. Please try again later." />
+    );
+  }
+
+  if (
+    !product ||
+    !Array.isArray(product.plans) ||
+    product.availability === "out-of-stock"
+  ) {
+    return (
+      <Unavailable message="This product is currently unavailable." />
+    );
+  }
+
+  const plan = product.plans.find(
+    (item) => String(item.id) === planId,
+  );
+
+  if (!plan) {
+    return (
+      <Unavailable message="The selected plan is unavailable." />
+    );
+  }
+
+  const amount = Number(plan.price);
+
+  if (
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ) {
+    return (
+      <Unavailable message="This plan has no valid price. Contact support." />
+    );
   }
 
   return (
-    <main className="min-h-[75vh] bg-[#F8FAFC] px-4 py-16 text-slate-900">
-      <div className="mx-auto max-w-3xl">
-        <div className="mb-8">
-          <p className="text-xs font-bold uppercase tracking-widest text-blue-600">
-            SastaStore Checkout
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 px-4 py-12 text-slate-900">
+      <div className="mx-auto max-w-5xl">
+        <Link
+          href={`/products/${slug}`}
+          className="text-sm font-semibold text-blue-600 hover:underline"
+        >
+          ← Back to product
+        </Link>
+
+        <div className="mt-7 mb-9">
+          <p className="text-sm font-bold uppercase tracking-widest text-blue-600">
+            SastaStore
           </p>
 
-          <h1 className="mt-3 text-4xl font-extrabold">
+          <h1 className="mt-2 text-4xl font-extrabold">
             Secure Checkout
           </h1>
 
-          <p className="mt-3 text-slate-500">
-            Review your selected product before payment.
+          <p className="mt-3 text-slate-600">
+            Submit your payment securely for manual verification.
           </p>
         </div>
 
-        <div className="rounded-3xl border border-blue-100 bg-white p-7 shadow-sm sm:p-10">
-          <div className="rounded-2xl border border-blue-100 bg-blue-50 p-5">
-            <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
-              Selected Product
-            </p>
-
-            <p className="mt-2 break-words text-xl font-bold text-slate-900">
-              {productSlug}
-            </p>
-
-            <p className="mt-3 text-sm text-slate-600">
-              Selected Plan: {planId}
-            </p>
-          </div>
-
-          <div className="mt-7 rounded-2xl border border-amber-200 bg-amber-50 p-5">
-            <h2 className="font-bold text-amber-900">
-              Checkout Setup in Progress
-            </h2>
-
-            <p className="mt-2 text-sm leading-6 text-amber-800">
-              We are preparing secure SadaPay and Bank
-              Transfer payment submission, receipt upload,
-              order tracking and admin verification.
-              Please do not make a payment yet.
-            </p>
-          </div>
-
-          <Link
-            href={`/products/${encodeURIComponent(productSlug)}`}
-            className="mt-7 inline-flex rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
-          >
-            Back to Product
-          </Link>
-        </div>
+        <CheckoutForm
+          productSlug={slug}
+          productName={product.name || slug}
+          planId={planId}
+          planName={plan.name || planId}
+          amount={amount}
+          email={user.email || ""}
+        />
       </div>
     </main>
   );
