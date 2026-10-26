@@ -1,23 +1,15 @@
 
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductLogo } from "@/components/product/ProductLogo";
-import { Reveal } from "@/components/common/Reveal";
-import { Badge } from "@/components/ui/Badge";
 import { Container } from "@/components/ui/Container";
-import { LinkButton } from "@/components/ui/LinkButton";
-import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { siteConfig } from "@/config/site";
 import { products } from "@/data/products";
 import { getProductBySlug } from "@/lib/products";
 import { getSession } from "@/lib/store-backend";
-import {
-  createProductOrderMessage,
-  createWhatsAppUrl,
-} from "@/lib/whatsapp";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -43,7 +35,6 @@ export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-
   const product = getProductBySlug(slug);
 
   if (!product) {
@@ -56,19 +47,17 @@ export async function generateMetadata({
     };
   }
 
-  const productUrl = `${siteConfig.url}/products/${product.slug}`;
+  const url = `${siteConfig.url}/products/${product.slug}`;
 
   return {
     title: product.seo.title,
     description: product.seo.description,
-
     alternates: {
-      canonical: productUrl,
+      canonical: url,
     },
-
     openGraph: {
       type: "website",
-      url: productUrl,
+      url,
       siteName: siteConfig.name,
       title: product.seo.title,
       description: product.seo.description,
@@ -81,7 +70,6 @@ export async function generateMetadata({
         },
       ],
     },
-
     twitter: {
       card: "summary_large_image",
       title: product.seo.title,
@@ -95,7 +83,6 @@ export default async function ProductPage({
   params,
 }: ProductPageProps) {
   const { slug } = await params;
-  const { user } = await getSession();
 
   const product = getProductBySlug(slug);
 
@@ -103,25 +90,26 @@ export default async function ProductPage({
     notFound();
   }
 
-  const productUrl = `${siteConfig.url}/products/${product.slug}`;
+  const { user } = await getSession();
 
-  const logoPath = product.logo.replace(/\.webp$/i, ".png");
+  const productUrl =
+    `${siteConfig.url}/products/${product.slug}`;
 
-  const sameCategoryProducts = products.filter(
-    (item) =>
-      item.slug !== product.slug &&
-      item.category === product.category,
-  );
-
-  const otherProducts = products.filter(
-    (item) =>
-      item.slug !== product.slug &&
-      item.category !== product.category,
-  );
+  const productImage = product.logo.startsWith("http")
+    ? product.logo
+    : `${siteConfig.url}${product.logo.startsWith("/") ? "" : "/"}${product.logo}`;
 
   const relatedProducts = [
-    ...sameCategoryProducts,
-    ...otherProducts,
+    ...products.filter(
+      (item) =>
+        item.slug !== product.slug &&
+        item.category === product.category,
+    ),
+    ...products.filter(
+      (item) =>
+        item.slug !== product.slug &&
+        item.category !== product.category,
+    ),
   ].slice(0, 4);
 
   const productJsonLd = {
@@ -129,7 +117,7 @@ export default async function ProductPage({
     "@type": "Product",
     name: product.name,
     description: product.description,
-    image: `${siteConfig.url}${logoPath}`,
+    image: productImage,
     category: product.category,
     url: productUrl,
     brand: {
@@ -137,7 +125,6 @@ export default async function ProductPage({
       name: siteConfig.name,
     },
     sku: product.slug,
-
     offers: product.plans.map((plan) => ({
       "@type": "Offer",
       name: plan.name,
@@ -151,37 +138,6 @@ export default async function ProductPage({
         url: siteConfig.url,
       },
     })),
-  };
-
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: `How do I order ${product.name}?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Choose your preferred plan and click Order on WhatsApp. Our team will confirm availability, payment details and delivery information.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: `Is ${product.name} available all the time?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Availability can change depending on the product and plan. Please confirm availability with SastaStore before ordering.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "How is delivery completed?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Digital products are delivered after order confirmation. Exact delivery details are shared through WhatsApp support.",
-        },
-      },
-    ],
   };
 
   const breadcrumbJsonLd = {
@@ -209,8 +165,31 @@ export default async function ProductPage({
     ],
   };
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `How do I order ${product.name}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Choose a plan, sign in and complete the checkout process when available.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: `Is ${product.name} always available?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Availability depends on the product and selected plan.",
+        },
+      },
+    ],
+  };
+
   return (
-    <main className="flex-1 bg-background text-foreground">
+    <main className="min-h-screen flex-1 bg-[#F8FAFC] text-slate-900">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -224,10 +203,9 @@ export default async function ProductPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbJsonLd).replace(
-            /</g,
-            "\\u003c",
-          ),
+          __html: JSON.stringify(
+            breadcrumbJsonLd,
+          ).replace(/</g, "\\u003c"),
         }}
       />
 
@@ -241,201 +219,366 @@ export default async function ProductPage({
         }}
       />
 
-      {/* Product Details */}
-      <Section>
+      {/* Breadcrumb */}
+      <section className="border-b border-blue-100 bg-white">
         <Container>
-          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+          <nav
+            aria-label="Breadcrumb"
+            className="flex flex-wrap items-center gap-2 py-5 text-sm"
+          >
+            <Link
+              href="/"
+              className="text-slate-500 hover:text-blue-600"
+            >
+              Home
+            </Link>
+
+            <span className="text-slate-300">/</span>
+
+            <Link
+              href="/products"
+              className="text-slate-500 hover:text-blue-600"
+            >
+              Products
+            </Link>
+
+            <span className="text-slate-300">/</span>
+
+            <span className="font-semibold text-blue-600">
+              {product.name}
+            </span>
+          </nav>
+        </Container>
+      </section>
+
+      {/* Main Product Section */}
+      <section className="relative overflow-hidden py-12 sm:py-20">
+        <div className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full bg-blue-100/70 blur-3xl" />
+
+        <Container>
+          <div className="relative grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+            {/* Product Information */}
             <div>
-              <div className="flex items-center gap-4">
-                <ProductLogo
-                  name={product.name}
-                  logo={product.logo}
-                  size="large"
-                />
+              <div className="rounded-[30px] border border-blue-100 bg-gradient-to-br from-white via-blue-50 to-emerald-50 p-7 shadow-sm sm:p-10">
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="flex min-h-28 min-w-28 items-center justify-center rounded-3xl border border-blue-100 bg-white p-5 shadow-sm">
+                    <ProductLogo
+                      name={product.name}
+                      logo={product.logo}
+                      size="large"
+                    />
+                  </div>
 
-                <div>
                   {product.badge ? (
-                    <Badge>{product.badge}</Badge>
+                    <span className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-bold text-emerald-700">
+                      {product.badge}
+                    </span>
                   ) : null}
+                </div>
 
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    {product.category
-                      .split("-")
-                      .map(
-                        (word) =>
-                          word.charAt(0).toUpperCase() +
-                          word.slice(1),
-                      )
-                      .join(" ")}
+                <div className="mt-10">
+                  <span className="inline-flex rounded-full border border-blue-100 bg-white px-4 py-2 text-xs font-semibold capitalize text-blue-700">
+                    {product.category.replace(/-/g, " ")}
+                  </span>
+
+                  <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+                    {product.name}
+                  </h1>
+
+                  <p className="mt-5 max-w-xl text-base leading-8 text-slate-600">
+                    {product.description}
                   </p>
+                </div>
+
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <span className="rounded-full border border-blue-100 bg-white px-4 py-2 text-xs font-semibold text-blue-700">
+                    Digital Product
+                  </span>
+
+                  <span className="rounded-full border border-emerald-100 bg-white px-4 py-2 text-xs font-semibold text-emerald-700">
+                    Online Delivery
+                  </span>
+
+                  <span className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600">
+                    {product.plans.length} Plan
+                    {product.plans.length === 1 ? "" : "s"}
+                  </span>
                 </div>
               </div>
 
-              <h1 className="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">
-                {product.name}
-              </h1>
+              {/* Features */}
+              <div className="mt-8 rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-xl font-bold text-emerald-600">
+                    ✓
+                  </span>
 
-              <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground">
-                {product.description}
-              </p>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
+                      Product Benefits
+                    </p>
 
-              <div className="mt-8">
-                <h2 className="text-lg font-semibold">
-                  What you get
-                </h2>
+                    <h2 className="mt-1 text-2xl font-bold text-slate-900">
+                      What You Get
+                    </h2>
+                  </div>
+                </div>
 
-                <ul className="mt-4 space-y-3">
+                <ul className="mt-8 grid gap-4">
                   {product.features.map((feature) => (
                     <li
                       key={feature}
-                      className="flex items-start gap-3 text-sm text-muted-foreground"
+                      className="flex items-start gap-3 rounded-xl bg-slate-50 px-4 py-3"
                     >
-                      <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand/10 text-xs font-bold text-brand">
+                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
                         ✓
                       </span>
 
-                      <span>{feature}</span>
+                      <span className="text-sm leading-6 text-slate-600">
+                        {feature}
+                      </span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="mt-8">
-                <LinkButton
-                  href="/products"
-                  variant="secondary"
-                >
-                  ← Back to Products
-                </LinkButton>
-              </div>
+              <Link
+                href="/products"
+                className="mt-7 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:text-blue-600"
+              >
+                ← Back to Products
+              </Link>
             </div>
 
-            {/* Plans */}
+            {/* Pricing Plans */}
             <div>
-              <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Choose your plan
-                </p>
+              <div className="rounded-[30px] border border-blue-100 bg-white p-6 shadow-[0_15px_60px_rgba(37,99,235,0.07)] sm:p-8">
+                <div className="mb-7">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
+                    Choose Your Subscription
+                  </p>
 
-                <div className="mt-5 space-y-4">
+                  <h2 className="mt-3 text-3xl font-extrabold text-slate-900">
+                    Available Plans
+                  </h2>
+
+                  <p className="mt-3 text-sm leading-6 text-slate-500">
+                    Select the plan that works best
+                    for your needs.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
                   {product.plans.map((plan) => {
-                    const whatsappMessage =
-                      createProductOrderMessage({
-                        productName: product.name,
-                        planName: plan.name,
-                        price: plan.price,
-                      });
+                    // The checkout route will be
+                    // implemented in the next stage.
+                    const checkoutPath =
+                      `/checkout?product=${encodeURIComponent(product.slug)}` +
+                      `&plan=${encodeURIComponent(String(plan.id))}`;
 
-                    const whatsappUrl =
-                      createWhatsAppUrl(whatsappMessage);
-
-                    // Preserve selected product and plan.
-                    const returnTo =
-                      `/products/${encodeURIComponent(product.slug)}` +
-                      `?plan=${encodeURIComponent(String(plan.id))}`;
-
-                    const orderUrl = user
-                      ? whatsappUrl
-                      : `/login?next=${encodeURIComponent(returnTo)}`;
+                    // Guests sign in first.
+                    // Logged-in customers go to checkout.
+                    const buyNowHref = user
+                      ? checkoutPath
+                      : `/login?next=${encodeURIComponent(checkoutPath)}`;
 
                     return (
                       <div
                         key={plan.id}
-                        className="rounded-xl border border-border bg-surface-elevated p-5"
+                        className="group rounded-2xl border border-slate-200 bg-[#F8FAFC] p-5 transition duration-300 hover:border-blue-300 hover:bg-blue-50/40 hover:shadow-md sm:p-6"
                       >
                         <div className="flex items-start justify-between gap-4">
                           <div>
-                            <h2 className="font-semibold text-foreground">
+                            <h3 className="text-lg font-bold text-slate-900">
                               {plan.name}
-                            </h2>
+                            </h3>
 
                             {plan.duration ? (
-                              <p className="mt-1 text-sm text-muted-foreground">
+                              <p className="mt-2 text-sm text-slate-500">
                                 {plan.duration}
                               </p>
                             ) : null}
                           </div>
 
-                          <p className="text-xl font-bold text-foreground">
-                            Rs. {formatPrice(plan.price)}
-                          </p>
+                          <div className="shrink-0 text-right">
+                            <p className="text-xs font-semibold text-slate-400">
+                              PKR
+                            </p>
+
+                            <p className="mt-1 text-2xl font-extrabold text-blue-600">
+                              Rs. {formatPrice(plan.price)}
+                            </p>
+                          </div>
                         </div>
 
-                        <a
-                          href={orderUrl}
-                          target={user ? "_blank" : undefined}
-                          rel={
-                            user
-                              ? "noopener noreferrer"
-                              : undefined
-                          }
-                          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-hover"
+                        <Link
+                          href={buyNowHref}
+                          className="mt-6 flex min-h-13 w-full items-center justify-center gap-3 rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-sm shadow-blue-200 transition duration-300 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-200"
                         >
-                          {user
-                            ? "Order on WhatsApp"
-                            : "Login to Order"}
-                        </a>
+                          Buy Now
+                          <span aria-hidden="true">→</span>
+                        </Link>
+
+                        <p className="mt-3 text-center text-xs text-slate-400">
+                          Account required to complete purchase
+                        </p>
                       </div>
                     );
                   })}
                 </div>
 
-                <div className="mt-6 border-t border-border pt-6">
-                  <p className="text-sm font-medium text-foreground">
-                    Delivery information
-                  </p>
+                {/* Delivery Information */}
+                <div className="mt-8 border-t border-slate-100 pt-7">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                        className="h-5 w-5"
+                      >
+                        <path d="M3 7h11v10H3z" />
+                        <path d="M14 10h4l3 3v4h-7z" />
+                        <circle cx="7" cy="18" r="2" />
+                        <circle cx="18" cy="18" r="2" />
+                      </svg>
+                    </span>
 
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                    <h3 className="text-base font-bold text-slate-900">
+                      Delivery Information
+                    </h3>
+                  </div>
+
+                  <p className="mt-4 text-sm leading-7 text-slate-500">
                     {product.deliveryInfo}
                   </p>
                 </div>
 
-                <div className="mt-6 rounded-xl border border-brand/20 bg-brand/5 p-4">
-                  <p className="text-sm leading-6 text-muted-foreground">
-                    Need help choosing a plan? Message SastaStore on
-                    WhatsApp before ordering.
+                <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+                  <p className="text-sm font-semibold text-emerald-800">
+                    Have questions before ordering?
                   </p>
+
+                  <p className="mt-2 text-xs leading-6 text-emerald-700">
+                    Visit our support page for help
+                    choosing the right plan.
+                  </p>
+
+                  <Link
+                    href="/contact"
+                    className="mt-3 inline-flex text-sm font-bold text-emerald-800 underline underline-offset-4"
+                  >
+                    Contact Support →
+                  </Link>
                 </div>
               </div>
             </div>
           </div>
         </Container>
-      </Section>
+      </section>
+
+      {/* How Ordering Works */}
+      <section className="border-y border-blue-100 bg-[#EFF7FF] py-20">
+        <Container>
+          <div className="mb-12 text-center">
+            <p className="text-xs font-bold uppercase tracking-widest text-blue-600">
+              Your Shopping Experience
+            </p>
+
+            <h2 className="mt-4 text-3xl font-extrabold text-slate-900 sm:text-4xl">
+              How Ordering Works
+            </h2>
+
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-slate-600">
+              Our upcoming checkout process is
+              designed to make digital shopping simple.
+            </p>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-3">
+            {[
+              {
+                number: "01",
+                title: "Choose Your Plan",
+                description:
+                  "Compare plans and select the right digital product.",
+              },
+              {
+                number: "02",
+                title: "Checkout & Payment",
+                description:
+                  "Submit your order and payment details through the checkout process.",
+              },
+              {
+                number: "03",
+                title: "Approval & Delivery",
+                description:
+                  "After payment verification, your digital order can be fulfilled.",
+              },
+            ].map((step) => (
+              <div
+                key={step.number}
+                className="rounded-3xl border border-blue-100 bg-white p-7 shadow-sm"
+              >
+                <span className="text-4xl font-black text-blue-200">
+                  {step.number}
+                </span>
+
+                <h3 className="mt-6 text-lg font-bold text-slate-900">
+                  {step.title}
+                </h3>
+
+                <p className="mt-3 text-sm leading-7 text-slate-500">
+                  {step.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </section>
 
       {/* Related Products */}
       {relatedProducts.length > 0 ? (
-        <Section className="border-t border-border">
+        <section className="bg-white py-20">
           <Container>
-            <Reveal>
-              <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-                <SectionHeading
-                  eyebrow="You May Also Like"
-                  title="Related products"
-                  description={`Explore more digital tools and subscriptions similar to ${product.name}.`}
-                />
+            <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-blue-600">
+                  Discover More
+                </p>
 
-                <LinkButton
-                  href="/products"
-                  variant="secondary"
-                >
-                  View All Products →
-                </LinkButton>
+                <h2 className="mt-3 text-3xl font-extrabold text-slate-900 sm:text-4xl">
+                  You May Also Like
+                </h2>
+
+                <p className="mt-3 max-w-xl text-sm leading-7 text-slate-500">
+                  Explore other digital tools and
+                  subscriptions from SastaStore.
+                </p>
               </div>
-            </Reveal>
 
-            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {relatedProducts.map((relatedProduct, index) => (
-                <Reveal
+              <Link
+                href="/products"
+                className="text-sm font-bold text-blue-600 hover:text-blue-700"
+              >
+                View All Products →
+              </Link>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {relatedProducts.map((relatedProduct) => (
+                <ProductCard
                   key={relatedProduct.slug}
-                  delay={index * 80}
-                  className="h-full"
-                >
-                  <ProductCard product={relatedProduct} />
-                </Reveal>
+                  product={relatedProduct}
+                />
               ))}
             </div>
           </Container>
-        </Section>
+        </section>
       ) : null}
     </main>
   );
