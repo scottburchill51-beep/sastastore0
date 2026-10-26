@@ -6,42 +6,49 @@ import {
   useState,
   type FormEvent,
 } from "react";
+
 import Link from "next/link";
 
 type AuthMode = "login" | "register";
 
+/**
+ * Only accept safe, internal return destinations.
+ * Never allow an external URL to be used for redirects.
+ */
 function safeReturnPath(value: string | null): string {
   if (!value) return "";
 
-  // Only allow checkout and product detail routes.
-  // Prevent external redirects.
   if (
-    value.startsWith("//") ||
     !value.startsWith("/") ||
+    value.startsWith("//") ||
     value.includes("\\") ||
-    value.includes("\n") ||
-    value.includes("\r")
+    /[\r\n\u0000-\u001f]/.test(value)
   ) {
     return "";
   }
 
   try {
-    const parsed = new URL(value, "https://sastastore.local");
+    const parsed = new URL(
+      value,
+      "https://sastastore.local",
+    );
 
     if (parsed.origin !== "https://sastastore.local") {
       return "";
     }
 
-    const allowed =
-      parsed.pathname === "/checkout" ||
-      parsed.pathname.startsWith("/products/");
+    const isCheckout = parsed.pathname === "/checkout";
 
-    if (!allowed) return "";
+    const isProductPage =
+      /^\/products\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(
+        parsed.pathname,
+      );
 
-    return (
-      parsed.pathname +
-      parsed.search
-    );
+    if (!isCheckout && !isProductPage) {
+      return "";
+    }
+
+    return parsed.pathname + parsed.search;
   } catch {
     return "";
   }
@@ -54,9 +61,12 @@ export function AuthForm({
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] =
+    useState(false);
+
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
   const [returnTo, setReturnTo] = useState("");
 
   useEffect(() => {
@@ -77,8 +87,6 @@ export function AuthForm({
     ? `/register?next=${encodeURIComponent(returnTo)}`
     : "/register";
 
-  // Google callback also needs to support
-  // this next parameter, which we will verify separately.
   const googleHref = returnTo
     ? `/api/auth/google?next=${encodeURIComponent(returnTo)}`
     : "/api/auth/google";
@@ -120,23 +128,25 @@ export function AuthForm({
 
       if (data.emailVerificationRequired) {
         setMessage(
-          "Please verify your email address, then sign in to continue your purchase.",
+          "Please check your email to verify your account. After verification, sign in to continue.",
         );
+
         setLoading(false);
         return;
       }
 
-      // Make a new server request so the
-      // authenticated cookies are available.
+      // Normal Login / Sign Up -> Homepage.
+      // Buy Now Login -> Selected checkout.
       window.location.replace(
-        safeReturnPath(returnTo) || "/account",
+        safeReturnPath(returnTo) || "/",
       );
     } catch (error) {
       setMessage(
         error instanceof Error
           ? error.message
-          : "Something went wrong.",
+          : "Something went wrong. Please try again.",
       );
+
       setLoading(false);
     }
   }
@@ -144,15 +154,21 @@ export function AuthForm({
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#F8FAFC] via-[#EFF7FF] to-[#E5FBF3] px-4 py-12 text-slate-900">
       <div className="w-full max-w-[440px]">
+
+        {/* Branding */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 text-2xl font-black text-white shadow-lg shadow-blue-100">
+          <Link
+            href="/"
+            className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 text-2xl font-black text-white shadow-lg shadow-blue-100"
+          >
             S
-          </div>
+          </Link>
 
           <h1 className="text-2xl font-extrabold tracking-tight">
             <span className="text-slate-900">
               Sasta
             </span>
+
             <span className="text-blue-600">
               Store
             </span>
@@ -163,6 +179,7 @@ export function AuthForm({
           </p>
         </div>
 
+        {/* Authentication Form */}
         <form
           onSubmit={submit}
           className="rounded-[28px] border border-blue-100 bg-white p-7 shadow-[0_20px_65px_rgba(37,99,235,0.08)] sm:p-9"
@@ -177,14 +194,15 @@ export function AuthForm({
             {returnTo
               ? "Sign in or create an account to continue your purchase."
               : mode === "login"
-                ? "Sign in to access your SastaStore account."
-                : "Join SastaStore to manage your digital purchases."}
+                ? "Sign in to continue exploring SastaStore."
+                : "Join SastaStore and explore premium digital products."}
           </p>
 
+          {/* Email */}
           <div className="space-y-5">
             <label className="block">
               <span className="text-sm font-semibold text-slate-700">
-                Email address
+                Email Address
               </span>
 
               <input
@@ -200,6 +218,7 @@ export function AuthForm({
               />
             </label>
 
+            {/* Password */}
             <label className="block">
               <span className="text-sm font-semibold text-slate-700">
                 Password
@@ -244,6 +263,7 @@ export function AuthForm({
             </label>
           </div>
 
+          {/* Forgot Password */}
           {mode === "login" && (
             <div className="mt-3 text-right">
               <Link
@@ -255,6 +275,7 @@ export function AuthForm({
             </div>
           )}
 
+          {/* Error / Confirmation Message */}
           {message && (
             <p
               role="status"
@@ -264,6 +285,7 @@ export function AuthForm({
             </p>
           )}
 
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
@@ -276,6 +298,7 @@ export function AuthForm({
                 : "Create Account"}
           </button>
 
+          {/* Divider */}
           <div className="my-6 flex items-center gap-3">
             <div className="h-px flex-1 bg-slate-200" />
 
@@ -286,6 +309,7 @@ export function AuthForm({
             <div className="h-px flex-1 bg-slate-200" />
           </div>
 
+          {/* Google Login */}
           <a
             href={googleHref}
             className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50"
@@ -299,14 +323,17 @@ export function AuthForm({
                 fill="#EA4335"
                 d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 5.38 6.51 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
               />
+
               <path
                 fill="#4285F4"
                 d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.28 5.48-4.82 7.18l7.73 6C44.36 38.03 46.98 31.88 46.98 24.55z"
               />
+
               <path
                 fill="#FBBC05"
                 d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.27-3.13.76-4.59l-7.98-6.2A23.94 23.94 0 0 0 0 24c0 3.87.93 7.51 2.56 10.78l7.97-6.19z"
               />
+
               <path
                 fill="#34A853"
                 d="M24 48c6.48 0 11.93-2.13 15.9-5.8l-7.73-6c-2.14 1.44-4.88 2.3-8.17 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
@@ -316,6 +343,7 @@ export function AuthForm({
             Continue with Google
           </a>
 
+          {/* Switch Between Login and Register */}
           <p className="mt-7 text-center text-sm text-slate-500">
             {mode === "login" ? (
               <>
@@ -341,9 +369,15 @@ export function AuthForm({
           </p>
         </form>
 
-        <p className="mt-6 text-center text-xs text-slate-400">
-          Secure access to your SastaStore account
-        </p>
+        {/* Back to Store */}
+        <div className="mt-6 text-center">
+          <Link
+            href="/"
+            className="text-sm font-semibold text-blue-600 transition hover:text-blue-700"
+          >
+            ← Back to SastaStore
+          </Link>
+        </div>
       </div>
     </main>
   );
