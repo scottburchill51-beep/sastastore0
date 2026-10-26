@@ -8,10 +8,49 @@ import {
 } from "react";
 import Link from "next/link";
 
+type AuthMode = "login" | "register";
+
+function safeReturnPath(value: string | null): string {
+  if (!value) return "";
+
+  // Only allow checkout and product detail routes.
+  // Prevent external redirects.
+  if (
+    value.startsWith("//") ||
+    !value.startsWith("/") ||
+    value.includes("\\") ||
+    value.includes("\n") ||
+    value.includes("\r")
+  ) {
+    return "";
+  }
+
+  try {
+    const parsed = new URL(value, "https://sastastore.local");
+
+    if (parsed.origin !== "https://sastastore.local") {
+      return "";
+    }
+
+    const allowed =
+      parsed.pathname === "/checkout" ||
+      parsed.pathname.startsWith("/products/");
+
+    if (!allowed) return "";
+
+    return (
+      parsed.pathname +
+      parsed.search
+    );
+  } catch {
+    return "";
+  }
+}
+
 export function AuthForm({
   mode,
 }: {
-  mode: "login" | "register";
+  mode: AuthMode;
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,27 +59,16 @@ export function AuthForm({
   const [message, setMessage] = useState("");
   const [returnTo, setReturnTo] = useState("");
 
-  // Read the original product destination from URL.
   useEffect(() => {
     const params = new URLSearchParams(
-      window.location.search
+      window.location.search,
     );
 
-    const requestedPath = params.get("next") || "";
-
-    // Only allow internal product URLs.
-    // Never redirect to external websites.
-    if (
-      requestedPath.startsWith("/products/") &&
-      !requestedPath.startsWith("//") &&
-      !requestedPath.includes("\\")
-    ) {
-      setReturnTo(requestedPath);
-    }
+    setReturnTo(
+      safeReturnPath(params.get("next")),
+    );
   }, []);
 
-  // Preserve selected product when switching
-  // between Login and Register.
   const loginHref = returnTo
     ? `/login?next=${encodeURIComponent(returnTo)}`
     : "/login";
@@ -49,14 +77,16 @@ export function AuthForm({
     ? `/register?next=${encodeURIComponent(returnTo)}`
     : "/register";
 
+  // Google callback also needs to support
+  // this next parameter, which we will verify separately.
   const googleHref = returnTo
     ? `/api/auth/google?next=${encodeURIComponent(returnTo)}`
     : "/api/auth/google";
 
   async function submit(
-    e: FormEvent<HTMLFormElement>
+    event: FormEvent<HTMLFormElement>,
   ) {
-    e.preventDefault();
+    event.preventDefault();
 
     if (loading) return;
 
@@ -77,75 +107,83 @@ export function AuthForm({
             email: email.trim(),
             password,
           }),
-        }
+        },
       );
 
       const data = await response.json();
 
       if (!response.ok) {
         throw new Error(
-          data.error || "Authentication failed"
+          data.error || "Authentication failed",
         );
       }
 
       if (data.emailVerificationRequired) {
         setMessage(
-          "Please check your email to verify your account. After verification, sign in to continue."
+          "Please verify your email address, then sign in to continue your purchase.",
         );
         setLoading(false);
         return;
       }
 
-      // If user came from a product purchase,
-      // return to that product and selected plan.
-      // Otherwise open the normal dashboard.
+      // Make a new server request so the
+      // authenticated cookies are available.
       window.location.replace(
-        returnTo || "/account"
+        safeReturnPath(returnTo) || "/account",
       );
     } catch (error) {
       setMessage(
         error instanceof Error
           ? error.message
-          : "Something went wrong."
+          : "Something went wrong.",
       );
       setLoading(false);
     }
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f6f7fb] px-4 py-12 text-slate-900">
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#F8FAFC] via-[#EFF7FF] to-[#E5FBF3] px-4 py-12 text-slate-900">
       <div className="w-full max-w-[440px]">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-600 text-2xl font-black text-white shadow-lg">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 text-2xl font-black text-white shadow-lg shadow-blue-100">
             S
           </div>
 
-          <h1 className="text-2xl font-bold tracking-tight">
-            SastaStore
+          <h1 className="text-2xl font-extrabold tracking-tight">
+            <span className="text-slate-900">
+              Sasta
+            </span>
+            <span className="text-blue-600">
+              Store
+            </span>
           </h1>
+
+          <p className="mt-2 text-sm text-slate-500">
+            Your premium digital marketplace
+          </p>
         </div>
 
         <form
           onSubmit={submit}
-          className="rounded-3xl border border-slate-200 bg-white p-7 shadow-xl shadow-slate-200/60 sm:p-9"
+          className="rounded-[28px] border border-blue-100 bg-white p-7 shadow-[0_20px_65px_rgba(37,99,235,0.08)] sm:p-9"
         >
-          <h2 className="text-2xl font-bold">
+          <h2 className="text-2xl font-extrabold text-slate-900">
             {mode === "login"
-              ? "Sign in"
-              : "Create account"}
+              ? "Welcome back"
+              : "Create your account"}
           </h2>
 
-          <p className="mb-7 mt-2 text-sm text-slate-500">
+          <p className="mb-7 mt-2 text-sm leading-6 text-slate-500">
             {returnTo
               ? "Sign in or create an account to continue your purchase."
               : mode === "login"
-                ? "Enter your details to continue."
-                : "Get started with your SastaStore account."}
+                ? "Sign in to access your SastaStore account."
+                : "Join SastaStore to manage your digital purchases."}
           </p>
 
           <div className="space-y-5">
             <label className="block">
-              <span className="text-sm font-semibold">
+              <span className="text-sm font-semibold text-slate-700">
                 Email address
               </span>
 
@@ -155,15 +193,15 @@ export function AuthForm({
                 autoComplete="email"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e) =>
-                  setEmail(e.target.value)
+                onChange={(event) =>
+                  setEmail(event.target.value)
                 }
-                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
             </label>
 
             <label className="block">
-              <span className="text-sm font-semibold">
+              <span className="text-sm font-semibold text-slate-700">
                 Password
               </span>
 
@@ -183,20 +221,20 @@ export function AuthForm({
                   }
                   placeholder="Enter your password"
                   value={password}
-                  onChange={(e) =>
-                    setPassword(e.target.value)
+                  onChange={(event) =>
+                    setPassword(event.target.value)
                   }
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-20 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-20 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
 
                 <button
                   type="button"
                   onClick={() =>
                     setShowPassword(
-                      (previous) => !previous
+                      (previous) => !previous,
                     )
                   }
-                  className="absolute inset-y-0 right-4 text-xs font-semibold text-violet-600"
+                  className="absolute inset-y-0 right-4 text-xs font-bold text-blue-600 hover:text-blue-700"
                 >
                   {showPassword
                     ? "Hide"
@@ -210,7 +248,7 @@ export function AuthForm({
             <div className="mt-3 text-right">
               <Link
                 href="/forgot-password"
-                className="text-sm font-semibold text-violet-600 hover:underline"
+                className="text-sm font-semibold text-blue-600 hover:underline"
               >
                 Forgot password?
               </Link>
@@ -220,7 +258,7 @@ export function AuthForm({
           {message && (
             <p
               role="status"
-              className="mt-5 rounded-xl bg-violet-50 p-3 text-sm text-violet-700"
+              className="mt-5 rounded-xl border border-blue-100 bg-blue-50 p-3 text-sm text-blue-700"
             >
               {message}
             </p>
@@ -229,19 +267,19 @@ export function AuthForm({
           <button
             type="submit"
             disabled={loading}
-            className="mt-7 w-full rounded-xl bg-violet-600 py-3.5 font-semibold text-white shadow-lg shadow-violet-200 transition hover:bg-violet-700 disabled:opacity-60"
+            className="mt-7 w-full rounded-xl bg-blue-600 py-3.5 font-bold text-white shadow-lg shadow-blue-100 transition hover:bg-blue-700 disabled:opacity-60"
           >
             {loading
               ? "Please wait..."
               : mode === "login"
-                ? "Sign in"
-                : "Create account"}
+                ? "Sign In"
+                : "Create Account"}
           </button>
 
           <div className="my-6 flex items-center gap-3">
             <div className="h-px flex-1 bg-slate-200" />
 
-            <span className="text-xs text-slate-400">
+            <span className="text-xs font-semibold text-slate-400">
               OR CONTINUE WITH
             </span>
 
@@ -250,7 +288,7 @@ export function AuthForm({
 
           <a
             href={googleHref}
-            className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50"
           >
             <svg
               viewBox="0 0 48 48"
@@ -284,9 +322,9 @@ export function AuthForm({
                 Don't have an account?{" "}
                 <Link
                   href={registerHref}
-                  className="font-bold text-violet-600 hover:underline"
+                  className="font-bold text-blue-600 hover:underline"
                 >
-                  Sign up
+                  Sign Up
                 </Link>
               </>
             ) : (
@@ -294,9 +332,9 @@ export function AuthForm({
                 Already have an account?{" "}
                 <Link
                   href={loginHref}
-                  className="font-bold text-violet-600 hover:underline"
+                  className="font-bold text-blue-600 hover:underline"
                 >
-                  Sign in
+                  Sign In
                 </Link>
               </>
             )}
@@ -304,7 +342,7 @@ export function AuthForm({
         </form>
 
         <p className="mt-6 text-center text-xs text-slate-400">
-          Secure access to SastaStore
+          Secure access to your SastaStore account
         </p>
       </div>
     </main>
