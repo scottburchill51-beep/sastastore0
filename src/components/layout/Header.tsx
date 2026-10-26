@@ -2,12 +2,18 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import {
+  usePathname,
+} from "next/navigation";
+
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 import { Container } from "@/components/ui/Container";
 import { siteConfig } from "@/config/site";
-import { createWhatsAppUrl } from "@/lib/whatsapp";
 
 const announcements = [
   "Premium Digital Tools at Sasta Prices",
@@ -16,18 +22,174 @@ const announcements = [
   "Friendly Customer Support",
 ];
 
+type SessionState = {
+  loggedIn: boolean;
+  isAdmin: boolean;
+};
+
 export function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const whatsappUrl = createWhatsAppUrl(
-    "Hello, I want to know more about SastaStore products and available subscriptions.",
-  );
+  const [menuOpen, setMenuOpen] =
+    useState(false);
+
+  const [session, setSession] =
+    useState<SessionState | null>(null);
+
+  const [loggingOut, setLoggingOut] =
+    useState(false);
+
+  const loadSession = useCallback(async () => {
+    try {
+      const response = await fetch(
+        "/api/store/session",
+        {
+          method: "GET",
+          credentials: "same-origin",
+          cache: "no-store",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Session unavailable");
+      }
+
+      const data: SessionState =
+        await response.json();
+
+      setSession({
+        loggedIn: data.loggedIn === true,
+        isAdmin: data.isAdmin === true,
+      });
+    } catch {
+      // Do not assume a user is logged in
+      // when the session cannot be verified.
+      setSession({
+        loggedIn: false,
+        isAdmin: false,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadSession();
+  }, [loadSession, pathname]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  const loggedIn = session?.loggedIn === true;
+  const admin = loggedIn && session?.isAdmin === true;
+
+  const accountHref = admin
+    ? "/admin"
+    : "/account";
+
+  const accountLabel = admin
+    ? "Admin Dashboard"
+    : "My Account";
 
   function isActive(href: string) {
-    if (href === "/") return pathname === "/";
-    return pathname === href || pathname.startsWith(`${href}/`);
+    if (href === "/") {
+      return pathname === "/";
+    }
+
+    return (
+      pathname === href ||
+      pathname.startsWith(`${href}/`)
+    );
   }
+
+  async function logout() {
+    if (loggingOut) return;
+
+    setLoggingOut(true);
+
+    try {
+      // Uses the existing SastaStore auth logout route.
+      const response = await fetch(
+        "/api/auth/logout",
+        {
+          method: "POST",
+          credentials: "same-origin",
+          cache: "no-store",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+
+      setSession({
+        loggedIn: false,
+        isAdmin: false,
+      });
+
+      window.location.replace("/");
+    } catch {
+      alert(
+        "Unable to sign out. Please try again.",
+      );
+
+      setLoggingOut(false);
+    }
+  }
+
+  const desktopAuth = () => {
+    if (session === null) {
+      return (
+        <span
+          className="text-xs text-slate-400"
+          aria-label="Checking session"
+        >
+          Checking account...
+        </span>
+      );
+    }
+
+    if (!loggedIn) {
+      return (
+        <>
+          <Link
+            href="/login"
+            className="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
+          >
+            Sign In
+          </Link>
+
+          <Link
+            href="/register"
+            className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
+          >
+            Get Started
+          </Link>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <Link
+          href={accountHref}
+          className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-2.5 text-sm font-bold text-blue-700 transition hover:bg-blue-100"
+        >
+          {accountLabel}
+        </Link>
+
+        <button
+          type="button"
+          onClick={() => void logout()}
+          disabled={loggingOut}
+          className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+        >
+          {loggingOut
+            ? "Signing Out..."
+            : "Logout"}
+        </button>
+      </>
+    );
+  };
 
   return (
     <>
@@ -36,7 +198,6 @@ export function Header() {
           from {
             transform: translateX(0);
           }
-
           to {
             transform: translateX(-50%);
           }
@@ -46,7 +207,8 @@ export function Header() {
           animation: sastastore-marquee 28s linear infinite;
         }
 
-        .sastastore-marquee:hover .sastastore-marquee-track {
+        .sastastore-marquee:hover
+        .sastastore-marquee-track {
           animation-play-state: paused;
         }
 
@@ -58,6 +220,7 @@ export function Header() {
       `}</style>
 
       <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 text-slate-900 shadow-sm shadow-blue-100/40 backdrop-blur-xl">
+
         {/* Announcement Bar */}
         <div className="sastastore-marquee overflow-hidden border-b border-blue-100 bg-gradient-to-r from-[#EAF4FF] via-[#F4FAFF] to-[#E5FBF3]">
           <div className="sastastore-marquee-track flex w-max">
@@ -82,9 +245,9 @@ export function Header() {
           </div>
         </div>
 
-        {/* Desktop & Mobile Header */}
         <Container>
           <div className="flex h-[76px] items-center justify-between gap-4">
+
             {/* Logo */}
             <Link
               href="/"
@@ -118,7 +281,9 @@ export function Header() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      aria-current={active ? "page" : undefined}
+                      aria-current={
+                        active ? "page" : undefined
+                      }
                       className={`group relative py-2 text-sm font-semibold transition-colors duration-200 ${
                         active
                           ? "text-blue-600"
@@ -140,26 +305,7 @@ export function Header() {
               </nav>
 
               <div className="flex items-center gap-2 border-l border-slate-200 pl-5">
-                <Link
-                  href="/login"
-                  className="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
-                >
-                  Sign In
-                </Link>
-
-                <Link
-                  href="/register"
-                  className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
-                >
-                  Get Started
-                </Link>
-
-                <Link
-                  href="/account"
-                  className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2.5 text-sm font-semibold text-blue-700 transition hover:bg-blue-100"
-                >
-                  Dashboard
-                </Link>
+                {desktopAuth()}
               </div>
             </div>
 
@@ -173,7 +319,9 @@ export function Header() {
               }
               aria-expanded={menuOpen}
               aria-controls="sastastore-mobile-menu"
-              onClick={() => setMenuOpen((current) => !current)}
+              onClick={() =>
+                setMenuOpen((current) => !current)
+              }
               className="relative inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 lg:hidden"
             >
               <span
@@ -203,7 +351,7 @@ export function Header() {
           </div>
 
           {/* Mobile Navigation */}
-          {menuOpen ? (
+          {menuOpen && (
             <div
               id="sastastore-mobile-menu"
               className="animate-fade-up border-t border-slate-100 pb-5 pt-4 lg:hidden"
@@ -219,8 +367,12 @@ export function Header() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      onClick={() => setMenuOpen(false)}
-                      aria-current={active ? "page" : undefined}
+                      onClick={() =>
+                        setMenuOpen(false)
+                      }
+                      aria-current={
+                        active ? "page" : undefined
+                      }
                       className={`rounded-xl px-4 py-3 text-sm font-semibold transition ${
                         active
                           ? "bg-blue-50 text-blue-700"
@@ -233,33 +385,62 @@ export function Header() {
                 })}
               </nav>
 
-              <div className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-100 pt-4">
-                <Link
-                  href="/login"
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-xl border border-slate-200 py-3 text-center text-sm font-semibold text-slate-700"
-                >
-                  Sign In
-                </Link>
+              <div className="mt-4 space-y-3 border-t border-slate-100 pt-4">
+                {session === null ? (
+                  <p className="py-3 text-center text-sm text-slate-400">
+                    Checking account...
+                  </p>
+                ) : !loggedIn ? (
+                  <div className="grid grid-cols-2 gap-3">
+                    <Link
+                      href="/login"
+                      onClick={() =>
+                        setMenuOpen(false)
+                      }
+                      className="rounded-xl border border-slate-200 py-3 text-center text-sm font-semibold text-slate-700"
+                    >
+                      Sign In
+                    </Link>
 
-                <Link
-                  href="/register"
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-xl bg-blue-600 py-3 text-center text-sm font-semibold text-white"
-                >
-                  Sign Up
-                </Link>
+                    <Link
+                      href="/register"
+                      onClick={() =>
+                        setMenuOpen(false)
+                      }
+                      className="rounded-xl bg-blue-600 py-3 text-center text-sm font-semibold text-white"
+                    >
+                      Sign Up
+                    </Link>
+                  </div>
+                ) : (
+                  <>
+                    <Link
+                      href={accountHref}
+                      onClick={() =>
+                        setMenuOpen(false)
+                      }
+                      className="flex w-full items-center justify-center rounded-xl bg-blue-50 py-3 text-sm font-bold text-blue-700"
+                    >
+                      {accountLabel}
+                    </Link>
+
+                    <button
+                      type="button"
+                      disabled={loggingOut}
+                      onClick={() =>
+                        void logout()
+                      }
+                      className="w-full rounded-xl border border-red-200 bg-red-50 py-3 text-sm font-semibold text-red-600 disabled:opacity-50"
+                    >
+                      {loggingOut
+                        ? "Signing Out..."
+                        : "Logout"}
+                    </button>
+                  </>
+                )}
               </div>
-
-              <Link
-                href="/account"
-                onClick={() => setMenuOpen(false)}
-                className="mt-3 flex w-full items-center justify-center rounded-xl bg-blue-50 py-3 text-sm font-semibold text-blue-700"
-              >
-                Customer Dashboard
-              </Link>
             </div>
-          ) : null}
+          )}
         </Container>
       </header>
     </>
