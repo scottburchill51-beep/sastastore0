@@ -38,11 +38,7 @@ const accounts = {
   },
 };
 
-function CopyButton({
-  value,
-}: {
-  value: string;
-}) {
+function CopyButton({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
 
   return (
@@ -80,7 +76,6 @@ function AccountRow({
         <span className="min-w-0 break-all text-sm font-bold text-slate-900">
           {value}
         </span>
-
         <CopyButton value={value} />
       </div>
     </div>
@@ -93,6 +88,59 @@ async function readJson(response: Response) {
   } catch {
     return null;
   }
+}
+
+function getCheckoutStorageKey(
+  email: string,
+  productSlug: string,
+  planId: string,
+) {
+  return [
+    "ss-checkout-v2",
+    encodeURIComponent(email.toLowerCase()),
+    encodeURIComponent(productSlug),
+    encodeURIComponent(planId),
+  ].join(":");
+}
+
+function getCheckoutRequestId(
+  storageKey: string,
+  requestRef: { current: string | null },
+) {
+  if (requestRef.current) {
+    return requestRef.current;
+  }
+
+  try {
+    const saved = window.sessionStorage.getItem(storageKey);
+
+    if (
+      saved &&
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        saved,
+      )
+    ) {
+      requestRef.current = saved;
+      return saved;
+    }
+  } catch {
+    // The browser may block session storage.
+  }
+
+  const requestId = crypto.randomUUID();
+  requestRef.current = requestId;
+
+  try {
+    window.sessionStorage.setItem(
+      storageKey,
+      requestId,
+    );
+  } catch {
+    // The in-memory ID still protects
+    // repeated submits on this page.
+  }
+
+  return requestId;
 }
 
 export default function CheckoutForm({
@@ -110,6 +158,7 @@ export default function CheckoutForm({
     useState<PaymentMethod>("sadapay");
 
   const [reference, setReference] = useState("");
+
   const [receipt, setReceipt] =
     useState<File | null>(null);
 
@@ -120,14 +169,17 @@ export default function CheckoutForm({
   const [complete, setComplete] = useState(false);
   const [error, setError] = useState("");
 
-  // Blocks duplicate submits immediately,
-  // before React updates the button state.
-  const submitLock = useRef(false);
-
-  // If the create-order response is lost,
-  // another order must not be created blindly.
   const [orderUncertain, setOrderUncertain] =
     useState(false);
+
+  const submitLock = useRef(false);
+  const requestIdRef = useRef<string | null>(null);
+
+  const storageKey = getCheckoutStorageKey(
+    email,
+    productSlug,
+    planId,
+  );
 
   const amountText = amount.toLocaleString("en-PK", {
     minimumFractionDigits: 0,
@@ -140,8 +192,7 @@ export default function CheckoutForm({
     if (
       submitLock.current ||
       busy ||
-      complete ||
-      orderUncertain
+      complete
     ) {
       return;
     }
@@ -178,12 +229,21 @@ export default function CheckoutForm({
     submitLock.current = true;
     setBusy(true);
     setError("");
+    setOrderUncertain(false);
 
     let activeOrder = order;
 
     try {
-      // STEP 1: Create order only if none exists.
+      // STEP 1:
+      // Reuse the same unique checkout request ID,
+      // including after a page refresh.
       if (!activeOrder) {
+        const checkoutRequestId =
+          getCheckoutRequestId(
+            storageKey,
+            requestIdRef,
+          );
+
         let response: Response;
 
         try {
@@ -199,24 +259,25 @@ export default function CheckoutForm({
               customerName: name.trim(),
               whatsappNumber: whatsapp.trim(),
               paymentMethod: method,
+              checkoutRequestId,
             }),
           });
         } catch {
-          // Server may have created the order
-          // even though its response was lost.
           setOrderUncertain(true);
 
           throw new Error(
-            "Connection interrupted while creating your order. Please check My Account before placing another order. Do not pay twice.",
+            "Connection interrupted. Your order may already exist. Check My Account before retrying.",
           );
         }
 
         const data = await readJson(response);
 
         if (!response.ok) {
+          setOrderUncertain(true);
+
           throw new Error(
             data?.error ||
-              "Unable to create order. Please check your details.",
+              "Unable to confirm order. Check My Account before retrying.",
           );
         }
 
@@ -232,7 +293,7 @@ export default function CheckoutForm({
           setOrderUncertain(true);
 
           throw new Error(
-            "Order confirmation is unavailable. Check My Account before trying again.",
+            "Order confirmation unavailable. Please check My Account.",
           );
         }
 
@@ -241,38 +302,58 @@ export default function CheckoutForm({
           trackingId: newOrder.trackingId,
         };
 
-        // If receipt upload fails, reuse this order.
         setOrder(activeOrder);
       }
 
-      // STEP 2: Upload payment proof to
-      // the existing order.
+      // STEP 2:
+      // Attach payment evidence to this order.
       const form = new FormData();
 
       form.append("orderId", activeOrder.id);
       form.append("reference", reference.trim());
       form.append("receipt", receipt);
 
-      const response = await fetch(
-        "/api/orders/payment",
-        {
-          method: "POST",
-          credentials: "same-origin",
-          body: form,
-        },
-      );
+      let response: Response;
+
+      try {
+        response = await fetch(
+          "/api/orders/payment",
+          {
+            method: "POST",
+            credentials: "same-origin",
+            body: form,
+          },
+        );
+      } catch {
+        throw new Error(
+          "Payment submission connection interrupted. Check My Account before retrying the screenshot.",
+        );
+      }
 
       const data = await readJson(response);
 
       if (!response.ok) {
         throw new Error(
           data?.error ||
-            "Payment receipt submission failed. Please retry using the same order.",
+            "Payment submission could not be confirmed. Check My Account before retrying.",
         );
       }
 
-      // Payment is submitted, not yet verified.
+      // Payment received for REVIEW only.
+      // This does not approve payment
+      // or activate the subscription.
       setComplete(true);
+
+      // Clear the request ID only after the
+      // payment submission is confirmed.
+      requestIdRef.current = null;
+
+      try {
+        window.sessionStorage.removeItem(storageKey);
+      } catch {
+        // Session storage is optional.
+      }
+
       setError("");
     } catch (caught) {
       setError(
@@ -585,9 +666,8 @@ export default function CheckoutForm({
             </p>
 
             <p className="mt-2 text-xs text-amber-800">
-              If upload failed, retry below
-              using this same order. Do not
-              pay twice.
+              If upload failed, retry using
+              this same order. Do not pay twice.
             </p>
           </div>
         )}
@@ -598,14 +678,15 @@ export default function CheckoutForm({
             className="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4"
           >
             <p className="text-sm font-bold text-amber-900">
-              Order status needs checking
+              Check Your Order Status
             </p>
 
             <p className="mt-2 text-sm text-amber-800">
-              We could not confirm whether
-              your order was created. Please
-              check My Account before placing
-              another order. Do not pay twice.
+              We could not confirm the result
+              of your checkout. Please check
+              My Account. The same checkout
+              request ID is preserved for a
+              safe retry after verification.
             </p>
 
             <Link
@@ -638,7 +719,7 @@ export default function CheckoutForm({
           {busy
             ? "Processing..."
             : orderUncertain
-              ? "Check Order History First"
+              ? "Check My Orders First"
               : order
                 ? "Retry Payment Proof Upload"
                 : "Submit Order & Payment"}
