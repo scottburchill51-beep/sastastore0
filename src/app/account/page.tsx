@@ -75,6 +75,7 @@ function dateLabel(value: string | null | undefined) {
     day: "numeric",
     month: "short",
     year: "numeric",
+    timeZone: "Asia/Karachi",
   });
 }
 
@@ -148,6 +149,53 @@ function orderStatusColor(status: string) {
   return "border-amber-200 bg-amber-50 text-amber-700";
 }
 
+// Opens the tracking page with the selected
+// order's Tracking ID already entered.
+function trackingHref(trackingId: string) {
+  return `/track?tracking=${encodeURIComponent(
+    trackingId,
+  )}`;
+}
+
+function TrackOrderButton({
+  trackingId,
+  compact = false,
+}: {
+  trackingId: string;
+  compact?: boolean;
+}) {
+  return (
+    <Link
+      href={trackingHref(trackingId)}
+      aria-label={`Track order ${trackingId}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 font-extrabold text-white shadow-sm transition hover:bg-blue-700 ${
+        compact
+          ? "px-4 py-2.5 text-xs"
+          : "px-5 py-3 text-sm"
+      }`}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="17"
+        height="17"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="12" r="9" />
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+      </svg>
+
+      Track This Order
+    </Link>
+  );
+}
+
 export default async function AccountPage() {
   const { user, token } = await getSession();
 
@@ -195,6 +243,7 @@ export default async function AccountPage() {
         "Customer orders request failed:",
         response.status,
       );
+
       ordersError = true;
     } else {
       const result: unknown = await response.json();
@@ -244,7 +293,6 @@ export default async function AccountPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 px-4 py-10 text-slate-900">
       <div className="mx-auto max-w-6xl space-y-8">
-
         {/* Dashboard Header */}
         <section>
           <p className="text-xs font-bold uppercase tracking-widest text-blue-600">
@@ -259,6 +307,22 @@ export default async function AccountPage() {
             Your orders, subscription status,
             payment tracking and account details.
           </p>
+
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link
+              href="/track"
+              className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-50"
+            >
+              Track an Order
+            </Link>
+
+            <Link
+              href="#my-orders"
+              className="inline-flex items-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
+            >
+              View My Orders
+            </Link>
+          </div>
         </section>
 
         {/* Account Details */}
@@ -396,6 +460,7 @@ export default async function AccountPage() {
                           <p className="text-xs text-slate-500">
                             Activated On
                           </p>
+
                           <p className="mt-1 font-bold">
                             {dateLabel(
                               order.subscription_activated_at,
@@ -407,6 +472,7 @@ export default async function AccountPage() {
                           <p className="text-xs text-slate-500">
                             Expires On
                           </p>
+
                           <p className="mt-1 font-bold">
                             {dateLabel(
                               order.subscription_expires_at,
@@ -431,6 +497,13 @@ export default async function AccountPage() {
                       <p className="mt-4 break-all text-xs text-slate-500">
                         Tracking ID: {order.tracking_id}
                       </p>
+
+                      <div className="mt-4">
+                        <TrackOrderButton
+                          trackingId={order.tracking_id}
+                          compact
+                        />
+                      </div>
                     </article>
                   );
                 })}
@@ -469,9 +542,16 @@ export default async function AccountPage() {
                       </p>
                     </div>
 
-                    <span className="rounded-full bg-slate-200 px-3 py-2 text-xs font-bold text-slate-700">
-                      Expired
-                    </span>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className="rounded-full bg-slate-200 px-3 py-2 text-xs font-bold text-slate-700">
+                        Expired
+                      </span>
+
+                      <TrackOrderButton
+                        trackingId={order.tracking_id}
+                        compact
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -513,6 +593,13 @@ export default async function AccountPage() {
                     <p className="mt-2 break-all text-xs text-slate-500">
                       Tracking ID: {order.tracking_id}
                     </p>
+
+                    <div className="mt-4">
+                      <TrackOrderButton
+                        trackingId={order.tracking_id}
+                        compact
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -548,16 +635,26 @@ export default async function AccountPage() {
               </h2>
 
               <p className="mt-2 text-sm text-slate-500">
-                Track orders, payments and deliveries.
+                View your orders and open their tracking
+                details with one click.
               </p>
             </div>
 
-            <Link
-              href="/products"
-              className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700"
-            >
-              Browse Products
-            </Link>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/track"
+                className="rounded-xl border border-blue-200 bg-blue-50 px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-100"
+              >
+                Track by ID
+              </Link>
+
+              <Link
+                href="/products"
+                className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700"
+              >
+                Browse Products
+              </Link>
+            </div>
           </div>
 
           {!ordersError && orders.length === 0 && (
@@ -648,6 +745,18 @@ export default async function AccountPage() {
                         {dateLabel(order.created_at)}
                       </p>
                     </div>
+                  </div>
+
+                  {/* Direct tracking button */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 bg-blue-50/40 px-5 py-4">
+                    <p className="text-xs text-slate-500">
+                      Check your payment, delivery
+                      and subscription status.
+                    </p>
+
+                    <TrackOrderButton
+                      trackingId={order.tracking_id}
+                    />
                   </div>
                 </article>
               ))}
