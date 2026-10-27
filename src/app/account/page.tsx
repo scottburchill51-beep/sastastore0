@@ -31,13 +31,14 @@ type CustomerOrder = {
   payment_status: string;
   order_status: string;
   created_at: string;
-  updated_at?: string | null;
+  subscription_activated_at: string | null;
+  subscription_expires_at: string | null;
 };
 
 const orderLabels: Record<string, string> = {
   pending_payment: "Awaiting Payment",
   payment_review: "Payment Under Review",
-  approved: "Payment Approved",
+  approved: "Awaiting Delivery",
   processing: "Preparing Delivery",
   delivered: "Delivered",
   cancelled: "Cancelled",
@@ -45,36 +46,96 @@ const orderLabels: Record<string, string> = {
 
 const paymentLabels: Record<string, string> = {
   pending: "Pending",
-  submitted: "Submitted for Review",
+  submitted: "Under Review",
   approved: "Approved",
   rejected: "Rejected",
   refunded: "Refunded",
 };
 
-function formatMoney(value: number | string) {
-  const amount = Number(value);
+function money(amount: number | string) {
+  const value = Number(amount);
 
-  if (!Number.isFinite(amount)) {
+  if (!Number.isFinite(value)) {
     return "Unavailable";
   }
 
-  return `PKR ${amount.toLocaleString("en-PK", {
-    maximumFractionDigits: 2,
-  })}`;
+  return `PKR ${value.toLocaleString("en-PK")}`;
 }
 
-function paymentMethodLabel(value: string) {
-  if (value === "sadapay") return "SadaPay";
-  if (value === "bank_transfer") return "UBL Bank Transfer";
-  if (value === "jazzcash") return "JazzCash";
-  if (value === "easypaisa") return "Easypaisa";
+function dateLabel(value: string | null | undefined) {
+  if (!value) return "Not available";
 
-  return value.replace(/_/g, " ");
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Not available";
+  }
+
+  return date.toLocaleDateString("en-PK", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
-function statusStyle(status: string) {
+function getSubscriptionStatus(
+  order: CustomerOrder,
+  now: number,
+) {
+  if (
+    order.payment_status !== "approved" ||
+    order.order_status !== "delivered" ||
+    !order.subscription_activated_at ||
+    !order.subscription_expires_at
+  ) {
+    return "not-activated" as const;
+  }
+
+  const start = new Date(
+    order.subscription_activated_at,
+  ).getTime();
+
+  const end = new Date(
+    order.subscription_expires_at,
+  ).getTime();
+
+  if (
+    !Number.isFinite(start) ||
+    !Number.isFinite(end) ||
+    end <= start
+  ) {
+    return "not-activated" as const;
+  }
+
+  if (start > now) {
+    return "not-activated" as const;
+  }
+
+  return end > now
+    ? ("active" as const)
+    : ("expired" as const);
+}
+
+function daysRemaining(
+  expiry: string,
+  now: number,
+) {
+  const milliseconds =
+    new Date(expiry).getTime() - now;
+
+  return Math.max(
+    0,
+    Math.ceil(milliseconds / 86400000),
+  );
+}
+
+function orderStatusColor(status: string) {
   if (status === "delivered") {
     return "border-emerald-200 bg-emerald-50 text-emerald-700";
+  }
+
+  if (status === "cancelled") {
+    return "border-red-200 bg-red-50 text-red-700";
   }
 
   if (
@@ -84,44 +145,7 @@ function statusStyle(status: string) {
     return "border-blue-200 bg-blue-50 text-blue-700";
   }
 
-  if (status === "cancelled") {
-    return "border-red-200 bg-red-50 text-red-700";
-  }
-
   return "border-amber-200 bg-amber-50 text-amber-700";
-}
-
-function statusDescription(order: CustomerOrder) {
-  if (order.payment_status === "rejected") {
-    return "Payment rejected. Please contact support for assistance.";
-  }
-
-  if (order.payment_status === "refunded") {
-    return "This payment has been marked as refunded.";
-  }
-
-  switch (order.order_status) {
-    case "pending_payment":
-      return "Your order was created. Payment confirmation is still pending.";
-
-    case "payment_review":
-      return "Your payment receipt has been submitted. The SastaStore team is checking it.";
-
-    case "approved":
-      return "Your payment was approved. Digital delivery is still pending.";
-
-    case "processing":
-      return "The SastaStore team is preparing your digital product.";
-
-    case "delivered":
-      return "Your digital order has been marked as delivered.";
-
-    case "cancelled":
-      return "This order is cancelled. Contact support if you need help.";
-
-    default:
-      return "Your order is being tracked.";
-  }
 }
 
 export default async function AccountPage() {
@@ -131,9 +155,7 @@ export default async function AccountPage() {
     redirect("/login");
   }
 
-  const admin = await isAdmin(user.id, token);
-
-  if (admin) {
+  if (await isAdmin(user.id, token)) {
     redirect("/admin");
   }
 
@@ -141,12 +163,21 @@ export default async function AccountPage() {
   let ordersError = false;
 
   try {
-    // Fetch orders for this authenticated customer.
-    // Supabase RLS also restricts records to auth.uid().
     const query = new URLSearchParams({
       user_id: `eq.${user.id}`,
-      select:
-        "id,tracking_id,product_name,plan_name,amount_pkr,payment_method,payment_status,order_status,created_at,updated_at",
+      select: [
+        "id",
+        "tracking_id",
+        "product_name",
+        "plan_name",
+        "amount_pkr",
+        "payment_method",
+        "payment_status",
+        "order_status",
+        "created_at",
+        "subscription_activated_at",
+        "subscription_expires_at",
+      ].join(","),
       order: "created_at.desc",
     });
 
@@ -154,11 +185,16 @@ export default async function AccountPage() {
       `/rest/v1/store_orders?${query.toString()}`,
       {
         method: "GET",
+        cache: "no-store",
       },
       token,
     );
 
     if (!response.ok) {
+      console.error(
+        "Customer orders request failed:",
+        response.status,
+      );
       ordersError = true;
     } else {
       const result: unknown = await response.json();
@@ -170,46 +206,66 @@ export default async function AccountPage() {
       }
     }
   } catch (error) {
-    console.error("Customer orders error:", error);
+    console.error(
+      "Unable to load customer orders:",
+      error,
+    );
+
     ordersError = true;
   }
 
-  const pendingReviews = orders.filter(
-    (order) => order.order_status === "payment_review",
-  ).length;
+  const now = Date.now();
 
-  const approvedPayments = orders.filter(
-    (order) => order.payment_status === "approved",
-  ).length;
+  const activeSubscriptions = orders.filter(
+    (order) =>
+      getSubscriptionStatus(order, now) === "active",
+  );
 
-  const deliveredOrders = orders.filter(
-    (order) => order.order_status === "delivered",
+  const expiredSubscriptions = orders.filter(
+    (order) =>
+      getSubscriptionStatus(order, now) === "expired",
+  );
+
+  const awaitingDelivery = orders.filter(
+    (order) =>
+      order.payment_status === "approved" &&
+      ["approved", "processing"].includes(
+        order.order_status,
+      ),
+  );
+
+  const deliveredWithoutActivation = orders.filter(
+    (order) =>
+      order.order_status === "delivered" &&
+      getSubscriptionStatus(order, now) ===
+        "not-activated",
   );
 
   return (
-    <main className="min-h-screen flex-1 bg-gradient-to-br from-[#F8FAFC] via-[#EFF7FF] to-[#E8FBF4] px-4 py-10 text-slate-900">
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 px-4 py-10 text-slate-900">
       <div className="mx-auto max-w-6xl space-y-8">
 
-        {/* Heading */}
+        {/* Dashboard Header */}
         <section>
-          <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
-            SastaStore / Customer Account
+          <p className="text-xs font-bold uppercase tracking-widest text-blue-600">
+            SASTASTORE ACCOUNT
           </p>
 
-          <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
+          <h1 className="mt-3 text-3xl font-extrabold sm:text-4xl">
             My Dashboard
           </h1>
 
           <p className="mt-3 text-sm text-slate-600">
-            Manage your orders, payments, and digital purchases.
+            Your orders, subscription status,
+            payment tracking and account details.
           </p>
         </section>
 
-        {/* Account Card */}
+        {/* Account Details */}
         <section className="rounded-3xl border border-blue-100 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-wrap items-center justify-between gap-5">
             <div>
-              <p className="text-sm font-semibold text-slate-500">
+              <p className="text-sm text-slate-500">
                 Signed in as
               </p>
 
@@ -226,58 +282,261 @@ export default async function AccountPage() {
           </div>
         </section>
 
-        {/* Summary */}
+        {/* Statistics */}
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
-              label: "Total Orders",
-              value: ordersError
-                ? "Unavailable"
-                : String(orders.length),
-              description: "Your order history",
+              title: "Total Orders",
+              value: orders.length,
             },
             {
-              label: "Payment Reviews",
-              value: ordersError
-                ? "Unavailable"
-                : String(pendingReviews),
-              description: "Awaiting admin verification",
+              title: "Active Subscriptions",
+              value: activeSubscriptions.length,
             },
             {
-              label: "Approved Payments",
-              value: ordersError
-                ? "Unavailable"
-                : String(approvedPayments),
-              description: "Verified by admin",
+              title: "Awaiting Delivery",
+              value: awaitingDelivery.length,
             },
             {
-              label: "Delivered Orders",
-              value: ordersError
-                ? "Unavailable"
-                : String(deliveredOrders.length),
-              description: "Marked as delivered",
+              title: "Expired Subscriptions",
+              value: expiredSubscriptions.length,
             },
-          ].map((stat) => (
+          ].map((item) => (
             <div
-              key={stat.label}
+              key={item.title}
               className="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm"
             >
               <p className="text-sm font-semibold text-slate-500">
-                {stat.label}
+                {item.title}
               </p>
 
-              <h2 className="mt-3 text-2xl font-extrabold text-blue-600">
-                {stat.value}
-              </h2>
-
-              <p className="mt-2 text-xs text-slate-400">
-                {stat.description}
+              <p className="mt-3 text-3xl font-extrabold text-blue-600">
+                {ordersError ? "—" : item.value}
               </p>
             </div>
           ))}
         </section>
 
-        {/* Orders */}
+        {ordersError && (
+          <div
+            role="alert"
+            className="rounded-2xl border border-red-200 bg-red-50 p-5 text-red-700"
+          >
+            Unable to load your account orders.
+            Please refresh the page or contact support.
+          </div>
+        )}
+
+        {/* Active Subscriptions */}
+        <section
+          id="subscriptions"
+          className="scroll-mt-24 rounded-3xl border border-blue-100 bg-white p-6 shadow-sm sm:p-8"
+        >
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-emerald-600">
+              Subscription Management
+            </p>
+
+            <h2 className="mt-2 text-2xl font-extrabold">
+              My Active Subscriptions
+            </h2>
+
+            <p className="mt-2 text-sm text-slate-500">
+              View your activated digital subscriptions
+              and their expiry dates.
+            </p>
+          </div>
+
+          {!ordersError &&
+            activeSubscriptions.length === 0 && (
+              <div className="mt-6 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-8 text-center">
+                <p className="text-lg font-bold">
+                  No Active Subscriptions Yet
+                </p>
+
+                <p className="mt-2 text-sm leading-6 text-slate-500">
+                  After your payment is approved,
+                  the admin must deliver and activate
+                  your subscription.
+                  Your active plan will then appear here.
+                </p>
+              </div>
+            )}
+
+          {!ordersError &&
+            activeSubscriptions.length > 0 && (
+              <div className="mt-6 grid gap-5 md:grid-cols-2">
+                {activeSubscriptions.map((order) => {
+                  const remaining = daysRemaining(
+                    order.subscription_expires_at!,
+                    now,
+                  );
+
+                  return (
+                    <article
+                      key={order.id}
+                      className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-6"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <h3 className="text-xl font-extrabold">
+                          {order.product_name}
+                        </h3>
+
+                        <span className="rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white">
+                          Active
+                        </span>
+                      </div>
+
+                      <p className="mt-2 text-sm font-semibold text-slate-600">
+                        {order.plan_name}
+                      </p>
+
+                      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <p className="text-xs text-slate-500">
+                            Activated On
+                          </p>
+                          <p className="mt-1 font-bold">
+                            {dateLabel(
+                              order.subscription_activated_at,
+                            )}
+                          </p>
+                        </div>
+
+                        <div>
+                          <p className="text-xs text-slate-500">
+                            Expires On
+                          </p>
+                          <p className="mt-1 font-bold">
+                            {dateLabel(
+                              order.subscription_expires_at,
+                            )}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-6 rounded-xl border border-emerald-100 bg-white p-4">
+                        <p className="text-xs text-slate-500">
+                          Time Remaining
+                        </p>
+
+                        <p className="mt-1 text-2xl font-extrabold text-emerald-700">
+                          {remaining}{" "}
+                          {remaining === 1
+                            ? "Day"
+                            : "Days"}
+                        </p>
+                      </div>
+
+                      <p className="mt-4 break-all text-xs text-slate-500">
+                        Tracking ID: {order.tracking_id}
+                      </p>
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+        </section>
+
+        {/* Expired Subscriptions */}
+        {!ordersError &&
+          expiredSubscriptions.length > 0 && (
+            <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+              <h2 className="text-2xl font-extrabold">
+                Expired Subscriptions
+              </h2>
+
+              <div className="mt-5 space-y-3">
+                {expiredSubscriptions.map((order) => (
+                  <div
+                    key={order.id}
+                    className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5"
+                  >
+                    <div>
+                      <p className="font-bold">
+                        {order.product_name}
+                      </p>
+
+                      <p className="mt-1 text-sm text-slate-500">
+                        {order.plan_name}
+                      </p>
+
+                      <p className="mt-2 text-xs text-slate-500">
+                        Expired:{" "}
+                        {dateLabel(
+                          order.subscription_expires_at,
+                        )}
+                      </p>
+                    </div>
+
+                    <span className="rounded-full bg-slate-200 px-3 py-2 text-xs font-bold text-slate-700">
+                      Expired
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+        {/* Awaiting Delivery */}
+        {!ordersError &&
+          awaitingDelivery.length > 0 && (
+            <section className="rounded-3xl border border-blue-100 bg-white p-6 shadow-sm sm:p-8">
+              <h2 className="text-2xl font-extrabold">
+                Awaiting Subscription Delivery
+              </h2>
+
+              <p className="mt-2 text-sm text-slate-500">
+                Payment has been approved.
+                Your subscription is awaiting delivery
+                and activation.
+              </p>
+
+              <div className="mt-5 space-y-3">
+                {awaitingDelivery.map((order) => (
+                  <div
+                    key={order.id}
+                    className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5"
+                  >
+                    <p className="font-bold">
+                      {order.product_name}
+                    </p>
+
+                    <p className="mt-1 text-sm text-slate-600">
+                      {order.plan_name}
+                    </p>
+
+                    <p className="mt-3 text-xs font-semibold text-blue-700">
+                      Payment Approved — Awaiting Activation
+                    </p>
+
+                    <p className="mt-2 break-all text-xs text-slate-500">
+                      Tracking ID: {order.tracking_id}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+        {/* Older delivered orders without dates */}
+        {!ordersError &&
+          deliveredWithoutActivation.length > 0 && (
+            <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6">
+              <h2 className="font-extrabold text-amber-900">
+                Subscription Dates Not Recorded
+              </h2>
+
+              <p className="mt-2 text-sm text-amber-800">
+                Some orders were marked delivered
+                without recorded activation and expiry
+                dates. Contact support to confirm their
+                subscription status.
+              </p>
+            </section>
+          )}
+
+        {/* Orders & Tracking */}
         <section
           id="my-orders"
           className="scroll-mt-24 rounded-3xl border border-blue-100 bg-white p-6 shadow-sm sm:p-8"
@@ -289,7 +548,7 @@ export default async function AccountPage() {
               </h2>
 
               <p className="mt-2 text-sm text-slate-500">
-                Track payment verification and order delivery.
+                Track orders, payments and deliveries.
               </p>
             </div>
 
@@ -301,29 +560,21 @@ export default async function AccountPage() {
             </Link>
           </div>
 
-          {ordersError ? (
-            <div className="mt-7 rounded-2xl border border-red-200 bg-red-50 p-6">
-              <p className="font-bold text-red-800">
-                Unable to load orders
-              </p>
-
-              <p className="mt-2 text-sm text-red-700">
-                Please refresh this page or try again later.
-              </p>
-            </div>
-          ) : orders.length === 0 ? (
-            <div className="mt-7 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-9 text-center">
-              <h3 className="text-lg font-bold">
+          {!ordersError && orders.length === 0 && (
+            <div className="mt-6 rounded-2xl bg-slate-50 p-8 text-center">
+              <p className="font-bold">
                 No Orders Yet
-              </h3>
+              </p>
 
               <p className="mt-2 text-sm text-slate-500">
-                Once you order a subscription, your tracking
-                ID and payment status will appear here.
+                Your order tracking information
+                will appear here after purchase.
               </p>
             </div>
-          ) : (
-            <div className="mt-7 space-y-4">
+          )}
+
+          {!ordersError && orders.length > 0 && (
+            <div className="mt-6 space-y-4">
               {orders.map((order) => (
                 <article
                   key={order.id}
@@ -331,7 +582,7 @@ export default async function AccountPage() {
                 >
                   <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-50 px-5 py-4">
                     <div>
-                      <p className="text-xs font-semibold uppercase text-slate-500">
+                      <p className="text-xs font-semibold text-slate-500">
                         Tracking ID
                       </p>
 
@@ -341,12 +592,13 @@ export default async function AccountPage() {
                     </div>
 
                     <span
-                      className={`rounded-full border px-3 py-1.5 text-xs font-bold ${statusStyle(
+                      className={`rounded-full border px-3 py-1.5 text-xs font-bold ${orderStatusColor(
                         order.order_status,
                       )}`}
                     >
-                      {orderLabels[order.order_status] ||
-                        order.order_status.replace(/_/g, " ")}
+                      {orderLabels[
+                        order.order_status
+                      ] || order.order_status}
                     </span>
                   </div>
 
@@ -356,7 +608,7 @@ export default async function AccountPage() {
                         Product
                       </p>
 
-                      <p className="mt-1 text-lg font-bold">
+                      <p className="mt-1 font-bold">
                         {order.product_name}
                       </p>
 
@@ -370,49 +622,32 @@ export default async function AccountPage() {
                         Amount
                       </p>
 
-                      <p className="mt-1 text-lg font-extrabold text-blue-600">
-                        {formatMoney(order.amount_pkr)}
+                      <p className="mt-1 font-bold text-blue-600">
+                        {money(order.amount_pkr)}
                       </p>
                     </div>
 
                     <div>
                       <p className="text-xs text-slate-500">
-                        Payment
+                        Payment Status
                       </p>
 
                       <p className="mt-1 text-sm font-semibold">
-                        {paymentLabels[order.payment_status] ||
-                          order.payment_status}
-                      </p>
-
-                      <p className="mt-1 text-xs text-slate-500">
-                        {paymentMethodLabel(
-                          order.payment_method,
-                        )}
+                        {paymentLabels[
+                          order.payment_status
+                        ] || order.payment_status}
                       </p>
                     </div>
 
                     <div>
                       <p className="text-xs text-slate-500">
-                        Ordered On
+                        Order Date
                       </p>
 
                       <p className="mt-1 text-sm font-semibold">
-                        {new Date(
-                          order.created_at,
-                        ).toLocaleDateString("en-PK")}
+                        {dateLabel(order.created_at)}
                       </p>
                     </div>
-                  </div>
-
-                  <div className="border-t border-slate-100 bg-blue-50/50 px-5 py-4">
-                    <p className="text-sm font-semibold text-slate-800">
-                      Tracking Update
-                    </p>
-
-                    <p className="mt-2 text-sm leading-6 text-slate-600">
-                      {statusDescription(order)}
-                    </p>
                   </div>
                 </article>
               ))}
@@ -420,75 +655,15 @@ export default async function AccountPage() {
           )}
         </section>
 
-        {/* Subscriptions */}
-        <section
-          id="subscriptions"
-          className="scroll-mt-24 rounded-3xl border border-blue-100 bg-white p-6 shadow-sm sm:p-8"
-        >
-          <h2 className="text-2xl font-extrabold">
-            My Subscriptions
-          </h2>
-
-          <p className="mt-2 text-sm text-slate-500">
-            Your delivered digital purchases are listed
-            below. Subscription activation tracking
-            is being prepared.
-          </p>
-
-          {deliveredOrders.length > 0 ? (
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              {deliveredOrders.map((order) => (
-                <div
-                  key={order.id}
-                  className="rounded-2xl border border-emerald-100 bg-emerald-50/50 p-5"
-                >
-                  <p className="text-lg font-extrabold">
-                    {order.product_name}
-                  </p>
-
-                  <p className="mt-1 text-sm text-slate-600">
-                    {order.plan_name}
-                  </p>
-
-                  <p className="mt-4 text-sm font-semibold text-emerald-700">
-                    Order Delivered
-                  </p>
-
-                  <p className="mt-2 text-xs text-slate-500">
-                    Tracking ID: {order.tracking_id}
-                  </p>
-
-                  <p className="mt-2 text-xs leading-5 text-slate-600">
-                    Activation and expiry dates have not
-                    been recorded yet.
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-7 text-center">
-              <p className="font-bold text-slate-700">
-                No Delivered Subscriptions Yet
-              </p>
-
-              <p className="mt-2 text-sm text-slate-500">
-                Delivered purchases will appear here.
-                Payments awaiting review or fulfillment
-                are tracked in My Orders above.
-              </p>
-            </div>
-          )}
-        </section>
-
-        {/* Help */}
+        {/* Support */}
         <section className="rounded-2xl border border-blue-100 bg-white p-6">
           <h2 className="font-extrabold">
-            Need Help With Your Order?
+            Need Help?
           </h2>
 
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            If your payment is taking longer to verify,
-            contact support with your Tracking ID.
+            Contact support with your Tracking ID
+            for payment, delivery or subscription help.
           </p>
 
           <Link
