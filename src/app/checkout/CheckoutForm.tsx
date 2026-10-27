@@ -76,6 +76,7 @@ function AccountRow({
         <span className="min-w-0 break-all text-sm font-bold text-slate-900">
           {value}
         </span>
+
         <CopyButton value={value} />
       </div>
     </div>
@@ -124,7 +125,7 @@ function getCheckoutRequestId(
       return saved;
     }
   } catch {
-    // The browser may block session storage.
+    // Browser storage may be unavailable.
   }
 
   const requestId = crypto.randomUUID();
@@ -141,6 +142,12 @@ function getCheckoutRequestId(
   }
 
   return requestId;
+}
+
+function trackingHref(trackingId: string) {
+  return `/track?tracking=${encodeURIComponent(
+    trackingId,
+  )}`;
 }
 
 export default function CheckoutForm({
@@ -339,12 +346,11 @@ export default function CheckoutForm({
         );
       }
 
-      // Payment received for REVIEW only.
-      // This does not approve payment
-      // or activate the subscription.
+      // Payment submitted for admin review.
+      // Does not approve or activate subscription.
       setComplete(true);
 
-      // Clear the request ID only after the
+      // Clear the request ID only after
       // payment submission is confirmed.
       requestIdRef.current = null;
 
@@ -367,6 +373,8 @@ export default function CheckoutForm({
     }
   }
 
+  // PAYMENT CONFIRMATION SCREEN
+  // Includes direct tracking link.
   if (complete && order) {
     return (
       <div className="mx-auto max-w-2xl rounded-3xl border border-emerald-200 bg-white p-8 text-center shadow-sm sm:p-12">
@@ -402,12 +410,44 @@ export default function CheckoutForm({
           </p>
         </div>
 
-        <Link
-          href="/account"
-          className="mt-7 inline-flex rounded-xl bg-blue-600 px-6 py-3 font-bold text-white hover:bg-blue-700"
-        >
-          View My Account
-        </Link>
+        <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <Link
+            href={trackingHref(order.trackingId)}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-extrabold text-white shadow-sm transition hover:bg-blue-700"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="19"
+              height="19"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+            </svg>
+
+            Track Your Order
+          </Link>
+
+          <Link
+            href="/account"
+            className="inline-flex items-center justify-center rounded-xl border border-blue-200 bg-white px-6 py-3 font-bold text-blue-700 transition hover:bg-blue-50"
+          >
+            View My Account
+          </Link>
+        </div>
+
+        <p className="mt-5 text-xs leading-6 text-slate-500">
+          You can check your order status anytime
+          from the Track Order page or My Account.
+          Payment approval is subject to verification.
+        </p>
       </div>
     );
   }
