@@ -2,6 +2,7 @@
 "use client";
 
 import {
+  useRef,
   useState,
   type FormEvent,
 } from "react";
@@ -79,10 +80,19 @@ function AccountRow({
         <span className="min-w-0 break-all text-sm font-bold text-slate-900">
           {value}
         </span>
+
         <CopyButton value={value} />
       </div>
     </div>
   );
+}
+
+async function readJson(response: Response) {
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
 }
 
 export default function CheckoutForm({
@@ -95,16 +105,29 @@ export default function CheckoutForm({
 }: Props) {
   const [name, setName] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+
   const [method, setMethod] =
     useState<PaymentMethod>("sadapay");
 
   const [reference, setReference] = useState("");
-  const [receipt, setReceipt] = useState<File | null>(null);
+  const [receipt, setReceipt] =
+    useState<File | null>(null);
 
-  const [order, setOrder] = useState<Order | null>(null);
+  const [order, setOrder] =
+    useState<Order | null>(null);
+
   const [busy, setBusy] = useState(false);
   const [complete, setComplete] = useState(false);
   const [error, setError] = useState("");
+
+  // Blocks duplicate submits immediately,
+  // before React updates the button state.
+  const submitLock = useRef(false);
+
+  // If the create-order response is lost,
+  // another order must not be created blindly.
+  const [orderUncertain, setOrderUncertain] =
+    useState(false);
 
   const amountText = amount.toLocaleString("en-PK", {
     minimumFractionDigits: 0,
@@ -114,71 +137,116 @@ export default function CheckoutForm({
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    if (busy || complete) return;
+    if (
+      submitLock.current ||
+      busy ||
+      complete ||
+      orderUncertain
+    ) {
+      return;
+    }
 
     if (!receipt) {
-      setError("Please attach your payment screenshot.");
+      setError(
+        "Please attach your payment screenshot.",
+      );
       return;
     }
 
     if (
-      !["image/jpeg", "image/png", "image/webp"].includes(
-        receipt.type,
-      ) ||
+      ![
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+      ].includes(receipt.type) ||
       receipt.size === 0 ||
       receipt.size > 5 * 1024 * 1024
     ) {
-      setError("Upload JPG, PNG or WEBP under 5 MB.");
+      setError(
+        "Upload JPG, PNG or WEBP under 5 MB.",
+      );
       return;
     }
 
+    if (reference.trim().length < 4) {
+      setError(
+        "Enter a valid payment transaction reference.",
+      );
+      return;
+    }
+
+    submitLock.current = true;
     setBusy(true);
     setError("");
 
     let activeOrder = order;
 
     try {
-      // Step 1: Create an order only once.
+      // STEP 1: Create order only if none exists.
       if (!activeOrder) {
-        const response = await fetch("/api/orders", {
-          method: "POST",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            productSlug,
-            planId,
-            customerName: name,
-            whatsappNumber: whatsapp,
-            paymentMethod: method,
-          }),
-        });
+        let response: Response;
 
-        const data = await response.json();
+        try {
+          response = await fetch("/api/orders", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              productSlug,
+              planId,
+              customerName: name.trim(),
+              whatsappNumber: whatsapp.trim(),
+              paymentMethod: method,
+            }),
+          });
+        } catch {
+          // Server may have created the order
+          // even though its response was lost.
+          setOrderUncertain(true);
+
+          throw new Error(
+            "Connection interrupted while creating your order. Please check My Account before placing another order. Do not pay twice.",
+          );
+        }
+
+        const data = await readJson(response);
 
         if (!response.ok) {
           throw new Error(
-            data.error || "Unable to book order.",
+            data?.error ||
+              "Unable to create order. Please check your details.",
           );
         }
 
-        activeOrder = data.order;
+        const newOrder = data?.order;
 
         if (
-          !activeOrder?.id ||
-          !activeOrder?.trackingId
+          !newOrder ||
+          typeof newOrder.id !== "string" ||
+          typeof newOrder.trackingId !== "string" ||
+          !newOrder.id ||
+          !newOrder.trackingId
         ) {
+          setOrderUncertain(true);
+
           throw new Error(
-            "Order confirmation missing. Check your order history before trying again.",
+            "Order confirmation is unavailable. Check My Account before trying again.",
           );
         }
 
+        activeOrder = {
+          id: newOrder.id,
+          trackingId: newOrder.trackingId,
+        };
+
+        // If receipt upload fails, reuse this order.
         setOrder(activeOrder);
       }
 
-      // Step 2: Upload private payment evidence
-      // and move this order into review.
+      // STEP 2: Upload payment proof to
+      // the existing order.
       const form = new FormData();
 
       form.append("orderId", activeOrder.id);
@@ -194,16 +262,18 @@ export default function CheckoutForm({
         },
       );
 
-      const data = await response.json();
+      const data = await readJson(response);
 
       if (!response.ok) {
         throw new Error(
-          data.error ||
-            "Payment receipt submission failed.",
+          data?.error ||
+            "Payment receipt submission failed. Please retry using the same order.",
         );
       }
 
+      // Payment is submitted, not yet verified.
       setComplete(true);
+      setError("");
     } catch (caught) {
       setError(
         caught instanceof Error
@@ -211,6 +281,7 @@ export default function CheckoutForm({
           : "Something went wrong.",
       );
     } finally {
+      submitLock.current = false;
       setBusy(false);
     }
   }
@@ -227,8 +298,9 @@ export default function CheckoutForm({
         </h2>
 
         <p className="mt-3 text-slate-600">
-          We received your payment screenshot. Our team
-          will verify it before approving your order.
+          We received your payment screenshot.
+          Our team will verify it before
+          approving your order.
         </p>
 
         <div className="mt-7 rounded-2xl bg-blue-50 p-6">
@@ -276,15 +348,18 @@ export default function CheckoutForm({
               <span className="text-sm font-semibold">
                 Full Name
               </span>
+
               <input
                 required
                 minLength={2}
                 maxLength={120}
-                disabled={Boolean(order)}
+                disabled={Boolean(order) || busy}
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) =>
+                  setName(e.target.value)
+                }
                 placeholder="Your full name"
-                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500"
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 disabled:bg-slate-50"
               />
             </label>
 
@@ -292,11 +367,13 @@ export default function CheckoutForm({
               <span className="text-sm font-semibold">
                 Email Address
               </span>
+
               <input
                 readOnly
                 value={email}
                 className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500"
               />
+
               <span className="mt-1 block text-xs text-slate-500">
                 Verified account email
               </span>
@@ -306,16 +383,17 @@ export default function CheckoutForm({
               <span className="text-sm font-semibold">
                 WhatsApp Number
               </span>
+
               <input
                 type="tel"
                 required
-                disabled={Boolean(order)}
+                disabled={Boolean(order) || busy}
                 value={whatsapp}
                 onChange={(e) =>
                   setWhatsapp(e.target.value)
                 }
                 placeholder="03XXXXXXXXX"
-                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500"
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 disabled:bg-slate-50"
               />
             </label>
           </div>
@@ -347,10 +425,11 @@ export default function CheckoutForm({
                   name="paymentMethod"
                   value={value}
                   checked={method === value}
-                  disabled={Boolean(order)}
+                  disabled={Boolean(order) || busy}
                   onChange={() => setMethod(value)}
                   className="accent-blue-600"
                 />
+
                 <span className="text-sm font-bold">
                   {label}
                 </span>
@@ -383,6 +462,7 @@ export default function CheckoutForm({
                   label="IBAN"
                   value={accounts.bank_transfer.iban}
                 />
+
                 <AccountRow
                   label="Account Number"
                   value={accounts.bank_transfer.number}
@@ -397,9 +477,10 @@ export default function CheckoutForm({
           </div>
 
           <p className="mt-4 text-sm leading-6 text-slate-600">
-            Send the exact amount using your chosen method.
-            Keep the transaction reference and payment
-            screenshot for verification.
+            Send the exact amount using your
+            chosen method. Keep the transaction
+            reference and payment screenshot
+            for verification.
           </p>
         </section>
 
@@ -414,10 +495,12 @@ export default function CheckoutForm({
               <span className="text-sm font-semibold">
                 Transaction ID / Reference
               </span>
+
               <input
                 required
                 minLength={4}
                 maxLength={120}
+                disabled={busy}
                 value={reference}
                 onChange={(e) =>
                   setReference(e.target.value)
@@ -431,15 +514,20 @@ export default function CheckoutForm({
               <span className="text-sm font-semibold">
                 Payment Screenshot
               </span>
+
               <input
                 type="file"
                 required={!receipt}
+                disabled={busy}
                 accept="image/jpeg,image/png,image/webp"
                 onChange={(e) =>
-                  setReceipt(e.target.files?.[0] || null)
+                  setReceipt(
+                    e.target.files?.[0] || null,
+                  )
                 }
                 className="mt-2 block w-full rounded-xl border border-dashed border-blue-200 bg-blue-50 p-4 text-sm text-slate-700 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-600 file:px-3 file:py-2 file:font-semibold file:text-white"
               />
+
               <span className="mt-2 block text-xs text-slate-500">
                 JPG, PNG or WEBP. Maximum 5 MB.
               </span>
@@ -459,6 +547,7 @@ export default function CheckoutForm({
             <p className="text-xs text-slate-500">
               Product
             </p>
+
             <p className="mt-1 font-bold">
               {productName}
             </p>
@@ -468,6 +557,7 @@ export default function CheckoutForm({
             <p className="text-xs text-slate-500">
               Selected Plan
             </p>
+
             <p className="mt-1 font-semibold">
               {planName}
             </p>
@@ -477,6 +567,7 @@ export default function CheckoutForm({
             <p className="text-sm text-slate-500">
               Total Amount
             </p>
+
             <p className="mt-1 text-3xl font-extrabold text-blue-600">
               PKR {amountText}
             </p>
@@ -488,13 +579,41 @@ export default function CheckoutForm({
             <p className="text-xs font-bold text-amber-800">
               Order Created — Payment Pending
             </p>
+
             <p className="mt-2 break-all text-sm font-bold text-slate-900">
               {order.trackingId}
             </p>
+
             <p className="mt-2 text-xs text-amber-800">
-              If upload failed, retry below. Do not
-              create another order or pay twice.
+              If upload failed, retry below
+              using this same order. Do not
+              pay twice.
             </p>
+          </div>
+        )}
+
+        {orderUncertain && !order && (
+          <div
+            role="alert"
+            className="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4"
+          >
+            <p className="text-sm font-bold text-amber-900">
+              Order status needs checking
+            </p>
+
+            <p className="mt-2 text-sm text-amber-800">
+              We could not confirm whether
+              your order was created. Please
+              check My Account before placing
+              another order. Do not pay twice.
+            </p>
+
+            <Link
+              href="/account"
+              className="mt-3 inline-flex rounded-lg bg-amber-900 px-4 py-2 text-sm font-bold text-white hover:bg-amber-950"
+            >
+              Check My Orders
+            </Link>
           </div>
         )}
 
@@ -509,19 +628,26 @@ export default function CheckoutForm({
 
         <button
           type="submit"
-          disabled={busy}
+          disabled={
+            busy ||
+            complete ||
+            orderUncertain
+          }
           className="mt-6 w-full rounded-xl bg-blue-600 px-5 py-4 font-extrabold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {busy
             ? "Processing..."
-            : order
-              ? "Retry Payment Proof Upload"
-              : "Submit Order & Payment"}
+            : orderUncertain
+              ? "Check Order History First"
+              : order
+                ? "Retry Payment Proof Upload"
+                : "Submit Order & Payment"}
         </button>
 
         <p className="mt-4 text-center text-xs leading-5 text-slate-500">
-          Your payment must be verified by the
-          SastaStore team before order approval.
+          Your payment must be verified by
+          the SastaStore team before order
+          approval.
         </p>
       </aside>
     </form>
