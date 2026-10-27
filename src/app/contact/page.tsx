@@ -7,11 +7,12 @@ import { createWhatsAppUrl } from "@/lib/whatsapp";
 export const metadata = {
   title: "Contact & Support | SastaStore",
   description:
-    "Contact SastaStore support for digital subscriptions, payment questions, order tracking, delivery, digital services and Telegram assistance.",
+    "Contact SastaStore through WhatsApp or Telegram for digital subscriptions, payments, order tracking, delivery and digital services.",
 };
 
+const telegramUsername = "@Techboyy0";
 const telegramId = "8161204113";
-const telegramUrl = `tg://user?id=${telegramId}`;
+const telegramUrl = "https://t.me/Techboyy0";
 
 const whatsappChannelUrl =
   "https://whatsapp.com/channel/0029Vb7BXu2B4hdMiWIlwY1v";
@@ -132,7 +133,9 @@ export default function ContactPage() {
 
             <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
               How Can We
-              <span className="text-blue-600"> Help You?</span>
+              <span className="text-blue-600">
+                {" "}Help You?
+              </span>
             </h1>
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-8 text-slate-600 sm:text-base">
@@ -182,7 +185,7 @@ export default function ContactPage() {
           </div>
 
           <div className="grid gap-5 lg:grid-cols-3">
-            {/* WhatsApp */}
+            {/* WhatsApp Support */}
             <article className="flex h-full flex-col rounded-3xl border border-emerald-100 bg-white p-7 shadow-lg shadow-emerald-100/30 transition hover:-translate-y-1 hover:shadow-xl">
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
                 <SupportIcon type="whatsapp" />
@@ -217,7 +220,7 @@ export default function ContactPage() {
               </a>
             </article>
 
-            {/* Telegram */}
+            {/* Telegram Support */}
             <article className="flex h-full flex-col rounded-3xl border border-sky-200 bg-white p-7 shadow-lg shadow-sky-100/40 transition hover:-translate-y-1 hover:shadow-xl">
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-100 text-sky-700">
                 <SupportIcon type="telegram" />
@@ -231,27 +234,33 @@ export default function ContactPage() {
                 Telegram Support
               </h3>
 
-              <p className="mt-3 text-lg font-bold text-sky-700">
-                ID: {telegramId}
+              <p className="mt-3 text-lg font-extrabold text-sky-700">
+                {telegramUsername}
+              </p>
+
+              <p className="mt-1 text-xs font-medium text-slate-500">
+                Telegram ID: {telegramId}
               </p>
 
               <p className="mt-4 flex-1 text-sm leading-7 text-slate-600">
-                Contact us through Telegram for
+                Message our Telegram account for
                 subscription questions, order
                 assistance and customer support.
               </p>
 
               <a
                 href={telegramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="mt-7 inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-sky-700"
               >
-                Open Telegram App
+                Chat on Telegram
                 <ArrowIcon />
               </a>
 
               <p className="mt-3 text-center text-xs leading-5 text-slate-500">
-                Requires Telegram. Numeric ID links
-                may not work on every device.
+                Opens Telegram chat in your browser
+                or Telegram app.
               </p>
             </article>
 
