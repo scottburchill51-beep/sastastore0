@@ -6,19 +6,31 @@ import type { Product } from "@/types/product";
 
 type ProductCardProps = {
   product: Product;
+  priority?: boolean;
 };
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("en-PK").format(price);
 }
 
-export function ProductCard({ product }: ProductCardProps) {
-  const lowestPrice =
-    product.plans.length > 0
-      ? Math.min(...product.plans.map((plan) => plan.price))
-      : 0;
+export function ProductCard({
+  product,
+  priority = false,
+}: ProductCardProps) {
+  const prices = product.plans
+    .map((plan) => Number(plan.price))
+    .filter(
+      (price) =>
+        Number.isFinite(price) && price > 0,
+    );
 
-  const hasMultiplePlans = product.plans.length > 1;
+  const lowestPrice =
+    prices.length > 0
+      ? Math.min(...prices)
+      : null;
+
+  const hasMultiplePlans =
+    product.plans.length > 1;
 
   return (
     <Link
@@ -27,7 +39,6 @@ export function ProductCard({ product }: ProductCardProps) {
       className="group block h-full rounded-[24px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
     >
       <article className="relative flex h-full flex-col overflow-hidden rounded-[24px] border border-slate-200 bg-white p-5 shadow-[0_5px_25px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:shadow-[0_20px_55px_rgba(37,99,235,0.12)] sm:p-6">
-
         {/* Decorative gradient */}
         <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-gradient-to-br from-blue-100/70 to-emerald-100/40 blur-3xl transition-transform duration-500 group-hover:scale-125" />
 
@@ -37,6 +48,7 @@ export function ProductCard({ product }: ProductCardProps) {
             <ProductLogo
               name={product.name}
               logo={product.logo}
+              priority={priority}
             />
           </div>
 
@@ -61,11 +73,15 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Price */}
         <div className="relative mt-6">
           <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-            {hasMultiplePlans ? "Starting From" : "Price"}
+            {hasMultiplePlans
+              ? "Starting From"
+              : "Price"}
           </p>
 
           <p className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900">
-            Rs. {formatPrice(lowestPrice)}
+            {lowestPrice !== null
+              ? `Rs. ${formatPrice(lowestPrice)}`
+              : "See Details"}
           </p>
 
           {hasMultiplePlans ? (
