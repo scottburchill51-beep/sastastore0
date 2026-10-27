@@ -24,6 +24,24 @@ type SessionState = {
   isAdmin: boolean;
 };
 
+type NavigationItem = {
+  href: string;
+  label: string;
+};
+
+// Widen navigation types so additional routes
+// are supported without TypeScript errors.
+const navigation: NavigationItem[] = [
+  ...siteConfig.navigation,
+];
+
+if (!navigation.some((item) => item.href === "/track")) {
+  navigation.push({
+    href: "/track",
+    label: "Track Order",
+  });
+}
+
 export function Header() {
   const pathname = usePathname();
 
@@ -35,20 +53,6 @@ export function Header() {
 
   const [loggingOut, setLoggingOut] =
     useState(false);
-
-  // Add Track Order only if it does not
-  // already exist in siteConfig.navigation.
-  const navigation = siteConfig.navigation.some(
-    (item) => item.href === "/track",
-  )
-    ? siteConfig.navigation
-    : [
-        ...siteConfig.navigation,
-        {
-          href: "/track",
-          label: "Track Order",
-        },
-      ];
 
   const loadSession = useCallback(async () => {
     try {
@@ -259,7 +263,7 @@ export function Header() {
 
         <Container>
           <div className="flex h-[76px] items-center justify-between gap-4">
-            {/* Logo */}
+            {/* Site Logo */}
             <Link
               href="/"
               onClick={() => setMenuOpen(false)}
@@ -324,16 +328,8 @@ export function Header() {
                           strokeLinejoin="round"
                           aria-hidden="true"
                         >
-                          <circle
-                            cx="12"
-                            cy="12"
-                            r="9"
-                          />
-                          <circle
-                            cx="12"
-                            cy="12"
-                            r="3"
-                          />
+                          <circle cx="12" cy="12" r="9" />
+                          <circle cx="12" cy="12" r="3" />
                           <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
                         </svg>
                       )}
@@ -452,16 +448,8 @@ export function Header() {
                           strokeLinejoin="round"
                           aria-hidden="true"
                         >
-                          <circle
-                            cx="12"
-                            cy="12"
-                            r="9"
-                          />
-                          <circle
-                            cx="12"
-                            cy="12"
-                            r="3"
-                          />
+                          <circle cx="12" cy="12" r="9" />
+                          <circle cx="12" cy="12" r="3" />
                           <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
                         </svg>
                       )}
@@ -533,3 +521,4 @@ export function Header() {
     </>
   );
 }
+
