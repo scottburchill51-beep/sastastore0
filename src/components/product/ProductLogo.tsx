@@ -10,22 +10,69 @@ type ProductLogoProps = {
   priority?: boolean;
 };
 
-function getPngFallback(source: string): string | null {
-  // Only try PNG fallback for local WebP images.
-  // Never modify external Supabase storage URLs.
+const verifiedLogos: Record<string, string> = {
+  "/products/canva-pro/logo.webp":
+    "/products/canva-pro/logo.png",
+};
 
+function preferredSource(logo: string) {
+  const original = (logo || "").trim();
+
+  return verifiedLogos[original] || original;
+}
+
+function alternateSource(source: string) {
+  // Never modify remote Supabase URLs.
   if (!source.startsWith("/")) {
     return null;
   }
 
-  if (!/\.webp(?=$|[?#])/i.test(source)) {
-    return null;
+  if (/\.webp(?=$|[?#])/i.test(source)) {
+    return source.replace(
+      /\.webp(?=$|[?#])/i,
+      ".png",
+    );
   }
 
-  return source.replace(
-    /\.webp(?=$|[?#])/i,
-    ".png",
-  );
+  if (/\.png(?=$|[?#])/i.test(source)) {
+    return source.replace(
+      /\.png(?=$|[?#])/i,
+      ".webp",
+    );
+  }
+
+  return null;
+}
+
+function cacheKey(original: string) {
+  return `ss-logo:${original}`;
+}
+
+function getRememberedSource(original: string) {
+  const preferred = preferredSource(original);
+
+  if (typeof window === "undefined") {
+    return preferred;
+  }
+
+  try {
+    const remembered = window.sessionStorage.getItem(
+      cacheKey(original),
+    );
+
+    const alternate = alternateSource(preferred);
+
+    if (
+      remembered === preferred ||
+      (alternate && remembered === alternate)
+    ) {
+      return remembered;
+    }
+  } catch {
+    // Storage may be unavailable; image loading still works.
+  }
+
+  return preferred;
 }
 
 export function ProductLogo({
@@ -34,46 +81,58 @@ export function ProductLogo({
   size = "small",
   priority = false,
 }: ProductLogoProps) {
-  const originalSource =
-    typeof logo === "string" ? logo.trim() : "";
+  const original = (logo || "").trim();
+  const preferred = preferredSource(original);
 
-  const [currentSource, setCurrentSource] =
-    useState(originalSource);
-
-  const [hasError, setHasError] = useState(false);
-
-  const [fallbackAttempted, setFallbackAttempted] =
-    useState(false);
+  const [source, setSource] = useState(preferred);
+  const [failed, setFailed] = useState(false);
+  const [tried, setTried] = useState<string[]>([]);
 
   const isLarge = size === "large";
-
   const dimensions = isLarge ? 64 : 48;
 
-  // Reset image when Admin changes a product logo.
   useEffect(() => {
-    setCurrentSource(originalSource);
-    setHasError(false);
-    setFallbackAttempted(false);
-  }, [originalSource]);
+    setSource(getRememberedSource(original));
+    setFailed(false);
+    setTried([]);
+  }, [original]);
 
-  function handleImageError() {
-    if (!fallbackAttempted) {
-      const pngFallback = getPngFallback(
-        currentSource,
-      );
+  function handleError() {
+    const nextTried = [...tried, source];
+    const alternate = alternateSource(source);
 
-      if (pngFallback) {
-        setFallbackAttempted(true);
-        setCurrentSource(pngFallback);
-        return;
-      }
+    if (
+      alternate &&
+      !nextTried.includes(alternate)
+    ) {
+      setTried(nextTried);
+      setSource(alternate);
+      return;
     }
 
-    setHasError(true);
+    setFailed(true);
+
+    try {
+      window.sessionStorage.removeItem(
+        cacheKey(original),
+      );
+    } catch {
+      // Ignore disabled storage.
+    }
   }
 
-  const showImage =
-    currentSource.length > 0 && !hasError;
+  function handleLoad() {
+    try {
+      window.sessionStorage.setItem(
+        cacheKey(original),
+        source,
+      );
+    } catch {
+      // Browser storage is optional.
+    }
+  }
+
+  const showImage = Boolean(source) && !failed;
 
   return (
     <div
@@ -82,28 +141,28 @@ export function ProductLogo({
       }`}
     >
       {showImage ? (
-        // Native image supports local and Supabase URLs.
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          key={currentSource}
-          src={currentSource}
+          key={source}
+          src={source}
           alt={`${name} logo`}
           width={dimensions}
           height={dimensions}
           loading={priority ? "eager" : "lazy"}
           fetchPriority={priority ? "high" : "auto"}
           decoding="async"
-          onError={handleImageError}
+          onLoad={handleLoad}
+          onError={handleError}
           className={`h-full w-full object-contain ${
             isLarge ? "p-2" : "p-1.5"
           }`}
         />
       ) : (
         <span
+          aria-label={`${name} logo unavailable`}
           className={`flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-50 to-emerald-50 font-extrabold text-blue-600 ${
             isLarge ? "text-2xl" : "text-lg"
           }`}
-          aria-label={`${name} logo unavailable`}
         >
           {name.trim().charAt(0).toUpperCase() || "S"}
         </span>
