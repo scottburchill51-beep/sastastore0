@@ -2,17 +2,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductLogo } from "@/components/product/ProductLogo";
 import { Container } from "@/components/ui/Container";
 import { siteConfig } from "@/config/site";
-import { products } from "@/data/products";
-import { getProductBySlug } from "@/lib/products";
-import { getSession } from "@/lib/store-backend";
+import type { Product } from "@/types/product";
+import { backend, getSession } from "@/lib/store-backend";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
+};
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+type ProductRow = {
+  payload: Product;
 };
 
 function formatPrice(price: number) {
@@ -25,17 +32,55 @@ const availabilityMap = {
   "out-of-stock": "https://schema.org/OutOfStock",
 } as const;
 
-export function generateStaticParams() {
-  return products.map((product) => ({
-    slug: product.slug,
-  }));
-}
+// Load fresh products from Supabase.
+// Never fall back to outdated static prices.
+const getCurrentProducts = cache(
+  async (): Promise<Product[]> => {
+    const response = await backend(
+      "/rest/v1/store_products?select=payload&order=created_at.desc",
+      { method: "GET" },
+    );
+
+    if (!response.ok) {
+      console.error(
+        "Supabase catalog read failed:",
+        response.status,
+      );
+
+      throw new Error(
+        "Unable to load the current product catalog",
+      );
+    }
+
+    const rows: unknown = await response.json();
+
+    if (!Array.isArray(rows)) {
+      throw new Error("Invalid product catalog response");
+    }
+
+    return (rows as ProductRow[])
+      .map((row) => row?.payload)
+      .filter(
+        (product): product is Product =>
+          product !== null &&
+          typeof product === "object" &&
+          typeof product.slug === "string" &&
+          typeof product.name === "string" &&
+          Array.isArray(product.plans),
+      );
+  },
+);
 
 export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+
+  const products = await getCurrentProducts();
+
+  const product = products.find(
+    (item) => item.slug === slug,
+  );
 
   if (!product) {
     return {
@@ -47,11 +92,15 @@ export async function generateMetadata({
     };
   }
 
-  const url = `${siteConfig.url}/products/${product.slug}`;
+  const url =
+    `${siteConfig.url}/products/${product.slug}`;
 
   return {
-    title: product.seo.title,
-    description: product.seo.description,
+    title: product.seo?.title || `${product.name} | SastaStore`,
+    description:
+      product.seo?.description ||
+      product.shortDescription ||
+      product.description,
     alternates: {
       canonical: url,
     },
@@ -59,8 +108,13 @@ export async function generateMetadata({
       type: "website",
       url,
       siteName: siteConfig.name,
-      title: product.seo.title,
-      description: product.seo.description,
+      title:
+        product.seo?.title ||
+        `${product.name} | SastaStore`,
+      description:
+        product.seo?.description ||
+        product.shortDescription ||
+        product.description,
       images: [
         {
           url: `${siteConfig.url}/opengraph-image`,
@@ -72,9 +126,16 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: product.seo.title,
-      description: product.seo.description,
-      images: [`${siteConfig.url}/opengraph-image`],
+      title:
+        product.seo?.title ||
+        `${product.name} | SastaStore`,
+      description:
+        product.seo?.description ||
+        product.shortDescription ||
+        product.description,
+      images: [
+        `${siteConfig.url}/opengraph-image`,
+      ],
     },
   };
 }
@@ -84,7 +145,11 @@ export default async function ProductPage({
 }: ProductPageProps) {
   const { slug } = await params;
 
-  const product = getProductBySlug(slug);
+  const products = await getCurrentProducts();
+
+  const product = products.find(
+    (item) => item.slug === slug,
+  );
 
   if (!product) {
     notFound();
@@ -95,9 +160,11 @@ export default async function ProductPage({
   const productUrl =
     `${siteConfig.url}/products/${product.slug}`;
 
-  const productImage = product.logo.startsWith("http")
-    ? product.logo
-    : `${siteConfig.url}${product.logo.startsWith("/") ? "" : "/"}${product.logo}`;
+  const logo = product.logo || "/favicon.ico";
+
+  const productImage = logo.startsWith("http")
+    ? logo
+    : `${siteConfig.url}${logo.startsWith("/") ? "" : "/"}${logo}`;
 
   const relatedProducts = [
     ...products.filter(
@@ -131,7 +198,8 @@ export default async function ProductPage({
       url: productUrl,
       priceCurrency: "PKR",
       price: plan.price,
-      availability: availabilityMap[product.availability],
+      availability:
+        availabilityMap[product.availability],
       seller: {
         "@type": "Organization",
         name: siteConfig.name,
@@ -174,7 +242,8 @@ export default async function ProductPage({
         name: `How do I order ${product.name}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Choose a plan, sign in and complete the checkout process when available.",
+          text:
+            "Choose a plan, sign in, and complete payment through the secure checkout.",
         },
       },
       {
@@ -182,7 +251,8 @@ export default async function ProductPage({
         name: `Is ${product.name} always available?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Availability depends on the product and selected plan.",
+          text:
+            "Availability depends on the product and selected plan.",
         },
       },
     ],
@@ -190,6 +260,7 @@ export default async function ProductPage({
 
   return (
     <main className="min-h-screen flex-1 bg-[#F8FAFC] text-slate-900">
+      {/* Product structured data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -200,6 +271,7 @@ export default async function ProductPage({
         }}
       />
 
+      {/* Breadcrumb structured data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -209,6 +281,7 @@ export default async function ProductPage({
         }}
       />
 
+      {/* FAQ structured data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -264,7 +337,7 @@ export default async function ProductPage({
                   <div className="flex min-h-28 min-w-28 items-center justify-center rounded-3xl border border-blue-100 bg-white p-5 shadow-sm">
                     <ProductLogo
                       name={product.name}
-                      logo={product.logo}
+                      logo={logo}
                       size="large"
                     />
                   </div>
@@ -278,7 +351,10 @@ export default async function ProductPage({
 
                 <div className="mt-10">
                   <span className="inline-flex rounded-full border border-blue-100 bg-white px-4 py-2 text-xs font-semibold capitalize text-blue-700">
-                    {product.category.replace(/-/g, " ")}
+                    {product.category.replace(
+                      /-/g,
+                      " ",
+                    )}
                   </span>
 
                   <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
@@ -301,7 +377,9 @@ export default async function ProductPage({
 
                   <span className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600">
                     {product.plans.length} Plan
-                    {product.plans.length === 1 ? "" : "s"}
+                    {product.plans.length === 1
+                      ? ""
+                      : "s"}
                   </span>
                 </div>
               </div>
@@ -325,20 +403,22 @@ export default async function ProductPage({
                 </div>
 
                 <ul className="mt-8 grid gap-4">
-                  {product.features.map((feature) => (
-                    <li
-                      key={feature}
-                      className="flex items-start gap-3 rounded-xl bg-slate-50 px-4 py-3"
-                    >
-                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
-                        ✓
-                      </span>
+                  {(product.features || []).map(
+                    (feature) => (
+                      <li
+                        key={feature}
+                        className="flex items-start gap-3 rounded-xl bg-slate-50 px-4 py-3"
+                      >
+                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
+                          ✓
+                        </span>
 
-                      <span className="text-sm leading-6 text-slate-600">
-                        {feature}
-                      </span>
-                    </li>
-                  ))}
+                        <span className="text-sm leading-6 text-slate-600">
+                          {feature}
+                        </span>
+                      </li>
+                    ),
+                  )}
                 </ul>
               </div>
 
@@ -370,14 +450,10 @@ export default async function ProductPage({
 
                 <div className="space-y-4">
                   {product.plans.map((plan) => {
-                    // The checkout route will be
-                    // implemented in the next stage.
                     const checkoutPath =
                       `/checkout?product=${encodeURIComponent(product.slug)}` +
                       `&plan=${encodeURIComponent(String(plan.id))}`;
 
-                    // Guests sign in first.
-                    // Logged-in customers go to checkout.
                     const buyNowHref = user
                       ? checkoutPath
                       : `/login?next=${encodeURIComponent(checkoutPath)}`;
@@ -406,21 +482,34 @@ export default async function ProductPage({
                             </p>
 
                             <p className="mt-1 text-2xl font-extrabold text-blue-600">
-                              Rs. {formatPrice(plan.price)}
+                              Rs.{" "}
+                              {formatPrice(
+                                Number(plan.price),
+                              )}
                             </p>
                           </div>
                         </div>
 
-                        <Link
-                          href={buyNowHref}
-                          className="mt-6 flex min-h-13 w-full items-center justify-center gap-3 rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-sm shadow-blue-200 transition duration-300 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-200"
-                        >
-                          Buy Now
-                          <span aria-hidden="true">→</span>
-                        </Link>
+                        {product.availability ===
+                        "out-of-stock" ? (
+                          <div className="mt-6 flex min-h-13 w-full items-center justify-center rounded-xl bg-slate-200 px-5 py-3.5 text-sm font-bold text-slate-600">
+                            Currently Unavailable
+                          </div>
+                        ) : (
+                          <Link
+                            href={buyNowHref}
+                            className="mt-6 flex min-h-13 w-full items-center justify-center gap-3 rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-sm shadow-blue-200 transition duration-300 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-200"
+                          >
+                            Buy Now
+                            <span aria-hidden="true">
+                              →
+                            </span>
+                          </Link>
+                        )}
 
                         <p className="mt-3 text-center text-xs text-slate-400">
-                          Account required to complete purchase
+                          Account required to complete
+                          purchase
                         </p>
                       </div>
                     );
@@ -494,8 +583,8 @@ export default async function ProductPage({
             </h2>
 
             <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-slate-600">
-              Our upcoming checkout process is
-              designed to make digital shopping simple.
+              Choose a plan, submit payment details,
+              and track your order after verification.
             </p>
           </div>
 
@@ -570,12 +659,14 @@ export default async function ProductPage({
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {relatedProducts.map((relatedProduct) => (
-                <ProductCard
-                  key={relatedProduct.slug}
-                  product={relatedProduct}
-                />
-              ))}
+              {relatedProducts.map(
+                (relatedProduct) => (
+                  <ProductCard
+                    key={relatedProduct.slug}
+                    product={relatedProduct}
+                  />
+                ),
+              )}
             </div>
           </Container>
         </section>
