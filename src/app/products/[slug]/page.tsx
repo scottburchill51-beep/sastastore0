@@ -8,23 +8,19 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { ProductLogo } from "@/components/product/ProductLogo";
 import { Container } from "@/components/ui/Container";
 import { siteConfig } from "@/config/site";
-import type { Product } from "@/types/product";
 import { backend, getSession } from "@/lib/store-backend";
+import type { Product } from "@/types/product";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
 type ProductRow = {
   payload: Product;
 };
 
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-PK").format(price);
-}
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const availabilityMap = {
   available: "https://schema.org/InStock",
@@ -32,8 +28,38 @@ const availabilityMap = {
   "out-of-stock": "https://schema.org/OutOfStock",
 } as const;
 
-// Load fresh products from Supabase.
-// Never fall back to outdated static prices.
+function formatPrice(value: number) {
+  return new Intl.NumberFormat("en-PK", {
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
+function getDiscount(
+  priceValue: number,
+  originalPriceValue: number | null | undefined,
+) {
+  const price = Number(priceValue);
+  const originalPrice = Number(originalPriceValue);
+
+  if (
+    originalPriceValue == null ||
+    !Number.isFinite(price) ||
+    !Number.isFinite(originalPrice) ||
+    price <= 0 ||
+    originalPrice <= price
+  ) {
+    return null;
+  }
+
+  return {
+    originalPrice,
+    savings: originalPrice - price,
+    percent: Math.round(
+      ((originalPrice - price) / originalPrice) * 100,
+    ),
+  };
+}
+
 const getCurrentProducts = cache(
   async (): Promise<Product[]> => {
     const response = await backend(
@@ -43,7 +69,7 @@ const getCurrentProducts = cache(
 
     if (!response.ok) {
       console.error(
-        "Supabase catalog read failed:",
+        "Supabase product read failed:",
         response.status,
       );
 
@@ -75,7 +101,6 @@ export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-
   const products = await getCurrentProducts();
 
   const product = products.find(
@@ -92,15 +117,20 @@ export async function generateMetadata({
     };
   }
 
-  const url =
-    `${siteConfig.url}/products/${product.slug}`;
+  const url = `${siteConfig.url}/products/${product.slug}`;
+
+  const title =
+    product.seo?.title ||
+    `${product.name} | SastaStore`;
+
+  const description =
+    product.seo?.description ||
+    product.shortDescription ||
+    product.description;
 
   return {
-    title: product.seo?.title || `${product.name} | SastaStore`,
-    description:
-      product.seo?.description ||
-      product.shortDescription ||
-      product.description,
+    title,
+    description,
     alternates: {
       canonical: url,
     },
@@ -108,13 +138,8 @@ export async function generateMetadata({
       type: "website",
       url,
       siteName: siteConfig.name,
-      title:
-        product.seo?.title ||
-        `${product.name} | SastaStore`,
-      description:
-        product.seo?.description ||
-        product.shortDescription ||
-        product.description,
+      title,
+      description,
       images: [
         {
           url: `${siteConfig.url}/opengraph-image`,
@@ -126,16 +151,9 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title:
-        product.seo?.title ||
-        `${product.name} | SastaStore`,
-      description:
-        product.seo?.description ||
-        product.shortDescription ||
-        product.description,
-      images: [
-        `${siteConfig.url}/opengraph-image`,
-      ],
+      title,
+      description,
+      images: [`${siteConfig.url}/opengraph-image`],
     },
   };
 }
@@ -144,7 +162,6 @@ export default async function ProductPage({
   params,
 }: ProductPageProps) {
   const { slug } = await params;
-
   const products = await getCurrentProducts();
 
   const product = products.find(
@@ -164,7 +181,9 @@ export default async function ProductPage({
 
   const productImage = logo.startsWith("http")
     ? logo
-    : `${siteConfig.url}${logo.startsWith("/") ? "" : "/"}${logo}`;
+    : `${siteConfig.url}${
+        logo.startsWith("/") ? "" : "/"
+      }${logo}`;
 
   const relatedProducts = [
     ...products.filter(
@@ -178,6 +197,9 @@ export default async function ProductPage({
         item.category !== product.category,
     ),
   ].slice(0, 4);
+
+  const isOutOfStock =
+    product.availability === "out-of-stock";
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -233,59 +255,49 @@ export default async function ProductPage({
     ],
   };
 
+  const faqItems = [
+    {
+      question: `How do I order ${product.name}?`,
+      answer:
+        "Choose a plan, sign in and complete website checkout. Submit the required payment details and evidence for review.",
+    },
+    {
+      question: "When will my subscription be activated?",
+      answer:
+        "Payment must be verified before delivery or activation. Processing time depends on the selected product and plan.",
+    },
+    {
+      question: "Can I track my order?",
+      answer:
+        "Yes. Sign in to your SastaStore account and use your tracking ID to view the available order status.",
+    },
+  ];
+
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: `How do I order ${product.name}?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text:
-            "Choose a plan, sign in, and complete payment through the secure checkout.",
-        },
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
       },
-      {
-        "@type": "Question",
-        name: `Is ${product.name} always available?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text:
-            "Availability depends on the product and selected plan.",
-        },
-      },
-    ],
+    })),
   };
 
+  const structuredData = [
+    productJsonLd,
+    breadcrumbJsonLd,
+    faqJsonLd,
+  ];
+
   return (
-    <main className="min-h-screen flex-1 bg-[#F8FAFC] text-slate-900">
-      {/* Product structured data */}
+    <main className="min-h-screen flex-1 overflow-hidden bg-gradient-to-b from-[#EFF8FF] via-white to-[#ECFDF5] text-slate-900">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(productJsonLd).replace(
-            /</g,
-            "\\u003c",
-          ),
-        }}
-      />
-
-      {/* Breadcrumb structured data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbJsonLd,
-          ).replace(/</g, "\\u003c"),
-        }}
-      />
-
-      {/* FAQ structured data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqJsonLd).replace(
+          __html: JSON.stringify(structuredData).replace(
             /</g,
             "\\u003c",
           ),
@@ -293,7 +305,7 @@ export default async function ProductPage({
       />
 
       {/* Breadcrumb */}
-      <section className="border-b border-blue-100 bg-white">
+      <section className="border-b border-blue-100 bg-white/80">
         <Container>
           <nav
             aria-label="Breadcrumb"
@@ -317,22 +329,22 @@ export default async function ProductPage({
 
             <span className="text-slate-300">/</span>
 
-            <span className="font-semibold text-blue-600">
+            <span className="font-semibold text-blue-700">
               {product.name}
             </span>
           </nav>
         </Container>
       </section>
 
-      {/* Main Product Section */}
-      <section className="relative overflow-hidden py-12 sm:py-20">
-        <div className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full bg-blue-100/70 blur-3xl" />
+      {/* Product Overview and Plans */}
+      <section className="relative py-12 sm:py-20">
+        <div className="pointer-events-none absolute -right-24 top-0 h-80 w-80 rounded-full bg-sky-200/40 blur-3xl" />
 
         <Container>
-          <div className="relative grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
-            {/* Product Information */}
-            <div>
-              <div className="rounded-[30px] border border-blue-100 bg-gradient-to-br from-white via-blue-50 to-emerald-50 p-7 shadow-sm sm:p-10">
+          <div className="relative grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
+            {/* Left: Product Information */}
+            <div className="min-w-0">
+              <article className="rounded-3xl border border-blue-100 bg-gradient-to-br from-white via-blue-50 to-emerald-50 p-7 shadow-sm sm:p-9">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="flex min-h-28 min-w-28 items-center justify-center rounded-3xl border border-blue-100 bg-white p-5 shadow-sm">
                     <ProductLogo
@@ -342,335 +354,447 @@ export default async function ProductPage({
                     />
                   </div>
 
-                  {product.badge ? (
-                    <span className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-bold text-emerald-700">
+                  {product.badge && (
+                    <span className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-extrabold text-emerald-700">
                       {product.badge}
                     </span>
-                  ) : null}
+                  )}
                 </div>
 
-                <div className="mt-10">
-                  <span className="inline-flex rounded-full border border-blue-100 bg-white px-4 py-2 text-xs font-semibold capitalize text-blue-700">
-                    {product.category.replace(
-                      /-/g,
-                      " ",
-                    )}
-                  </span>
+                <div className="mt-9">
+                  <Link
+                    href={`/categories/${product.category}`}
+                    className="inline-flex rounded-full border border-blue-100 bg-white px-4 py-2 text-xs font-bold capitalize text-blue-700 transition hover:border-blue-300"
+                  >
+                    {product.category.replace(/-/g, " ")}
+                  </Link>
 
-                  <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+                  <h1 className="mt-5 text-3xl font-extrabold tracking-tight sm:text-5xl">
                     {product.name}
                   </h1>
 
-                  <p className="mt-5 max-w-xl text-base leading-8 text-slate-600">
+                  {product.shortDescription && (
+                    <p className="mt-4 text-base font-semibold leading-7 text-blue-700">
+                      {product.shortDescription}
+                    </p>
+                  )}
+
+                  <p className="mt-5 whitespace-pre-line text-sm leading-8 text-slate-600 sm:text-base">
                     {product.description}
                   </p>
                 </div>
 
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <span className="rounded-full border border-blue-100 bg-white px-4 py-2 text-xs font-semibold text-blue-700">
+                  <span className="rounded-full border border-blue-100 bg-white px-4 py-2 text-xs font-bold text-blue-700">
                     Digital Product
                   </span>
 
-                  <span className="rounded-full border border-emerald-100 bg-white px-4 py-2 text-xs font-semibold text-emerald-700">
-                    Online Delivery
+                  <span className="rounded-full border border-emerald-100 bg-white px-4 py-2 text-xs font-bold text-emerald-700">
+                    Digital Delivery
                   </span>
 
-                  <span className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600">
-                    {product.plans.length} Plan
+                  <span className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600">
+                    {product.plans.length}{" "}
                     {product.plans.length === 1
-                      ? ""
-                      : "s"}
+                      ? "Plan"
+                      : "Plans"}
                   </span>
+
+                  {isOutOfStock && (
+                    <span className="rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-bold text-rose-700">
+                      Currently Unavailable
+                    </span>
+                  )}
                 </div>
-              </div>
+              </article>
 
               {/* Features */}
-              <div className="mt-8 rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-xl font-bold text-emerald-600">
-                    ✓
-                  </span>
+              {product.features?.length > 0 && (
+                <section className="mt-7 rounded-3xl border border-blue-100 bg-white p-7 shadow-sm sm:p-9">
+                  <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-600">
+                    Product Features
+                  </p>
 
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
-                      Product Benefits
-                    </p>
+                  <h2 className="mt-3 text-2xl font-extrabold">
+                    What You Get
+                  </h2>
 
-                    <h2 className="mt-1 text-2xl font-bold text-slate-900">
-                      What You Get
-                    </h2>
-                  </div>
-                </div>
-
-                <ul className="mt-8 grid gap-4">
-                  {(product.features || []).map(
-                    (feature) => (
+                  <ul className="mt-7 space-y-3">
+                    {product.features.map((feature) => (
                       <li
                         key={feature}
                         className="flex items-start gap-3 rounded-xl bg-slate-50 px-4 py-3"
                       >
-                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
                           ✓
                         </span>
 
-                        <span className="text-sm leading-6 text-slate-600">
+                        <span className="text-sm leading-7 text-slate-600">
                           {feature}
                         </span>
                       </li>
-                    ),
-                  )}
-                </ul>
-              </div>
+                    ))}
+                  </ul>
+                </section>
+              )}
 
               <Link
                 href="/products"
-                className="mt-7 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:text-blue-600"
+                className="mt-7 inline-flex items-center rounded-xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-50"
               >
                 ← Back to Products
               </Link>
             </div>
 
-            {/* Pricing Plans */}
-            <div>
-              <div className="rounded-[30px] border border-blue-100 bg-white p-6 shadow-[0_15px_60px_rgba(37,99,235,0.07)] sm:p-8">
-                <div className="mb-7">
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
-                    Choose Your Subscription
-                  </p>
+            {/* Right: Pricing */}
+            <div className="min-w-0">
+              <section className="rounded-3xl border border-blue-100 bg-white p-6 shadow-xl shadow-blue-100/30 sm:p-8">
+                <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+                  Plans & Pricing
+                </p>
 
-                  <h2 className="mt-3 text-3xl font-extrabold text-slate-900">
-                    Available Plans
-                  </h2>
+                <h2 className="mt-3 text-3xl font-extrabold">
+                  Choose Your Plan
+                </h2>
 
-                  <p className="mt-3 text-sm leading-6 text-slate-500">
-                    Select the plan that works best
-                    for your needs.
-                  </p>
-                </div>
+                <p className="mt-3 text-sm leading-7 text-slate-600">
+                  Review the plan duration, price and
+                  applicable conditions before checkout.
+                </p>
 
-                <div className="space-y-4">
-                  {product.plans.map((plan) => {
-                    const checkoutPath =
-                      `/checkout?product=${encodeURIComponent(product.slug)}` +
-                      `&plan=${encodeURIComponent(String(plan.id))}`;
+                {product.plans.length > 0 ? (
+                  <div className="mt-8 space-y-4">
+                    {product.plans.map((plan) => {
+                      const discount = getDiscount(
+                        Number(plan.price),
+                        plan.originalPrice,
+                      );
 
-                    const buyNowHref = user
-                      ? checkoutPath
-                      : `/login?next=${encodeURIComponent(checkoutPath)}`;
+                      const checkoutPath =
+                        `/checkout?product=${encodeURIComponent(
+                          product.slug,
+                        )}` +
+                        `&plan=${encodeURIComponent(
+                          String(plan.id),
+                        )}`;
 
-                    return (
-                      <div
-                        key={plan.id}
-                        className="group rounded-2xl border border-slate-200 bg-[#F8FAFC] p-5 transition duration-300 hover:border-blue-300 hover:bg-blue-50/40 hover:shadow-md sm:p-6"
-                      >
-                        <div className="flex items-start justify-between gap-4">
-                          <div>
-                            <h3 className="text-lg font-bold text-slate-900">
-                              {plan.name}
-                            </h3>
+                      const buyNowHref = user
+                        ? checkoutPath
+                        : `/login?next=${encodeURIComponent(
+                            checkoutPath,
+                          )}`;
 
-                            {plan.duration ? (
-                              <p className="mt-2 text-sm text-slate-500">
-                                {plan.duration}
-                              </p>
-                            ) : null}
-                          </div>
+                      return (
+                        <article
+                          key={plan.id}
+                          className="overflow-hidden rounded-2xl border border-blue-100 bg-[#F8FBFF] p-5 transition hover:border-blue-300 hover:shadow-md sm:p-6"
+                        >
+                          <div className="flex flex-wrap items-start justify-between gap-4">
+                            <div className="min-w-0 flex-1">
+                              <h3 className="text-lg font-extrabold">
+                                {plan.name}
+                              </h3>
 
-                          <div className="shrink-0 text-right">
-                            <p className="text-xs font-semibold text-slate-400">
-                              PKR
-                            </p>
-
-                            <p className="mt-1 text-2xl font-extrabold text-blue-600">
-                              Rs.{" "}
-                              {formatPrice(
-                                Number(plan.price),
+                              {plan.duration && (
+                                <p className="mt-2 text-sm text-slate-500">
+                                  {plan.duration}
+                                </p>
                               )}
+
+                              {discount && (
+                                <span className="mt-3 inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-extrabold text-emerald-700">
+                                  {discount.percent}% OFF
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="text-right">
+                              {discount && (
+                                <p className="text-xs text-slate-400 line-through">
+                                  Rs.{" "}
+                                  {formatPrice(
+                                    discount.originalPrice,
+                                  )}
+                                </p>
+                              )}
+
+                              <p className="mt-1 text-2xl font-extrabold text-blue-600">
+                                Rs.{" "}
+                                {formatPrice(
+                                  Number(plan.price),
+                                )}
+                              </p>
+
+                              <p className="text-xs text-slate-500">
+                                PKR
+                              </p>
+                            </div>
+                          </div>
+
+                          {discount && (
+                            <div className="mt-4 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3">
+                              <p className="text-sm font-bold text-emerald-700">
+                                You save Rs.{" "}
+                                {formatPrice(
+                                  discount.savings,
+                                )}
+                              </p>
+                            </div>
+                          )}
+
+                          {isOutOfStock ? (
+                            <div className="mt-6 flex min-h-12 items-center justify-center rounded-xl bg-slate-200 px-5 py-3 text-sm font-bold text-slate-600">
+                              Currently Unavailable
+                            </div>
+                          ) : (
+                            <Link
+                              href={buyNowHref}
+                              className="mt-6 flex min-h-12 items-center justify-center gap-3 rounded-xl bg-blue-600 px-5 py-3 text-sm font-extrabold text-white shadow-sm transition hover:bg-blue-700"
+                            >
+                              Buy Now
+                              <span aria-hidden="true">
+                                →
+                              </span>
+                            </Link>
+                          )}
+
+                          {!isOutOfStock && (
+                            <p className="mt-3 text-center text-xs text-slate-500">
+                              {user
+                                ? "Continue to checkout"
+                                : "Sign in to complete your purchase"}
                             </p>
-                          </div>
-                        </div>
-
-                        {product.availability ===
-                        "out-of-stock" ? (
-                          <div className="mt-6 flex min-h-13 w-full items-center justify-center rounded-xl bg-slate-200 px-5 py-3.5 text-sm font-bold text-slate-600">
-                            Currently Unavailable
-                          </div>
-                        ) : (
-                          <Link
-                            href={buyNowHref}
-                            className="mt-6 flex min-h-13 w-full items-center justify-center gap-3 rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-sm shadow-blue-200 transition duration-300 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-200"
-                          >
-                            Buy Now
-                            <span aria-hidden="true">
-                              →
-                            </span>
-                          </Link>
-                        )}
-
-                        <p className="mt-3 text-center text-xs text-slate-400">
-                          Account required to complete
-                          purchase
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Delivery Information */}
-                <div className="mt-8 border-t border-slate-100 pt-7">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                        className="h-5 w-5"
-                      >
-                        <path d="M3 7h11v10H3z" />
-                        <path d="M14 10h4l3 3v4h-7z" />
-                        <circle cx="7" cy="18" r="2" />
-                        <circle cx="18" cy="18" r="2" />
-                      </svg>
-                    </span>
-
-                    <h3 className="text-base font-bold text-slate-900">
-                      Delivery Information
-                    </h3>
+                          )}
+                        </article>
+                      );
+                    })}
                   </div>
+                ) : (
+                  <div className="mt-7 rounded-xl border border-blue-100 bg-blue-50 p-6 text-center">
+                    <p className="text-sm font-semibold text-slate-700">
+                      No plans are currently listed.
+                    </p>
+                  </div>
+                )}
 
-                  <p className="mt-4 text-sm leading-7 text-slate-500">
-                    {product.deliveryInfo}
+                {/* Delivery */}
+                <div className="mt-8 border-t border-blue-100 pt-7">
+                  <h3 className="text-lg font-extrabold">
+                    Delivery Information
+                  </h3>
+
+                  <p className="mt-3 whitespace-pre-line text-sm leading-8 text-slate-600">
+                    {product.deliveryInfo ||
+                      "Digital delivery or activation is arranged after payment verification. Timing depends on the product."}
                   </p>
                 </div>
 
-                <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-                  <p className="text-sm font-semibold text-emerald-800">
-                    Have questions before ordering?
-                  </p>
+                <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50 p-5">
+                  <h3 className="font-extrabold text-emerald-900">
+                    Need Help Choosing?
+                  </h3>
 
-                  <p className="mt-2 text-xs leading-6 text-emerald-700">
-                    Visit our support page for help
-                    choosing the right plan.
+                  <p className="mt-2 text-sm leading-7 text-emerald-800">
+                    Contact our team if you have
+                    questions about plans,
+                    compatibility or delivery.
                   </p>
 
                   <Link
                     href="/contact"
-                    className="mt-3 inline-flex text-sm font-bold text-emerald-800 underline underline-offset-4"
+                    className="mt-4 inline-flex text-sm font-extrabold text-emerald-800 underline underline-offset-4"
                   >
                     Contact Support →
                   </Link>
                 </div>
-              </div>
+              </section>
             </div>
           </div>
         </Container>
       </section>
 
       {/* How Ordering Works */}
-      <section className="border-y border-blue-100 bg-[#EFF7FF] py-20">
+      <section className="border-y border-blue-100 bg-white/70 py-16 sm:py-20">
         <Container>
-          <div className="mb-12 text-center">
-            <p className="text-xs font-bold uppercase tracking-widest text-blue-600">
-              Your Shopping Experience
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+              Ordering Process
             </p>
 
-            <h2 className="mt-4 text-3xl font-extrabold text-slate-900 sm:text-4xl">
-              How Ordering Works
+            <h2 className="mt-3 text-3xl font-extrabold sm:text-4xl">
+              Simple Steps to Get Started
             </h2>
 
-            <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-slate-600">
-              Choose a plan, submit payment details,
-              and track your order after verification.
+            <p className="mt-4 text-sm leading-7 text-slate-600">
+              From plan selection to delivery,
+              you can follow your order progress.
             </p>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-3">
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
             {[
               {
                 number: "01",
-                title: "Choose Your Plan",
+                title: "Choose a Plan",
                 description:
-                  "Compare plans and select the right digital product.",
+                  "Review the product details and choose your preferred subscription.",
               },
               {
                 number: "02",
                 title: "Checkout & Payment",
                 description:
-                  "Submit your order and payment details through the checkout process.",
+                  "Sign in, follow the payment instructions and submit payment evidence for review.",
               },
               {
                 number: "03",
-                title: "Approval & Delivery",
+                title: "Verification & Delivery",
                 description:
-                  "After payment verification, your digital order can be fulfilled.",
+                  "Track the order while payment is reviewed and delivery or activation is arranged.",
               },
             ].map((step) => (
-              <div
+              <article
                 key={step.number}
                 className="rounded-3xl border border-blue-100 bg-white p-7 shadow-sm"
               >
-                <span className="text-4xl font-black text-blue-200">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-sm font-extrabold text-blue-700">
                   {step.number}
-                </span>
+                </div>
 
-                <h3 className="mt-6 text-lg font-bold text-slate-900">
+                <h3 className="mt-5 text-lg font-extrabold">
                   {step.title}
                 </h3>
 
-                <p className="mt-3 text-sm leading-7 text-slate-500">
+                <p className="mt-3 text-sm leading-7 text-slate-600">
                   {step.description}
                 </p>
-              </div>
+              </article>
             ))}
+          </div>
+
+          <div className="mt-8 text-center">
+            <Link
+              href="/track"
+              className="inline-flex rounded-xl border border-blue-200 bg-white px-6 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+            >
+              Track Your Order
+            </Link>
+          </div>
+        </Container>
+      </section>
+
+      {/* FAQs */}
+      <section className="py-16 sm:py-20">
+        <Container>
+          <div className="mx-auto max-w-3xl">
+            <p className="text-center text-xs font-extrabold uppercase tracking-widest text-emerald-600">
+              Common Questions
+            </p>
+
+            <h2 className="mt-3 text-center text-3xl font-extrabold sm:text-4xl">
+              Product FAQs
+            </h2>
+
+            <div className="mt-9 space-y-3">
+              {faqItems.map((item) => (
+                <details
+                  key={item.question}
+                  className="group overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm"
+                >
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5 text-sm font-bold [&::-webkit-details-marker]:hidden">
+                    {item.question}
+
+                    <span
+                      aria-hidden="true"
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-lg text-blue-600 transition group-open:rotate-45"
+                    >
+                      +
+                    </span>
+                  </summary>
+
+                  <p className="border-t border-blue-50 px-5 py-5 text-sm leading-8 text-slate-600">
+                    {item.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
           </div>
         </Container>
       </section>
 
       {/* Related Products */}
-      {relatedProducts.length > 0 ? (
-        <section className="bg-white py-20">
+      {relatedProducts.length > 0 && (
+        <section className="border-t border-blue-100 bg-white/70 py-16 sm:py-20">
           <Container>
-            <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+            <div className="mb-9 flex flex-wrap items-end justify-between gap-5">
               <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-blue-600">
+                <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
                   Discover More
                 </p>
 
-                <h2 className="mt-3 text-3xl font-extrabold text-slate-900 sm:text-4xl">
+                <h2 className="mt-3 text-3xl font-extrabold sm:text-4xl">
                   You May Also Like
                 </h2>
 
-                <p className="mt-3 max-w-xl text-sm leading-7 text-slate-500">
-                  Explore other digital tools and
-                  subscriptions from SastaStore.
+                <p className="mt-3 text-sm leading-7 text-slate-600">
+                  Explore other digital products
+                  available through SastaStore.
                 </p>
               </div>
 
               <Link
                 href="/products"
-                className="text-sm font-bold text-blue-600 hover:text-blue-700"
+                className="text-sm font-extrabold text-blue-600 hover:underline"
               >
                 View All Products →
               </Link>
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {relatedProducts.map(
-                (relatedProduct) => (
-                  <ProductCard
-                    key={relatedProduct.slug}
-                    product={relatedProduct}
-                  />
-                ),
-              )}
+              {relatedProducts.map((item) => (
+                <ProductCard
+                  key={item.slug}
+                  product={item}
+                />
+              ))}
             </div>
           </Container>
         </section>
-      ) : null}
+      )}
+
+      {/* Bottom Support */}
+      <section className="py-14">
+        <Container>
+          <div className="flex flex-col items-start justify-between gap-6 rounded-3xl bg-gradient-to-r from-blue-600 to-sky-600 p-8 text-white sm:p-10 lg:flex-row lg:items-center">
+            <div>
+              <h2 className="text-2xl font-extrabold">
+                Questions Before Ordering?
+              </h2>
+
+              <p className="mt-3 max-w-xl text-sm leading-7 text-blue-50">
+                Our support team can help you
+                understand product details,
+                plan options and ordering.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/contact"
+                className="rounded-xl bg-white px-6 py-3 text-sm font-extrabold text-blue-700 hover:bg-blue-50"
+              >
+                Contact Support
+              </Link>
+
+              <Link
+                href="/refund-policy"
+                className="rounded-xl border border-white/50 bg-white/10 px-6 py-3 text-sm font-extrabold text-white hover:bg-white/20"
+              >
+                Refund Policy
+              </Link>
+            </div>
+          </div>
+        </Container>
+      </section>
     </main>
   );
 }
