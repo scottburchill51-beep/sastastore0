@@ -15,10 +15,7 @@ export const revalidate = 0;
 
 export const metadata = {
   title: "Admin Dashboard | SastaStore",
-  robots: {
-    index: false,
-    follow: false,
-  },
+  robots: { index: false, follow: false },
 };
 
 type AdminOrder = {
@@ -46,18 +43,17 @@ const testOrderIds = new Set<string>(
 
 function isTestOrder(order: AdminOrder) {
   return testOrderIds.has(
-    String(order.tracking_id || "").trim().toUpperCase(),
+    String(order.tracking_id || "")
+      .trim()
+      .toUpperCase(),
   );
 }
 
 function money(amount: number) {
-  if (!Number.isFinite(amount)) {
-    return "PKR 0";
-  }
-
-  return `PKR ${amount.toLocaleString("en-PK", {
-    maximumFractionDigits: 2,
-  })}`;
+  return `PKR ${(Number.isFinite(amount) ? amount : 0)
+    .toLocaleString("en-PK", {
+      maximumFractionDigits: 2,
+    })}`;
 }
 
 function paymentLabel(method: string) {
@@ -65,7 +61,6 @@ function paymentLabel(method: string) {
   if (method === "bank_transfer") return "Bank Transfer";
   if (method === "jazzcash") return "JazzCash";
   if (method === "easypaisa") return "Easypaisa";
-
   return method || "Unknown";
 }
 
@@ -144,7 +139,6 @@ function OrdersTable({
                 <p className="font-semibold text-slate-900">
                   {order.customer_name}
                 </p>
-
                 <p className="mt-1 text-xs text-slate-500">
                   {order.product_name}
                 </p>
@@ -154,7 +148,7 @@ function OrdersTable({
                 {paymentLabel(order.payment_method)}
               </td>
 
-              <td className="px-3 py-4 font-semibold text-slate-900">
+              <td className="px-3 py-4 font-semibold">
                 {money(Number(order.amount_pkr))}
               </td>
 
@@ -164,7 +158,8 @@ function OrdersTable({
                     order.order_status,
                   )}`}
                 >
-                  {order.order_status.replace(/_/g, " ")}
+                  {String(order.order_status || "unknown")
+                    .replace(/_/g, " ")}
                 </span>
               </td>
             </tr>
@@ -210,9 +205,10 @@ export default async function AdminDashboardPage() {
   let orders: AdminOrder[] = [];
   let ordersAvailable = false;
 
+  let registeredCustomers: number | null = null;
+
+  // Existing secure admin order listing.
   try {
-    // Existing database RPC independently checks
-    // the authenticated administrator.
     const response = await backend(
       "/rest/v1/rpc/admin_list_store_orders",
       {
@@ -223,28 +219,73 @@ export default async function AdminDashboardPage() {
     );
 
     if (response.ok) {
-      const result: unknown = await response.json();
+      const data: unknown = await response.json();
 
-      if (Array.isArray(result)) {
-        orders = result as AdminOrder[];
+      if (Array.isArray(data)) {
+        orders = data as AdminOrder[];
         ordersAvailable = true;
       }
     } else {
       console.error(
-        "Admin order fetch failed:",
+        "Admin orders fetch failed:",
         response.status,
       );
     }
   } catch (error) {
     console.error(
-      "Admin order fetch error:",
+      "Admin orders fetch error:",
       error,
     );
   }
 
-  // Separate test orders from real orders.
-  // This does NOT delete or modify database records.
+  // New secure admin-only customer counter.
+  try {
+    const response = await backend(
+      "/rest/v1/rpc/admin_customer_stats",
+      {
+        method: "POST",
+        body: JSON.stringify({}),
+      },
+      token,
+    );
+
+    if (response.ok) {
+      const data: unknown = await response.json();
+
+      if (
+        data !== null &&
+        typeof data === "object" &&
+        !Array.isArray(data) &&
+        "registered_customers" in data
+      ) {
+        const count = Number(
+          data.registered_customers,
+        );
+
+        if (
+          Number.isSafeInteger(count) &&
+          count >= 0
+        ) {
+          registeredCustomers = count;
+        }
+      }
+    } else {
+      console.error(
+        "Admin customer stats failed:",
+        response.status,
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Admin customer stats error:",
+      error,
+    );
+  }
+
+  // Test orders are separated from real orders
+  // without changing or deleting database records.
   const testOrders = orders.filter(isTestOrder);
+
   const realOrders = orders.filter(
     (order) => !isTestOrder(order),
   );
@@ -276,11 +317,21 @@ export default async function AdminDashboardPage() {
     (id) =>
       !testOrders.some(
         (order) =>
-          order.tracking_id.toUpperCase() === id,
+          String(order.tracking_id || "")
+            .toUpperCase() === id,
       ),
   );
 
   const stats = [
+    {
+      label: "Registered Customers",
+      value:
+        registeredCustomers === null
+          ? "Unavailable"
+          : registeredCustomers.toLocaleString("en-PK"),
+      detail: "Customer accounts, excluding admins",
+      accent: "text-indigo-600",
+    },
     {
       label: "Verified Revenue",
       value: ordersAvailable
@@ -318,6 +369,7 @@ export default async function AdminDashboardPage() {
   return (
     <main className="min-h-screen flex-1 bg-gradient-to-br from-[#F8FAFC] via-[#EFF7FF] to-[#E8FBF4] px-4 py-10 text-slate-900">
       <div className="mx-auto max-w-7xl space-y-8">
+
         {/* Dashboard Header */}
         <section className="flex flex-wrap items-center justify-between gap-5">
           <div>
@@ -330,8 +382,8 @@ export default async function AdminDashboardPage() {
             </h1>
 
             <p className="mt-3 text-sm text-slate-600">
-              Manage products, review customer orders
-              and monitor store activity.
+              Manage products, customers, payments,
+              real orders and test orders.
             </p>
           </div>
 
@@ -355,8 +407,8 @@ export default async function AdminDashboardPage() {
           </div>
         </section>
 
-        {/* Real Business Statistics */}
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {/* Live Business Statistics */}
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
           {stats.map((stat) => (
             <article
               key={stat.label}
@@ -367,7 +419,7 @@ export default async function AdminDashboardPage() {
               </p>
 
               <h2
-                className={`mt-4 text-2xl font-extrabold ${stat.accent}`}
+                className={`mt-4 break-words text-2xl font-extrabold ${stat.accent}`}
               >
                 {stat.value}
               </h2>
@@ -380,10 +432,13 @@ export default async function AdminDashboardPage() {
         </section>
 
         <p className="text-xs leading-6 text-slate-500">
-          Statistics are based on orders returned by
-          the existing admin orders API (currently
-          limited to the latest 200 records). The
-          four designated test orders are excluded.
+          Registered Customers comes from the
+          secure Supabase admin customer stats
+          function. Order and revenue statistics
+          use the existing admin orders API,
+          currently limited to the latest 200
+          orders. Designated test orders are
+          excluded from business statistics.
         </p>
 
         {!ordersAvailable && (
@@ -391,16 +446,28 @@ export default async function AdminDashboardPage() {
             <h2 className="font-extrabold text-amber-900">
               Order Statistics Unavailable
             </h2>
-
             <p className="mt-2 text-sm text-amber-800">
-              The admin order API could not be
+              The order listing could not be
               loaded. Product management remains
               available.
             </p>
           </div>
         )}
 
-        {/* Admin Actions */}
+        {registeredCustomers === null && (
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+            <h2 className="font-extrabold text-amber-900">
+              Customer Counter Unavailable
+            </h2>
+            <p className="mt-2 text-sm text-amber-800">
+              Please check the admin_customer_stats
+              function and the authenticated
+              admin permissions in Supabase.
+            </p>
+          </div>
+        )}
+
+        {/* Quick Actions */}
         <section className="grid gap-5 md:grid-cols-2">
           <a
             href="#manage-products"
@@ -415,8 +482,9 @@ export default async function AdminDashboardPage() {
             </h2>
 
             <p className="mt-3 text-sm leading-7 text-slate-600">
-              Add products, edit listings and
-              manage subscription plans and prices.
+              Add products, edit listings,
+              upload product images and manage
+              subscription pricing plans.
             </p>
 
             <span className="mt-5 inline-block text-sm font-bold text-blue-600">
@@ -437,9 +505,9 @@ export default async function AdminDashboardPage() {
             </h2>
 
             <p className="mt-3 text-sm leading-7 text-slate-600">
-              Review payment evidence and
-              approve, reject or deliver orders
-              through the existing order manager.
+              Review customer payment proofs,
+              approve payments and deliver
+              customer orders.
             </p>
 
             <span className="mt-5 inline-block text-sm font-bold text-emerald-700">
@@ -461,7 +529,7 @@ export default async function AdminDashboardPage() {
               </h2>
 
               <p className="mt-2 text-sm text-slate-500">
-                Test orders are not included here.
+                Test orders are excluded.
               </p>
             </div>
 
@@ -483,7 +551,7 @@ export default async function AdminDashboardPage() {
           />
         </section>
 
-        {/* TEST ORDERS SECTION */}
+        {/* Test Orders */}
         <section
           id="test-orders"
           className="scroll-mt-24 overflow-hidden rounded-3xl border-2 border-amber-200 bg-white shadow-sm"
@@ -495,16 +563,14 @@ export default async function AdminDashboardPage() {
                   Testing Only
                 </span>
 
-                <h2 className="mt-4 text-2xl font-extrabold text-slate-900">
+                <h2 className="mt-4 text-2xl font-extrabold">
                   Test Orders
                 </h2>
 
                 <p className="mt-3 max-w-2xl text-sm leading-7 text-amber-900">
-                  This section contains the four
-                  designated testing orders. They
-                  are excluded from the real-order
-                  dashboard statistics and verified
-                  revenue calculations.
+                  These four designated testing
+                  orders are excluded from the
+                  real-order dashboard statistics.
                 </p>
               </div>
 
@@ -531,7 +597,7 @@ export default async function AdminDashboardPage() {
               orders={sortedTestOrders}
               emptyMessage={
                 ordersAvailable
-                  ? "None of the designated test orders were found in the loaded records."
+                  ? "No designated test orders found in the loaded records."
                   : "Test order data is unavailable."
               }
             />
@@ -544,10 +610,10 @@ export default async function AdminDashboardPage() {
                   </h3>
 
                   <p className="mt-2 text-xs leading-6 text-amber-800">
-                    These tracking IDs were not
-                    returned by the current admin
-                    order list. This does not mean
-                    they were deleted.
+                    These orders were not returned
+                    by the current order list.
+                    They have not been deleted
+                    by this dashboard.
                   </p>
 
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -564,18 +630,17 @@ export default async function AdminDashboardPage() {
               )}
 
             <p className="mt-6 text-xs leading-6 text-slate-500">
-              Testing classification applies to
-              this dashboard only. The original
-              order records, payment proofs and
-              order statuses remain unchanged.
-              These orders may still appear in
-              the existing Order Manager and
-              customer account history.
+              Test classification affects this
+              dashboard only. Original database
+              records, payments and order statuses
+              remain unchanged. Test orders may
+              still appear in the existing order
+              manager and customer history.
             </p>
 
             <Link
               href="/admin/orders"
-              className="mt-5 inline-flex rounded-xl border border-amber-200 bg-amber-50 px-5 py-3 text-sm font-bold text-amber-900 transition hover:bg-amber-100"
+              className="mt-5 inline-flex rounded-xl border border-amber-200 bg-amber-50 px-5 py-3 text-sm font-bold text-amber-900 hover:bg-amber-100"
             >
               Open Order Manager
             </Link>
