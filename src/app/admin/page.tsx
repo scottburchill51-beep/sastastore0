@@ -33,7 +33,28 @@ type AdminOrder = {
   created_at: string;
 };
 
+const TEST_TRACKING_IDS = [
+  "SS-C79151B6B922",
+  "SS-3034F11C070F",
+  "SS-C7DEE13C3385",
+  "SS-D7586820EA9F",
+] as const;
+
+const testOrderIds = new Set<string>(
+  TEST_TRACKING_IDS,
+);
+
+function isTestOrder(order: AdminOrder) {
+  return testOrderIds.has(
+    String(order.tracking_id || "").trim().toUpperCase(),
+  );
+}
+
 function money(amount: number) {
+  if (!Number.isFinite(amount)) {
+    return "PKR 0";
+  }
+
   return `PKR ${amount.toLocaleString("en-PK", {
     maximumFractionDigits: 2,
   })}`;
@@ -44,7 +65,8 @@ function paymentLabel(method: string) {
   if (method === "bank_transfer") return "Bank Transfer";
   if (method === "jazzcash") return "JazzCash";
   if (method === "easypaisa") return "Easypaisa";
-  return method;
+
+  return method || "Unknown";
 }
 
 function statusStyle(status: string) {
@@ -55,13 +77,105 @@ function statusStyle(status: string) {
     case "delivered":
       return "border-emerald-200 bg-emerald-50 text-emerald-700";
     case "cancelled":
+    case "rejected":
       return "border-red-200 bg-red-50 text-red-700";
     default:
       return "border-blue-200 bg-blue-50 text-blue-700";
   }
 }
 
-export default async function Page() {
+function sortNewest(orders: AdminOrder[]) {
+  return [...orders].sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() -
+      new Date(a.created_at).getTime(),
+  );
+}
+
+function OrdersTable({
+  orders,
+  emptyMessage,
+}: {
+  orders: AdminOrder[];
+  emptyMessage: string;
+}) {
+  if (orders.length === 0) {
+    return (
+      <div className="mt-6 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-9 text-center text-sm text-slate-500">
+        {emptyMessage}
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-6 overflow-x-auto">
+      <table className="w-full min-w-[700px] text-left text-sm">
+        <thead>
+          <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
+            <th className="px-3 py-4 font-semibold">
+              Tracking ID
+            </th>
+            <th className="px-3 py-4 font-semibold">
+              Customer / Product
+            </th>
+            <th className="px-3 py-4 font-semibold">
+              Payment
+            </th>
+            <th className="px-3 py-4 font-semibold">
+              Amount
+            </th>
+            <th className="px-3 py-4 font-semibold">
+              Status
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {orders.map((order) => (
+            <tr
+              key={order.order_id}
+              className="border-b border-slate-100 last:border-0"
+            >
+              <td className="px-3 py-4 font-bold text-blue-700">
+                {order.tracking_id}
+              </td>
+
+              <td className="px-3 py-4">
+                <p className="font-semibold text-slate-900">
+                  {order.customer_name}
+                </p>
+
+                <p className="mt-1 text-xs text-slate-500">
+                  {order.product_name}
+                </p>
+              </td>
+
+              <td className="px-3 py-4 text-slate-600">
+                {paymentLabel(order.payment_method)}
+              </td>
+
+              <td className="px-3 py-4 font-semibold text-slate-900">
+                {money(Number(order.amount_pkr))}
+              </td>
+
+              <td className="px-3 py-4">
+                <span
+                  className={`inline-flex rounded-full border px-3 py-1.5 text-xs font-bold ${statusStyle(
+                    order.order_status,
+                  )}`}
+                >
+                  {order.order_status.replace(/_/g, " ")}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default async function AdminDashboardPage() {
   const { user, token } = await getSession();
 
   if (!user || !token) {
@@ -74,7 +188,7 @@ export default async function Page() {
     return (
       <main className="flex min-h-[70vh] items-center justify-center bg-slate-50 px-4 py-16">
         <div className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-9 text-center shadow-sm">
-          <h1 className="text-2xl font-extrabold text-slate-900">
+          <h1 className="text-2xl font-extrabold">
             Access Denied
           </h1>
 
@@ -97,8 +211,8 @@ export default async function Page() {
   let ordersAvailable = false;
 
   try {
-    // Security: this RPC independently verifies
-    // admin identity on the database.
+    // Existing database RPC independently checks
+    // the authenticated administrator.
     const response = await backend(
       "/rest/v1/rpc/admin_list_store_orders",
       {
@@ -117,28 +231,32 @@ export default async function Page() {
       }
     } else {
       console.error(
-        "Admin dashboard order fetch failed:",
+        "Admin order fetch failed:",
         response.status,
       );
     }
   } catch (error) {
     console.error(
-      "Admin dashboard order fetch error:",
+      "Admin order fetch error:",
       error,
     );
   }
 
-  const totalOrders = orders.length;
+  // Separate test orders from real orders.
+  // This does NOT delete or modify database records.
+  const testOrders = orders.filter(isTestOrder);
+  const realOrders = orders.filter(
+    (order) => !isTestOrder(order),
+  );
 
-  const pendingOrders = orders.filter(
+  const pendingOrders = realOrders.filter(
     (order) =>
       order.payment_status === "submitted" &&
       order.order_status === "payment_review",
-  ).length;
+  );
 
-  const approvedOrders = orders.filter(
-    (order) =>
-      order.payment_status === "approved",
+  const approvedOrders = realOrders.filter(
+    (order) => order.payment_status === "approved",
   );
 
   const verifiedRevenue = approvedOrders.reduce(
@@ -147,13 +265,20 @@ export default async function Page() {
     0,
   );
 
-  const recentOrders = [...orders]
-    .sort(
-      (a, b) =>
-        new Date(b.created_at).getTime() -
-        new Date(a.created_at).getTime(),
-    )
-    .slice(0, 5);
+  const recentOrders = sortNewest(realOrders).slice(
+    0,
+    5,
+  );
+
+  const sortedTestOrders = sortNewest(testOrders);
+
+  const missingTestIds = TEST_TRACKING_IDS.filter(
+    (id) =>
+      !testOrders.some(
+        (order) =>
+          order.tracking_id.toUpperCase() === id,
+      ),
+  );
 
   const stats = [
     {
@@ -161,23 +286,23 @@ export default async function Page() {
       value: ordersAvailable
         ? money(verifiedRevenue)
         : "Unavailable",
-      detail: "Approved payments",
+      detail: "Approved real orders only",
       accent: "text-emerald-600",
     },
     {
-      label: "Total Orders",
+      label: "Real Orders",
       value: ordersAvailable
-        ? totalOrders.toString()
+        ? realOrders.length.toString()
         : "Unavailable",
-      detail: "Latest 200 orders",
+      detail: "Excludes designated test orders",
       accent: "text-blue-600",
     },
     {
       label: "Pending Reviews",
       value: ordersAvailable
-        ? pendingOrders.toString()
+        ? pendingOrders.length.toString()
         : "Unavailable",
-      detail: "Awaiting payment verification",
+      detail: "Real orders awaiting payment review",
       accent: "text-amber-600",
     },
     {
@@ -185,7 +310,7 @@ export default async function Page() {
       value: ordersAvailable
         ? approvedOrders.length.toString()
         : "Unavailable",
-      detail: "Payment confirmed by admin",
+      detail: "Approved real-order payments",
       accent: "text-violet-600",
     },
   ];
@@ -193,11 +318,10 @@ export default async function Page() {
   return (
     <main className="min-h-screen flex-1 bg-gradient-to-br from-[#F8FAFC] via-[#EFF7FF] to-[#E8FBF4] px-4 py-10 text-slate-900">
       <div className="mx-auto max-w-7xl space-y-8">
-
         {/* Dashboard Header */}
         <section className="flex flex-wrap items-center justify-between gap-5">
           <div>
-            <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-blue-600">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
               SastaStore / Administration
             </p>
 
@@ -206,35 +330,35 @@ export default async function Page() {
             </h1>
 
             <p className="mt-3 text-sm text-slate-600">
-              Manage your digital products, customers,
-              payment reviews and orders from one place.
+              Manage products, review customer orders
+              and monitor store activity.
             </p>
           </div>
 
           <div className="flex flex-wrap gap-3">
             <Link
               href="/"
-              className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              className="rounded-xl border border-blue-200 bg-white px-5 py-3 text-sm font-semibold text-blue-700 hover:bg-blue-50"
             >
               View Website
             </Link>
 
             <Link
               href="/admin/orders"
-              className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
+              className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700"
             >
               Manage Orders
-              {pendingOrders > 0
-                ? ` (${pendingOrders})`
+              {pendingOrders.length > 0
+                ? ` (${pendingOrders.length})`
                 : ""}
             </Link>
           </div>
         </section>
 
-        {/* Real Order Statistics */}
+        {/* Real Business Statistics */}
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {stats.map((stat) => (
-            <div
+            <article
               key={stat.label}
               className="rounded-2xl border border-blue-100 bg-white p-6 shadow-sm"
             >
@@ -248,34 +372,41 @@ export default async function Page() {
                 {stat.value}
               </h2>
 
-              <p className="mt-2 text-xs text-slate-400">
+              <p className="mt-2 text-xs text-slate-500">
                 {stat.detail}
               </p>
-            </div>
+            </article>
           ))}
         </section>
 
+        <p className="text-xs leading-6 text-slate-500">
+          Statistics are based on orders returned by
+          the existing admin orders API (currently
+          limited to the latest 200 records). The
+          four designated test orders are excluded.
+        </p>
+
         {!ordersAvailable && (
           <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
-            <p className="font-bold text-amber-900">
-              Order statistics are temporarily unavailable.
-            </p>
+            <h2 className="font-extrabold text-amber-900">
+              Order Statistics Unavailable
+            </h2>
 
             <p className="mt-2 text-sm text-amber-800">
-              Product management remains available.
-              Please check the admin orders API and
-              Supabase configuration.
+              The admin order API could not be
+              loaded. Product management remains
+              available.
             </p>
           </div>
         )}
 
-        {/* Quick Actions */}
+        {/* Admin Actions */}
         <section className="grid gap-5 md:grid-cols-2">
           <a
             href="#manage-products"
-            className="group rounded-3xl border border-blue-100 bg-white p-7 shadow-sm transition hover:border-blue-300 hover:shadow-md"
+            className="rounded-3xl border border-blue-100 bg-white p-7 shadow-sm transition hover:border-blue-300 hover:shadow-md"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-2xl text-blue-700">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-2xl">
               📦
             </div>
 
@@ -283,22 +414,21 @@ export default async function Page() {
               Manage Products
             </h2>
 
-            <p className="mt-3 text-sm leading-6 text-slate-600">
-              Add new digital products, edit existing
-              listings, upload product images and
-              manage pricing plans.
+            <p className="mt-3 text-sm leading-7 text-slate-600">
+              Add products, edit listings and
+              manage subscription plans and prices.
             </p>
 
-            <span className="mt-5 inline-block text-sm font-bold text-blue-600 group-hover:underline">
+            <span className="mt-5 inline-block text-sm font-bold text-blue-600">
               Open Product Manager →
             </span>
           </a>
 
           <Link
             href="/admin/orders"
-            className="group rounded-3xl border border-emerald-100 bg-white p-7 shadow-sm transition hover:border-emerald-300 hover:shadow-md"
+            className="rounded-3xl border border-emerald-100 bg-white p-7 shadow-sm transition hover:border-emerald-300 hover:shadow-md"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-2xl text-emerald-700">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-2xl">
               🧾
             </div>
 
@@ -306,31 +436,32 @@ export default async function Page() {
               Manage Orders
             </h2>
 
-            <p className="mt-3 text-sm leading-6 text-slate-600">
-              Review customer orders, inspect private
-              SadaPay and UBL payment screenshots,
-              and approve or reject submitted payments.
+            <p className="mt-3 text-sm leading-7 text-slate-600">
+              Review payment evidence and
+              approve, reject or deliver orders
+              through the existing order manager.
             </p>
 
-            <span className="mt-5 inline-block text-sm font-bold text-emerald-600 group-hover:underline">
+            <span className="mt-5 inline-block text-sm font-bold text-emerald-700">
               Open Order Manager →
-              {pendingOrders > 0 &&
-                ` ${pendingOrders} pending`}
             </span>
           </Link>
         </section>
 
-        {/* Recent Orders */}
+        {/* Real Customer Orders */}
         <section className="rounded-3xl border border-blue-100 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <h2 className="text-xl font-extrabold">
-                Recent Orders
+              <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+                Real Customer Activity
+              </p>
+
+              <h2 className="mt-2 text-xl font-extrabold sm:text-2xl">
+                Recent Customer Orders
               </h2>
 
               <p className="mt-2 text-sm text-slate-500">
-                Latest customer purchases and payment
-                verification statuses.
+                Test orders are not included here.
               </p>
             </div>
 
@@ -342,85 +473,113 @@ export default async function Page() {
             </Link>
           </div>
 
-          {recentOrders.length === 0 ? (
-            <div className="mt-7 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-9 text-center text-sm text-slate-500">
-              {ordersAvailable
-                ? "No customer orders yet."
-                : "Order data is unavailable."}
+          <OrdersTable
+            orders={recentOrders}
+            emptyMessage={
+              ordersAvailable
+                ? "No real customer orders found in the loaded records."
+                : "Order data is unavailable."
+            }
+          />
+        </section>
+
+        {/* TEST ORDERS SECTION */}
+        <section
+          id="test-orders"
+          className="scroll-mt-24 overflow-hidden rounded-3xl border-2 border-amber-200 bg-white shadow-sm"
+        >
+          <div className="border-b border-amber-200 bg-amber-50 p-6 sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <span className="inline-flex rounded-full border border-amber-300 bg-white px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-amber-800">
+                  Testing Only
+                </span>
+
+                <h2 className="mt-4 text-2xl font-extrabold text-slate-900">
+                  Test Orders
+                </h2>
+
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-amber-900">
+                  This section contains the four
+                  designated testing orders. They
+                  are excluded from the real-order
+                  dashboard statistics and verified
+                  revenue calculations.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-amber-200 bg-white px-6 py-4 text-center">
+                <p className="text-xs font-bold uppercase text-amber-700">
+                  Test Orders Found
+                </p>
+
+                <p className="mt-2 text-3xl font-extrabold text-amber-900">
+                  {ordersAvailable
+                    ? testOrders.length
+                    : "—"}
+                </p>
+
+                <p className="mt-1 text-xs text-slate-500">
+                  Of 4 designated
+                </p>
+              </div>
             </div>
-          ) : (
-            <div className="mt-6 overflow-x-auto">
-              <table className="w-full min-w-[650px] text-left text-sm">
-                <thead>
-                  <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
-                    <th className="px-3 py-4 font-semibold">
-                      Tracking ID
-                    </th>
-                    <th className="px-3 py-4 font-semibold">
-                      Customer
-                    </th>
-                    <th className="px-3 py-4 font-semibold">
-                      Payment
-                    </th>
-                    <th className="px-3 py-4 font-semibold">
-                      Amount
-                    </th>
-                    <th className="px-3 py-4 font-semibold">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
+          </div>
 
-                <tbody>
-                  {recentOrders.map((order) => (
-                    <tr
-                      key={order.order_id}
-                      className="border-b border-slate-100 last:border-0"
-                    >
-                      <td className="px-3 py-4 font-bold text-blue-700">
-                        {order.tracking_id}
-                      </td>
+          <div className="p-6 sm:p-8">
+            <OrdersTable
+              orders={sortedTestOrders}
+              emptyMessage={
+                ordersAvailable
+                  ? "None of the designated test orders were found in the loaded records."
+                  : "Test order data is unavailable."
+              }
+            />
 
-                      <td className="px-3 py-4">
-                        <p className="font-semibold">
-                          {order.customer_name}
-                        </p>
+            {ordersAvailable &&
+              missingTestIds.length > 0 && (
+                <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-5">
+                  <h3 className="text-sm font-extrabold text-amber-900">
+                    Test Orders Not in Loaded Records
+                  </h3>
 
-                        <p className="mt-1 text-xs text-slate-500">
-                          {order.product_name}
-                        </p>
-                      </td>
+                  <p className="mt-2 text-xs leading-6 text-amber-800">
+                    These tracking IDs were not
+                    returned by the current admin
+                    order list. This does not mean
+                    they were deleted.
+                  </p>
 
-                      <td className="px-3 py-4 text-slate-600">
-                        {paymentLabel(
-                          order.payment_method,
-                        )}
-                      </td>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {missingTestIds.map((id) => (
+                      <span
+                        key={id}
+                        className="rounded-lg border border-amber-200 bg-white px-3 py-2 font-mono text-xs font-semibold text-amber-900"
+                      >
+                        {id}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-                      <td className="px-3 py-4 font-semibold">
-                        {money(
-                          Number(order.amount_pkr),
-                        )}
-                      </td>
+            <p className="mt-6 text-xs leading-6 text-slate-500">
+              Testing classification applies to
+              this dashboard only. The original
+              order records, payment proofs and
+              order statuses remain unchanged.
+              These orders may still appear in
+              the existing Order Manager and
+              customer account history.
+            </p>
 
-                      <td className="px-3 py-4">
-                        <span
-                          className={`inline-flex rounded-full border px-3 py-1.5 text-xs font-bold ${statusStyle(
-                            order.order_status,
-                          )}`}
-                        >
-                          {order.order_status.replace(
-                            /_/g,
-                            " ",
-                          )}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+            <Link
+              href="/admin/orders"
+              className="mt-5 inline-flex rounded-xl border border-amber-200 bg-amber-50 px-5 py-3 text-sm font-bold text-amber-900 transition hover:bg-amber-100"
+            >
+              Open Order Manager
+            </Link>
+          </div>
         </section>
 
         {/* Existing Product Management */}
@@ -434,8 +593,8 @@ export default async function Page() {
             </h2>
 
             <p className="mt-2 text-sm text-slate-500">
-              Add, edit and manage your existing
-              digital products and pricing plans.
+              Add, edit and manage digital products,
+              images and subscription prices.
             </p>
           </div>
 
