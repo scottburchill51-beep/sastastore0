@@ -1,12 +1,10 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import { Analytics } from "@vercel/analytics/next";
 
-import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
-import { WelcomePopup } from "@/components/layout/WelcomePopup";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import { siteConfig } from "@/config/site";
 
 import "./globals.css";
@@ -136,23 +134,21 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased bg-[#f6f7fb]`}
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-screen flex-col bg-[#f6f7fb] text-slate-900">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+            __html: JSON.stringify(structuredData).replace(
+              /</g,
+              "\\u003c"
+            ),
           }}
         />
 
-        <Header />
-        <WelcomePopup />
+        <SiteChrome>{children}</SiteChrome>
 
-        {children}
-
-        <Footer />
-        <FloatingWhatsApp />
         <Analytics />
       </body>
     </html>

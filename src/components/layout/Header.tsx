@@ -1,35 +1,210 @@
+
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 import { Container } from "@/components/ui/Container";
 import { siteConfig } from "@/config/site";
-import { createWhatsAppUrl } from "@/lib/whatsapp";
 
 const announcements = [
   "Premium Digital Tools at Sasta Prices",
-  "Fast Digital Delivery",
-  "WhatsApp Support",
-  "Clear Plans & Pricing",
+  "Explore AI & Creative Software",
+  "Affordable Digital Subscriptions",
+  "Friendly Customer Support",
 ];
 
+type SessionState = {
+  loggedIn: boolean;
+  isAdmin: boolean;
+};
+
+type NavigationItem = {
+  href: string;
+  label: string;
+};
+
+// Widen navigation types so additional routes
+// are supported without TypeScript errors.
+const navigation: NavigationItem[] = [
+  ...siteConfig.navigation,
+];
+
+if (!navigation.some((item) => item.href === "/track")) {
+  navigation.push({
+    href: "/track",
+    label: "Track Order",
+  });
+}
+
 export function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const whatsappUrl = createWhatsAppUrl(
-    "Hello, I want to know more about SastaStore products and available subscriptions.",
-  );
+  const [menuOpen, setMenuOpen] =
+    useState(false);
+
+  const [session, setSession] =
+    useState<SessionState | null>(null);
+
+  const [loggingOut, setLoggingOut] =
+    useState(false);
+
+  const loadSession = useCallback(async () => {
+    try {
+      const response = await fetch(
+        "/api/store/session",
+        {
+          method: "GET",
+          credentials: "same-origin",
+          cache: "no-store",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Session unavailable");
+      }
+
+      const data: SessionState =
+        await response.json();
+
+      setSession({
+        loggedIn: data.loggedIn === true,
+        isAdmin: data.isAdmin === true,
+      });
+    } catch {
+      setSession({
+        loggedIn: false,
+        isAdmin: false,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadSession();
+  }, [loadSession, pathname]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  const loggedIn =
+    session?.loggedIn === true;
+
+  const admin =
+    loggedIn && session?.isAdmin === true;
+
+  const accountHref = admin
+    ? "/admin"
+    : "/account";
+
+  const accountLabel = admin
+    ? "Admin Dashboard"
+    : "My Account";
 
   function isActive(href: string) {
     if (href === "/") {
       return pathname === "/";
     }
 
-    return pathname === href || pathname.startsWith(`${href}/`);
+    return (
+      pathname === href ||
+      pathname.startsWith(`${href}/`)
+    );
   }
+
+  async function logout() {
+    if (loggingOut) return;
+
+    setLoggingOut(true);
+
+    try {
+      const response = await fetch(
+        "/api/auth/logout",
+        {
+          method: "POST",
+          credentials: "same-origin",
+          cache: "no-store",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+
+      setSession({
+        loggedIn: false,
+        isAdmin: false,
+      });
+
+      window.location.replace("/");
+    } catch {
+      alert(
+        "Unable to sign out. Please try again.",
+      );
+
+      setLoggingOut(false);
+    }
+  }
+
+  const desktopAuth = () => {
+    if (session === null) {
+      return (
+        <span
+          className="text-xs text-slate-400"
+          aria-label="Checking session"
+        >
+          Checking account...
+        </span>
+      );
+    }
+
+    if (!loggedIn) {
+      return (
+        <>
+          <Link
+            href="/login"
+            className="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
+          >
+            Sign In
+          </Link>
+
+          <Link
+            href="/register"
+            className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
+          >
+            Get Started
+          </Link>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <Link
+          href={accountHref}
+          className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-2.5 text-sm font-bold text-blue-700 transition hover:bg-blue-100"
+        >
+          {accountLabel}
+        </Link>
+
+        <button
+          type="button"
+          onClick={() => void logout()}
+          disabled={loggingOut}
+          className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+        >
+          {loggingOut
+            ? "Signing Out..."
+            : "Logout"}
+        </button>
+      </>
+    );
+  };
 
   return (
     <>
@@ -45,10 +220,11 @@ export function Header() {
         }
 
         .sastastore-marquee-track {
-          animation: sastastore-marquee 24s linear infinite;
+          animation: sastastore-marquee 28s linear infinite;
         }
 
-        .sastastore-marquee:hover .sastastore-marquee-track {
+        .sastastore-marquee:hover
+        .sastastore-marquee-track {
           animation-play-state: paused;
         }
 
@@ -59,86 +235,140 @@ export function Header() {
         }
       `}</style>
 
-      <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-xl">
-        {/* Top Moving Announcement Bar */}
-        <div className="sastastore-marquee overflow-hidden border-b border-white/5 bg-[#050607] text-white">
+      <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 text-slate-900 shadow-sm shadow-blue-100/40 backdrop-blur-xl">
+        {/* Announcement Bar */}
+        <div className="sastastore-marquee overflow-hidden border-b border-blue-100 bg-gradient-to-r from-[#EAF4FF] via-[#F4FAFF] to-[#E5FBF3]">
           <div className="sastastore-marquee-track flex w-max">
-            {[...announcements, ...announcements].map((item, index) => (
+            {[
+              ...announcements,
+              ...announcements,
+            ].map((item, index) => (
               <div
                 key={`${item}-${index}`}
-                className="flex shrink-0 items-center gap-3 px-6 py-2 sm:px-10"
+                className="flex shrink-0 items-center gap-3 px-7 py-2 sm:px-10"
               >
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand shadow-[0_0_10px_rgba(34,197,94,0.8)]" />
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
 
-                <span className="whitespace-nowrap text-xs font-semibold tracking-wide text-white/90 sm:text-sm">
+                <span className="whitespace-nowrap text-xs font-semibold tracking-wide text-slate-700 sm:text-sm">
                   {item}
                 </span>
 
-                <span className="text-sm text-brand">✦</span>
+                <span className="text-sm text-emerald-500">
+                  ✦
+                </span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Main Header */}
         <Container>
-          <div className="flex h-18 items-center justify-between gap-4">
+          <div className="flex h-[76px] items-center justify-between gap-4">
+            {/* Site Logo */}
             <Link
               href="/"
               onClick={() => setMenuOpen(false)}
-              className="group shrink-0 text-xl font-bold tracking-tight text-foreground"
+              className="group flex shrink-0 items-center gap-2.5"
             >
-              <span className="transition-colors duration-300 group-hover:text-brand">
-                Sasta
+              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 text-xl font-black text-white shadow-md shadow-blue-200">
+                S
               </span>
-              <span className="text-brand">Store</span>
+
+              <span className="text-xl font-extrabold tracking-tight">
+                <span className="text-slate-900">
+                  Sasta
+                </span>
+                <span className="text-blue-600">
+                  Store
+                </span>
+              </span>
             </Link>
 
-            <div className="hidden items-center gap-7 md:flex">
-              <nav className="flex items-center gap-7">
-                {siteConfig.navigation.map((item) => {
+            {/* Desktop Navigation */}
+            <div className="hidden items-center gap-5 lg:flex">
+              <nav
+                aria-label="Main navigation"
+                className="flex items-center gap-6"
+              >
+                {navigation.map((item) => {
                   const active = isActive(item.href);
+                  const isTracking =
+                    item.href === "/track";
 
                   return (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`group relative py-2 text-sm font-medium transition-colors duration-300 ${
-                        active
-                          ? "text-foreground"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
+                      aria-current={
+                        active ? "page" : undefined
+                      }
+                      className={
+                        isTracking
+                          ? `inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-bold transition ${
+                              active
+                                ? "border-blue-500 bg-blue-600 text-white"
+                                : "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
+                            }`
+                          : `group relative py-2 text-sm font-semibold transition-colors duration-200 ${
+                              active
+                                ? "text-blue-600"
+                                : "text-slate-600 hover:text-blue-600"
+                            }`
+                      }
                     >
+                      {isTracking && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="17"
+                          height="17"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <circle cx="12" cy="12" r="9" />
+                          <circle cx="12" cy="12" r="3" />
+                          <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+                        </svg>
+                      )}
+
                       {item.label}
 
-                      <span
-                        className={`absolute bottom-0 left-0 h-px bg-brand transition-all duration-300 ${
-                          active
-                            ? "w-full"
-                            : "w-0 group-hover:w-full"
-                        }`}
-                      />
+                      {!isTracking && (
+                        <span
+                          className={`absolute bottom-0 left-0 h-[2px] rounded-full bg-blue-600 transition-all duration-200 ${
+                            active
+                              ? "w-full"
+                              : "w-0 group-hover:w-full"
+                          }`}
+                        />
+                      )}
                     </Link>
                   );
                 })}
               </nav>
 
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-hover"
-              >
-                WhatsApp Us
-              </a>
+              <div className="flex items-center gap-2 border-l border-slate-200 pl-5">
+                {desktopAuth()}
+              </div>
             </div>
 
+            {/* Mobile Menu Button */}
             <button
               type="button"
-              aria-label="Toggle navigation menu"
+              aria-label={
+                menuOpen
+                  ? "Close navigation menu"
+                  : "Open navigation menu"
+              }
               aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((current) => !current)}
-              className="relative inline-flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-surface text-foreground transition-colors hover:border-brand/30 hover:bg-surface-elevated md:hidden"
+              aria-controls="sastastore-mobile-menu"
+              onClick={() =>
+                setMenuOpen((current) => !current)
+              }
+              className="relative inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 lg:hidden"
             >
               <span
                 className={`absolute h-0.5 w-5 rounded-full bg-current transition-all duration-300 ${
@@ -150,7 +380,9 @@ export function Header() {
 
               <span
                 className={`absolute h-0.5 w-5 rounded-full bg-current transition-all duration-300 ${
-                  menuOpen ? "scale-x-0 opacity-0" : "opacity-100"
+                  menuOpen
+                    ? "scale-x-0 opacity-0"
+                    : "opacity-100"
                 }`}
               />
 
@@ -164,41 +396,129 @@ export function Header() {
             </button>
           </div>
 
-          {menuOpen ? (
-            <div className="animate-fade-up border-t border-border py-4 md:hidden">
-              <nav className="flex flex-col gap-1">
-                {siteConfig.navigation.map((item) => {
+          {/* Mobile Navigation */}
+          {menuOpen && (
+            <div
+              id="sastastore-mobile-menu"
+              className="animate-fade-up border-t border-slate-100 pb-5 pt-4 lg:hidden"
+            >
+              <nav
+                aria-label="Mobile navigation"
+                className="flex flex-col gap-1"
+              >
+                {navigation.map((item) => {
                   const active = isActive(item.href);
+                  const isTracking =
+                    item.href === "/track";
 
                   return (
                     <Link
                       key={item.href}
                       href={item.href}
-                      onClick={() => setMenuOpen(false)}
-                      className={`rounded-xl px-3 py-3 text-sm font-medium transition-colors ${
-                        active
-                          ? "bg-brand/10 text-brand"
-                          : "text-muted-foreground hover:bg-surface hover:text-foreground"
-                      }`}
+                      onClick={() =>
+                        setMenuOpen(false)
+                      }
+                      aria-current={
+                        active ? "page" : undefined
+                      }
+                      className={
+                        isTracking
+                          ? `mt-2 flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-extrabold ${
+                              active
+                                ? "border-blue-600 bg-blue-600 text-white"
+                                : "border-blue-200 bg-blue-50 text-blue-700"
+                            }`
+                          : `rounded-xl px-4 py-3 text-sm font-semibold transition ${
+                              active
+                                ? "bg-blue-50 text-blue-700"
+                                : "text-slate-700 hover:bg-slate-50"
+                            }`
+                      }
                     >
+                      {isTracking && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <circle cx="12" cy="12" r="9" />
+                          <circle cx="12" cy="12" r="3" />
+                          <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+                        </svg>
+                      )}
+
                       {item.label}
                     </Link>
                   );
                 })}
               </nav>
 
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-black transition-colors hover:bg-brand-hover"
-              >
-                WhatsApp Us
-              </a>
+              <div className="mt-4 space-y-3 border-t border-slate-100 pt-4">
+                {session === null ? (
+                  <p className="py-3 text-center text-sm text-slate-400">
+                    Checking account...
+                  </p>
+                ) : !loggedIn ? (
+                  <div className="grid grid-cols-2 gap-3">
+                    <Link
+                      href="/login"
+                      onClick={() =>
+                        setMenuOpen(false)
+                      }
+                      className="rounded-xl border border-slate-200 py-3 text-center text-sm font-semibold text-slate-700"
+                    >
+                      Sign In
+                    </Link>
+
+                    <Link
+                      href="/register"
+                      onClick={() =>
+                        setMenuOpen(false)
+                      }
+                      className="rounded-xl bg-blue-600 py-3 text-center text-sm font-semibold text-white"
+                    >
+                      Sign Up
+                    </Link>
+                  </div>
+                ) : (
+                  <>
+                    <Link
+                      href={accountHref}
+                      onClick={() =>
+                        setMenuOpen(false)
+                      }
+                      className="flex w-full items-center justify-center rounded-xl bg-blue-50 py-3 text-sm font-bold text-blue-700"
+                    >
+                      {accountLabel}
+                    </Link>
+
+                    <button
+                      type="button"
+                      disabled={loggingOut}
+                      onClick={() =>
+                        void logout()
+                      }
+                      className="w-full rounded-xl border border-red-200 bg-red-50 py-3 text-sm font-semibold text-red-600 disabled:opacity-50"
+                    >
+                      {loggingOut
+                        ? "Signing Out..."
+                        : "Logout"}
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
-          ) : null}
+          )}
         </Container>
       </header>
     </>
   );
 }
+

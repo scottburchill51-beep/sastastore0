@@ -1,277 +1,215 @@
 
-import { NextRequest, NextResponse } from "next/server";
+import {
+  NextRequest,
+  NextResponse,
+} from "next/server";
 
 import {
-  getSession,
   backend,
-  storeProducts,
+  getSession,
+  isAdmin,
 } from "@/lib/store-backend";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
-const ALLOWED_PAYMENT_METHODS = [
-  "jazzcash",
-  "easypaisa",
-  "bank_transfer",
-] as const;
-
-type PaymentMethod = (typeof ALLOWED_PAYMENT_METHODS)[number];
-
-function errorResponse(message: string, status: number) {
-  return NextResponse.json({ error: message }, { status });
+function respond(
+  data: unknown,
+  status = 200,
+) {
+  return NextResponse.json(data, {
+    status,
+    headers: {
+      "Cache-Control": "private, no-store",
+    },
+  });
 }
 
-function isValidText(value: unknown, maxLength = 200): value is string {
-  return (
-    typeof value === "string" &&
-    value.trim().length > 0 &&
-    value.trim().length <= maxLength
-  );
+async function adminSession() {
+  const { user, token } = await getSession();
+
+  if (!user || !token) {
+    return null;
+  }
+
+  const allowed = await isAdmin(user.id, token);
+
+  if (!allowed) {
+    return null;
+  }
+
+  return { user, token };
 }
 
-/**
- * GET /api/orders
- * Returns only the authenticated customer's orders.
- */
+// GET: Load orders using the admin-only
+// Supabase function.
 export async function GET() {
   try {
-    const { user, token } = await getSession();
+    const admin = await adminSession();
 
-    if (!user || !token) {
-      return errorResponse("Please sign in to view your orders.", 401);
+    if (!admin) {
+      return respond(
+        { error: "Admin access required." },
+        403,
+      );
     }
 
     const response = await backend(
-      `/rest/v1/store_orders?user_id=eq.${encodeURIComponent(
-        user.id,
-      )}&select=id,tracking_id,product_slug,product_name,plan_id,plan_name,amount_pkr,payment_method,payment_status,order_status,created_at,updated_at&order=created_at.desc`,
-      {},
-      token,
+      "/rest/v1/rpc/admin_list_store_orders",
+      {
+        method: "POST",
+        body: JSON.stringify({}),
+      },
+      admin.token,
     );
 
-    const data = await response.json().catch(() => null);
-
     if (!response.ok) {
-      return errorResponse(
-        "Unable to load orders. Please try again.",
+      console.error(
+        "Admin order listing failed:",
         response.status,
+        await response.text(),
+      );
+
+      return respond(
+        { error: "Unable to load admin orders." },
+        500,
       );
     }
 
-    return NextResponse.json(
-      { orders: Array.isArray(data) ? data : [] },
-      {
-        headers: {
-          "Cache-Control": "private, no-store",
-        },
-      },
+    const result = await response.json();
+
+    return respond({
+      orders: Array.isArray(result) ? result : [],
+    });
+  } catch (error) {
+    console.error("Admin orders GET error:", error);
+
+    return respond(
+      { error: "Unable to load orders." },
+      500,
     );
-  } catch {
-    return errorResponse("Unable to load orders.", 500);
   }
 }
 
-/**
- * POST /api/orders
- * Creates a pending order using the server-side product price.
- *
- * Expected JSON:
- * {
- *   "productSlug": "example-product",
- *   "planId": "plan-id",
- *   "customerName": "Customer Name",
- *   "customerEmail": "customer@example.com",
- *   "whatsappNumber": "+923001234567",
- *   "paymentMethod": "jazzcash"
- * }
- */
-export async function POST(request: NextRequest) {
+// POST: Admin can approve or reject
+// payments only through the secured RPC.
+export async function POST(
+  request: NextRequest,
+) {
   try {
-    const { user, token } = await getSession();
+    const admin = await adminSession();
 
-    if (!user || !token) {
-      return errorResponse(
-        "Please sign in before placing an order.",
-        401,
+    if (!admin) {
+      return respond(
+        { error: "Admin access required." },
+        403,
       );
     }
 
-    let body: {
-      productSlug?: unknown;
-      planId?: unknown;
-      customerName?: unknown;
-      customerEmail?: unknown;
-      whatsappNumber?: unknown;
-      paymentMethod?: unknown;
-    };
+    let body: Record<string, unknown>;
 
     try {
-      body = await request.json();
+      const parsed: unknown = await request.json();
+
+      if (
+        !parsed ||
+        typeof parsed !== "object" ||
+        Array.isArray(parsed)
+      ) {
+        return respond(
+          { error: "Invalid request." },
+          400,
+        );
+      }
+
+      body = parsed as Record<string, unknown>;
     } catch {
-      return errorResponse("Invalid request body.", 400);
-    }
-
-    const {
-      productSlug,
-      planId,
-      customerName,
-      customerEmail,
-      whatsappNumber,
-      paymentMethod,
-    } = body;
-
-    if (
-      !isValidText(productSlug, 150) ||
-      !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(productSlug)
-    ) {
-      return errorResponse("Invalid product.", 400);
-    }
-
-    if (
-      (typeof planId !== "string" && typeof planId !== "number") ||
-      String(planId).trim().length === 0 ||
-      String(planId).length > 100
-    ) {
-      return errorResponse("Invalid plan.", 400);
-    }
-
-    if (!isValidText(customerName, 120)) {
-      return errorResponse("Enter your name.", 400);
-    }
-
-    if (
-      !isValidText(customerEmail, 254) ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail.trim())
-    ) {
-      return errorResponse("Enter a valid email address.", 400);
-    }
-
-    if (
-      !isValidText(whatsappNumber, 30) ||
-      !/^[+\d][\d\s()-]{6,28}$/.test(whatsappNumber.trim())
-    ) {
-      return errorResponse("Enter a valid WhatsApp number.", 400);
-    }
-
-    if (
-      typeof paymentMethod !== "string" ||
-      !ALLOWED_PAYMENT_METHODS.includes(paymentMethod as PaymentMethod)
-    ) {
-      return errorResponse("Select a valid payment method.", 400);
-    }
-
-    // Resolve the product and price from the server-side catalogue.
-    // Never trust a price supplied by the browser.
-    const catalogue = await storeProducts();
-
-    const product = catalogue.find(
-      (item) => item.slug === productSlug,
-    );
-
-    if (!product) {
-      return errorResponse("Product not found.", 404);
-    }
-
-    if (product.availability === "out-of-stock") {
-      return errorResponse(
-        "This product is currently unavailable.",
-        409,
+      return respond(
+        { error: "Invalid request body." },
+        400,
       );
     }
 
-    const plan = product.plans.find(
-      (item) => String(item.id) === String(planId),
-    );
+    const { orderId, decision, note } = body;
 
     if (
-      !plan ||
-      !Number.isFinite(plan.price) ||
-      plan.price <= 0
+      typeof orderId !== "string" ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        orderId,
+      )
     ) {
-      return errorResponse("Selected plan is invalid.", 400);
+      return respond(
+        { error: "Invalid order ID." },
+        400,
+      );
     }
 
-    // Verify the account email against the authenticated session.
-    // Customers cannot submit an order under another account's email.
-    const accountEmail = user.email?.trim().toLowerCase();
-    const submittedEmail = customerEmail.trim().toLowerCase();
+    if (
+      decision !== "approve" &&
+      decision !== "reject"
+    ) {
+      return respond(
+        { error: "Invalid decision." },
+        400,
+      );
+    }
 
-    if (accountEmail && accountEmail !== submittedEmail) {
-      return errorResponse(
-        "Use the email address associated with your account.",
+    if (
+      note !== undefined &&
+      (typeof note !== "string" ||
+        note.length > 1000)
+    ) {
+      return respond(
+        { error: "Invalid admin note." },
         400,
       );
     }
 
     const response = await backend(
-      "/rest/v1/store_orders",
+      "/rest/v1/rpc/admin_review_store_payment",
       {
         method: "POST",
-        headers: {
-          Prefer: "return=representation",
-        },
         body: JSON.stringify({
-          user_id: user.id,
-          customer_name: customerName.trim(),
-          customer_email: accountEmail || submittedEmail,
-          whatsapp_number: whatsappNumber.trim(),
-          product_slug: product.slug,
-          product_name: product.name,
-          plan_id: String(plan.id),
-          plan_name: plan.name,
-          amount_pkr: plan.price,
-          payment_method: paymentMethod,
-          payment_status: "pending",
-          order_status: "pending_payment",
+          p_order_id: orderId,
+          p_decision: decision,
+          p_note:
+            typeof note === "string"
+              ? note.trim()
+              : null,
         }),
       },
-      token,
+      admin.token,
     );
-
-    const result = await response.json().catch(() => null);
 
     if (!response.ok) {
-      return errorResponse(
-        "The order could not be created. Please try again.",
+      console.error(
+        "Payment review failed:",
         response.status,
+        await response.text(),
+      );
+
+      return respond(
+        {
+          error:
+            "Payment review failed. Check order status and try again.",
+        },
+        400,
       );
     }
 
-    const order = Array.isArray(result) ? result[0] : result;
+    const result = await response.json();
+    const reviewed = Array.isArray(result)
+      ? result[0]
+      : result;
 
-    if (!order?.id || !order?.tracking_id) {
-      return errorResponse(
-        "The order was submitted, but its confirmation could not be read. Check your orders before retrying.",
-        502,
-      );
-    }
+    return respond({
+      success: true,
+      order: reviewed,
+    });
+  } catch (error) {
+    console.error("Admin orders POST error:", error);
 
-    return NextResponse.json(
-      {
-        message: "Order created successfully.",
-        order: {
-          id: order.id,
-          trackingId: order.tracking_id,
-          productName: order.product_name,
-          planName: order.plan_name,
-          amount: order.amount_pkr,
-          paymentMethod: order.payment_method,
-          paymentStatus: order.payment_status,
-          orderStatus: order.order_status,
-          createdAt: order.created_at,
-        },
-      },
-      {
-        status: 201,
-        headers: {
-          "Cache-Control": "private, no-store",
-        },
-      },
-    );
-  } catch {
-    return errorResponse(
-      "An unexpected error occurred while processing the order.",
+    return respond(
+      { error: "Unable to review payment." },
       500,
     );
   }

@@ -1,235 +1,228 @@
+
 import Link from "next/link";
 
-import { Reveal } from "@/components/common/Reveal";
-import { ProductCard } from "@/components/product/ProductCard";
 import { Container } from "@/components/ui/Container";
-import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { getFeaturedProducts, getPopularProducts } from "@/lib/products";
+import { DealsCatalog } from "@/components/product/DealsCatalog";
 import { createWhatsAppUrl } from "@/lib/whatsapp";
 
 export const metadata = {
-  title: "Deals & Popular Tools | SastaStore",
+  title: "Deals & Special Offers | SastaStore",
   description:
-    "Explore SastaStore deals, popular digital tools, premium subscriptions and featured products.",
+    "Discover SastaStore digital subscription deals, real discounts, featured products and popular software subscriptions in Pakistan.",
 };
 
+export const dynamic = "force-dynamic";
+
+const whatsappChannelUrl =
+  "https://whatsapp.com/channel/0029Vb7BXu2B4hdMiWIlwY1v";
+
+const telegramUrl = "https://t.me/Techboyy0";
+
 export default function DealsPage() {
-  const products = Array.from(
-    new Map(
-      [...getFeaturedProducts(), ...getPopularProducts()].map((product) => [
-        product.slug,
-        product,
-      ]),
-    ).values(),
-  );
-
-  const dealProducts = products.filter((product) =>
-    product.plans.some(
-      (plan) =>
-        typeof plan.originalPrice === "number" &&
-        plan.originalPrice > plan.price,
-    ),
-  );
-
-  const regularProducts = products.filter(
-    (product) =>
-      !dealProducts.some(
-        (dealProduct) => dealProduct.slug === product.slug,
-      ),
-  );
-
   const whatsappUrl = createWhatsAppUrl(
-    "Hello, I want to know about the latest SastaStore deals and discounted digital products.",
+    "Hello SastaStore, I would like to know about your latest subscription deals and special offers.",
   );
-
-  const whatsappChannelUrl =
-    "https://whatsapp.com/channel/0029Vb7BXu2B4hdMiWIlwY1v";
 
   return (
-    <main className="flex-1 overflow-hidden bg-background text-foreground">
+    <main className="min-h-screen overflow-hidden bg-gradient-to-b from-[#EFF8FF] via-white to-[#ECFDF5] text-slate-900">
       {/* Hero */}
-      <Section>
+      <section className="relative overflow-hidden border-b border-blue-100 py-16 sm:py-24">
+        <div className="pointer-events-none absolute -left-20 top-0 h-72 w-72 rounded-full bg-sky-200/50 blur-3xl" />
+        <div className="pointer-events-none absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-emerald-200/50 blur-3xl" />
+
         <Container>
-          <div className="relative overflow-hidden rounded-3xl border border-brand/20 bg-surface p-7 sm:p-10">
-            <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand/10 blur-3xl" />
+          <div className="relative mx-auto max-w-4xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-5 py-2 text-xs font-extrabold uppercase tracking-widest text-blue-600 shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-blue-500" />
+              SastaStore Special Offers
+            </span>
 
-            <Reveal>
-              <div className="relative max-w-3xl">
-                <div className="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-brand">
-                  <span className="status-dot h-2 w-2 rounded-full bg-brand" />
-                  SastaStore Deals
-                </div>
+            <h1 className="mt-7 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+              Premium Digital Tools.
+              <span className="block text-blue-600">
+                Better Deals.
+              </span>
+            </h1>
 
-                <h1 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
-                  Premium tools at even better prices.
-                </h1>
+            <p className="mx-auto mt-6 max-w-2xl text-sm leading-8 text-slate-600 sm:text-base">
+              Explore genuine discounts, featured
+              subscriptions and popular digital
+              products. Find an option that works
+              for your needs and budget.
+            </p>
 
-                <p className="mt-5 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
-                  Browse current discounted products, featured subscriptions
-                  and some of the most popular digital tools available at
-                  SastaStore.
-                </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <a
+                href="#active-deals"
+                className="rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+              >
+                Explore Deals
+              </a>
 
-                <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center rounded-xl bg-brand px-6 py-3.5 text-sm font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-hover"
-                  >
-                    Ask About Latest Deals
-                  </a>
-
-                  <Link
-                    href="/products"
-                    className="inline-flex items-center justify-center rounded-xl border border-border bg-surface-elevated px-6 py-3.5 text-sm font-semibold text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/30 hover:text-brand"
-                  >
-                    Browse All Products
-                  </Link>
-                </div>
-              </div>
-            </Reveal>
-          </div>
-        </Container>
-      </Section>
-
-      {/* Active Deals */}
-      <Section className="border-t border-border">
-        <Container>
-          <Reveal>
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-              <SectionHeading
-                eyebrow="Current Offers"
-                title="Deals available right now"
-                description="Only products with an actual configured discount are shown in this section."
-              />
-
-              <div className="inline-flex w-fit items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
-                <span className="status-dot h-2 w-2 rounded-full bg-brand" />
-                {dealProducts.length} Active Deal
-                {dealProducts.length === 1 ? "" : "s"}
-              </div>
+              <Link
+                href="/products"
+                className="rounded-xl border border-blue-200 bg-white px-6 py-3.5 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+              >
+                All Products
+              </Link>
             </div>
-          </Reveal>
 
-          {dealProducts.length > 0 ? (
-            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {dealProducts.map((product, index) => (
-                <Reveal
-                  key={product.slug}
-                  delay={(index % 4) * 70}
-                  className="h-full"
+            <div className="mx-auto mt-10 grid max-w-3xl gap-3 sm:grid-cols-3">
+              {[
+                "Verified Price Comparisons",
+                "PKR Subscription Pricing",
+                "Order Tracking",
+              ].map((label) => (
+                <div
+                  key={label}
+                  className="rounded-2xl border border-blue-100 bg-white/80 px-4 py-4 text-center text-xs font-bold text-slate-700 shadow-sm"
                 >
-                  <ProductCard product={product} />
-                </Reveal>
+                  <span className="mr-2 text-emerald-600">
+                    ✓
+                  </span>
+                  {label}
+                </div>
               ))}
             </div>
-          ) : (
-            <Reveal>
-              <div className="mt-10 rounded-3xl border border-brand/15 bg-brand/5 p-7 text-center sm:p-10">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-brand/20 bg-brand/10 text-xl text-brand">
-                  %
-                </div>
-
-                <h2 className="mt-5 text-xl font-semibold">
-                  New deals are coming
-                </h2>
-
-                <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-muted-foreground">
-                  There are no separately marked discounted offers at the
-                  moment. Follow our WhatsApp Channel to receive new deal and
-                  product updates.
-                </p>
-
-                <a
-                  href={whatsappChannelUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-hover"
-                >
-                  Follow WhatsApp Channel
-                  <span>↗</span>
-                </a>
-              </div>
-            </Reveal>
-          )}
-        </Container>
-      </Section>
-
-      {/* Popular Products */}
-      <Section className="border-t border-border">
-        <Container>
-          <Reveal>
-            <SectionHeading
-              eyebrow="Popular Picks"
-              title="Customer-favorite digital tools"
-              description="Explore popular and featured products currently available through SastaStore."
-            />
-          </Reveal>
-
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {(regularProducts.length > 0
-              ? regularProducts
-              : products
-            ).map((product, index) => (
-              <Reveal
-                key={product.slug}
-                delay={(index % 4) * 70}
-                className="h-full"
-              >
-                <ProductCard product={product} />
-              </Reveal>
-            ))}
           </div>
         </Container>
-      </Section>
+      </section>
 
-      {/* Deal Updates */}
-      <Section className="border-t border-border">
+      {/* Live Deals */}
+      <section
+        id="active-deals"
+        className="scroll-mt-28 py-14 sm:py-20"
+      >
         <Container>
-          <Reveal>
-            <div className="relative overflow-hidden rounded-3xl border border-brand/20 bg-surface p-7 sm:p-9 lg:flex lg:items-center lg:justify-between lg:gap-10">
-              <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand/10 blur-3xl" />
+          <DealsCatalog />
+        </Container>
+      </section>
 
-              <div className="relative max-w-2xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">
-                  Deal Updates
+      {/* How Deals Work */}
+      <section className="border-y border-blue-100 bg-white/70 py-14 sm:py-20">
+        <Container>
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-600">
+              Shop with Clarity
+            </p>
+
+            <h2 className="mt-3 text-3xl font-extrabold sm:text-4xl">
+              How Our Offers Work
+            </h2>
+
+            <p className="mt-4 text-sm leading-7 text-slate-600">
+              Clear prices, simple checkout and
+              customer order tracking.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            <article className="rounded-3xl border border-blue-100 bg-white p-7 shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 font-extrabold text-blue-700">
+                01
+              </div>
+
+              <h3 className="mt-5 text-xl font-extrabold">
+                Compare Prices
+              </h3>
+
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                Review the available product plans.
+                When a real discount is configured,
+                the original and current prices
+                are shown together.
+              </p>
+            </article>
+
+            <article className="rounded-3xl border border-blue-100 bg-white p-7 shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-100 font-extrabold text-sky-700">
+                02
+              </div>
+
+              <h3 className="mt-5 text-xl font-extrabold">
+                Choose a Plan
+              </h3>
+
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                Select your product and plan,
+                then complete website checkout
+                using the supported payment methods.
+              </p>
+            </article>
+
+            <article className="rounded-3xl border border-emerald-100 bg-white p-7 shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 font-extrabold text-emerald-700">
+                03
+              </div>
+
+              <h3 className="mt-5 text-xl font-extrabold">
+                Track Your Order
+              </h3>
+
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                Submit your payment evidence
+                for review and use your tracking
+                ID to check order progress.
+              </p>
+            </article>
+          </div>
+        </Container>
+      </section>
+
+      {/* Updates and Support */}
+      <section className="py-16">
+        <Container>
+          <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-sky-600 p-8 text-white shadow-xl shadow-blue-200/40 sm:p-12">
+            <div className="flex flex-col justify-between gap-7 lg:flex-row lg:items-center">
+              <div className="max-w-xl">
+                <p className="text-xs font-extrabold uppercase tracking-widest text-blue-100">
+                  More Offers & Updates
                 </p>
 
-                <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
-                  Don&apos;t miss new SastaStore offers.
+                <h2 className="mt-3 text-2xl font-extrabold sm:text-3xl">
+                  Looking for a Special Offer?
                 </h2>
 
-                <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                  Follow our official WhatsApp Channel for new products,
-                  discounts, availability updates and announcements.
+                <p className="mt-4 text-sm leading-8 text-blue-50">
+                  Follow our WhatsApp Channel
+                  for product announcements or
+                  ask our team about the latest
+                  available offers.
                 </p>
               </div>
 
-              <div className="relative mt-6 flex flex-col gap-3 sm:flex-row lg:mt-0">
+              <div className="flex w-full flex-col gap-3 sm:w-auto">
                 <a
                   href={whatsappChannelUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-hover"
+                  className="rounded-xl bg-white px-6 py-3.5 text-center text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
                 >
-                  Follow WhatsApp Channel
+                  WhatsApp Channel
                 </a>
 
                 <a
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-xl border border-border bg-surface-elevated px-5 py-3 text-sm font-semibold text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/30 hover:text-brand"
+                  className="rounded-xl border border-white/50 bg-white/10 px-6 py-3.5 text-center text-sm font-extrabold text-white transition hover:bg-white/20"
                 >
-                  Ask on WhatsApp
+                  Ask About Deals
+                </a>
+
+                <a
+                  href={telegramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-xl border border-white/50 bg-white/10 px-6 py-3.5 text-center text-sm font-extrabold text-white transition hover:bg-white/20"
+                >
+                  Telegram @Techboyy0
                 </a>
               </div>
             </div>
-          </Reveal>
+          </div>
         </Container>
-      </Section>
+      </section>
     </main>
   );
 }
