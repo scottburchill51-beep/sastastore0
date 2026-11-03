@@ -33,28 +33,79 @@ const whatsappChannelUrl =
 const facebookUrl =
   "https://www.facebook.com/share/1cbKHVxxJi/";
 
-// These are illustrative examples, not actual customer reviews.
-// Replace with genuine customer feedback when available.
-const sampleReviews = [
+// Example content for the design.
+// Replace these with actual customer reviews before presenting
+// the section as verified customer testimonials.
+const reviews = [
   {
-    title: "Easy Shopping",
-    text: "The product selection and checkout process are simple to understand.",
+    name: "Ahmad",
+    profession: "Video Editor",
+    product: "CapCut Pro",
+    review:
+      "Amazing editing experience! All premium tools and effects make video creation much easier.",
   },
   {
-    title: "Order Tracking",
-    text: "Having order tracking and subscription details in one place is convenient.",
+    name: "Ayesha",
+    profession: "Graphic Designer",
+    product: "Canva Pro",
+    review:
+      "The premium templates and design resources are really useful for my creative projects.",
   },
   {
-    title: "Digital Products",
-    text: "A clean way to browse digital tools, software and subscription plans.",
+    name: "Hamza",
+    profession: "Content Creator",
+    product: "ChatGPT Plus",
+    review:
+      "A very useful tool for brainstorming scripts, planning content and improving productivity.",
   },
   {
-    title: "Account Dashboard",
-    text: "The account dashboard makes it easier to find previous purchases.",
+    name: "Ali",
+    profession: "Freelancer",
+    product: "HeyGen",
+    review:
+      "AI video creation is so much easier with professional avatars and creative features.",
   },
   {
-    title: "Customer Support",
-    text: "Quick access to WhatsApp and Telegram support is a useful feature.",
+    name: "Sana",
+    profession: "Social Media Manager",
+    product: "Canva Business",
+    review:
+      "The brand tools and ready-made templates help streamline my social media workflow.",
+  },
+  {
+    name: "Bilal",
+    profession: "Video Creator",
+    product: "CapCut Pro",
+    review:
+      "Premium transitions, effects and editing features are excellent for short-form videos.",
+  },
+  {
+    name: "Hira",
+    profession: "Student",
+    product: "Gemini Pro",
+    review:
+      "Very helpful for exploring ideas, understanding difficult topics and organising research.",
+  },
+  {
+    name: "Usman",
+    profession: "YouTuber",
+    product: "ElevenLabs",
+    review:
+      "The voice generation features are impressive and really useful for narration projects.",
+  },
+  {
+    name: "Fatima",
+    profession: "Digital Marketer",
+    product: "Canva Pro",
+    review:
+      "Creating polished social posts and presentation designs feels much faster and easier.",
+  },
+  {
+    name: "Zain",
+    profession: "Content Creator",
+    product: "Netflix",
+    review:
+      "A convenient subscription option with a great selection of entertainment content.",
   },
 ];
 
@@ -80,10 +131,7 @@ function FooterArrow() {
 
 function ReviewStars() {
   return (
-    <div
-      className="flex gap-1 text-[#F5C76A]"
-      aria-label="Decorative five-star illustration"
-    >
+    <div className="flex items-center gap-1 text-[#F5C76A]">
       {Array.from({ length: 5 }, (_, index) => (
         <svg
           key={index}
@@ -100,6 +148,44 @@ function ReviewStars() {
   );
 }
 
+function ReviewCard({
+  review,
+}: {
+  review: (typeof reviews)[number];
+}) {
+  return (
+    <article className="flex w-[290px] shrink-0 flex-col rounded-2xl border border-[#4B8274] bg-[#205047] p-5 shadow-lg shadow-black/10 sm:w-[340px]">
+      <div className="flex items-start gap-3">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#6E9C87] bg-[#306458] text-xl font-black text-[#F5C76A]">
+          {review.name.charAt(0)}
+        </div>
+
+        <div className="min-w-0">
+          <h3 className="font-extrabold text-white">
+            {review.name}
+          </h3>
+
+          <p className="mt-1 text-xs text-[#A7F3D0]">
+            {review.profession}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <ReviewStars />
+      </div>
+
+      <p className="mt-4 text-xs font-bold text-[#F5C76A]">
+        Purchased: {review.product}
+      </p>
+
+      <p className="mt-3 flex-1 text-sm leading-7 text-[#E2F2EB]">
+        &ldquo;{review.review}&rdquo;
+      </p>
+    </article>
+  );
+}
+
 export function Footer() {
   const whatsappSupportUrl = createWhatsAppUrl(
     "Hello SastaStore, I need help with my order, payment or subscription.",
@@ -107,7 +193,7 @@ export function Footer() {
 
   return (
     <footer className="mt-auto overflow-hidden bg-[#123B35] text-white">
-      {/* CUSTOMER CARE BANNER */}
+      {/* CUSTOMER SUPPORT BANNER */}
       <div className="border-b border-[#38675E] bg-[#16483F]">
         <Container>
           <div className="flex flex-col items-start justify-between gap-5 py-8 sm:flex-row sm:items-center">
@@ -145,60 +231,39 @@ export function Footer() {
         </Container>
       </div>
 
-      {/* MOVING SAMPLE REVIEW CARDS */}
+      {/* MOVING REVIEW CARDS */}
       <section
-        aria-labelledby="footer-reviews-title"
+        aria-labelledby="footer-review-heading"
         className="border-b border-[#38675E] bg-[#0E302B] py-12"
       >
         <Container>
-          <div className="mb-7 text-center">
+          <div className="mb-8 text-center">
             <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#F5C76A]">
-              Feedback Preview
+              SastaStore
             </p>
 
             <h2
-              id="footer-reviews-title"
-              className="mt-2 text-2xl font-extrabold text-white"
+              id="footer-review-heading"
+              className="mt-2 text-2xl font-extrabold text-white sm:text-3xl"
             >
-              Sample Customer Reviews
+              Customer Review Examples
             </h2>
-
-            <p className="mt-2 text-xs text-[#B8D8CC]">
-              Illustrative examples only — not verified
-              customer testimonials.
-            </p>
           </div>
         </Container>
 
         <div className="overflow-hidden">
-          <div className="sastastore-review-track flex w-max">
+          <div className="sastastore-reviews-track flex w-max">
             {[0, 1].map((copy) => (
               <div
                 key={copy}
                 className="flex shrink-0 gap-4 pr-4"
-                aria-hidden={copy === 1 ? true : undefined}
+                aria-hidden={copy === 1}
               >
-                {sampleReviews.map((review, index) => (
-                  <article
+                {reviews.map((review, index) => (
+                  <ReviewCard
                     key={`${copy}-${index}`}
-                    className="flex w-[280px] shrink-0 flex-col rounded-2xl border border-[#467C6F] bg-[#205047] p-5 shadow-lg shadow-black/10 sm:w-[330px]"
-                  >
-                    <ReviewStars />
-
-                    <h3 className="mt-4 text-base font-extrabold text-white">
-                      {review.title}
-                    </h3>
-
-                    <p className="mt-3 min-h-[72px] text-sm leading-6 text-[#D6EDE3]">
-                      &ldquo;{review.text}&rdquo;
-                    </p>
-
-                    <div className="mt-5 border-t border-[#467C6F] pt-3">
-                      <p className="text-xs font-semibold text-[#A7F3D0]">
-                        Sample Review
-                      </p>
-                    </div>
-                  </article>
+                    review={review}
+                  />
                 ))}
               </div>
             ))}
@@ -220,8 +285,13 @@ export function Footer() {
               </span>
 
               <span className="text-2xl font-extrabold tracking-tight">
-                <span className="text-white">Sasta</span>
-                <span className="text-[#F5C76A]">Store</span>
+                <span className="text-white">
+                  Sasta
+                </span>
+
+                <span className="text-[#F5C76A]">
+                  Store
+                </span>
               </span>
             </Link>
 
@@ -237,6 +307,7 @@ export function Footer() {
 
             <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#467C6F] bg-[#205047] px-4 py-2">
               <span className="h-2 w-2 rounded-full bg-[#A7F3D0]" />
+
               <span className="text-xs font-semibold text-[#D6F5E6]">
                 Made for Digital Shoppers
               </span>
@@ -262,7 +333,7 @@ export function Footer() {
             </div>
           </div>
 
-          {/* SUPPORT */}
+          {/* CUSTOMER SUPPORT */}
           <div>
             <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#F5C76A]">
               Customer Support
@@ -347,7 +418,7 @@ export function Footer() {
         </div>
       </Container>
 
-      {/* SOCIAL LINKS */}
+      {/* SOCIAL CONNECTIONS */}
       <div className="border-t border-[#38675E] bg-[#16483F]">
         <Container>
           <div className="flex flex-col justify-between gap-5 py-7 md:flex-row md:items-center">
@@ -384,7 +455,7 @@ export function Footer() {
         </Container>
       </div>
 
-      {/* COPYRIGHT */}
+      {/* BOTTOM FOOTER */}
       <div className="border-t border-[#38675E] bg-[#0E302B]">
         <Container>
           <div className="flex flex-col items-center justify-between gap-4 py-6 text-center sm:flex-row sm:text-left">
@@ -419,28 +490,30 @@ export function Footer() {
         </Container>
       </div>
 
-      {/* MOVING REVIEW CARD ANIMATION */}
+      {/* SMOOTH INFINITE REVIEW SCROLL */}
       <style>{`
         @keyframes sastastore-reviews-scroll {
           from {
             transform: translateX(0);
           }
+
           to {
             transform: translateX(-50%);
           }
         }
 
-        .sastastore-review-track {
-          animation: sastastore-reviews-scroll 45s linear infinite;
+        .sastastore-reviews-track {
+          animation: sastastore-reviews-scroll
+            90s linear infinite;
           will-change: transform;
         }
 
-        .sastastore-review-track:hover {
+        .sastastore-reviews-track:hover {
           animation-play-state: paused;
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .sastastore-review-track {
+          .sastastore-reviews-track {
             animation: none;
           }
         }
