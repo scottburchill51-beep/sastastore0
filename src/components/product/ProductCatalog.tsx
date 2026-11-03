@@ -96,8 +96,7 @@ export function ProductCatalog() {
     void loadProducts();
   }, [loadProducts]);
 
-  // Refresh the catalog when the customer
-  // returns to this browser tab.
+  // Refresh catalog when customer returns to tab.
   useEffect(() => {
     function refreshOnFocus() {
       if (document.visibilityState === "visible") {
@@ -223,11 +222,10 @@ export function ProductCatalog() {
 
   return (
     <>
-      {/* Search and Filter Controls */}
+      {/* SEARCH AND FILTER CONTROLS */}
       <div className="mt-10 rounded-2xl border border-blue-100 bg-white p-4 shadow-sm sm:p-5">
         <div className="grid gap-3 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
-
-          {/* Search */}
+          {/* SEARCH */}
           <div className="relative">
             <svg
               viewBox="0 0 24 24"
@@ -254,13 +252,13 @@ export function ProductCatalog() {
             />
           </div>
 
-          {/* Category */}
+          {/* CATEGORY */}
           <select
             value={category}
             onChange={(event) =>
               setCategory(event.target.value)
             }
-            className="h-12 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none focus:border-blue-500"
+            className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none focus:border-blue-500"
           >
             <option value="all">
               All Categories
@@ -276,7 +274,7 @@ export function ProductCatalog() {
             ))}
           </select>
 
-          {/* Type */}
+          {/* PRODUCT TYPE */}
           <select
             value={typeFilter}
             onChange={(event) =>
@@ -284,7 +282,7 @@ export function ProductCatalog() {
                 event.target.value as ProductTypeFilter,
               )
             }
-            className="h-12 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none focus:border-blue-500"
+            className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none focus:border-blue-500"
           >
             <option value="all">All Products</option>
             <option value="popular">Popular</option>
@@ -292,7 +290,7 @@ export function ProductCatalog() {
             <option value="new">New</option>
           </select>
 
-          {/* Sort */}
+          {/* SORT */}
           <select
             value={sort}
             onChange={(event) =>
@@ -300,7 +298,7 @@ export function ProductCatalog() {
                 event.target.value as SortOption,
               )
             }
-            className="h-12 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none focus:border-blue-500"
+            className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none focus:border-blue-500"
           >
             <option value="default">
               Newest First
@@ -317,6 +315,7 @@ export function ProductCatalog() {
           </select>
         </div>
 
+        {/* PRODUCT COUNTER */}
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
           <p className="text-sm text-slate-500">
             {loading
@@ -359,7 +358,7 @@ export function ProductCatalog() {
         </div>
       </div>
 
-      {/* Loading */}
+      {/* LOADING STATE */}
       {loading && products.length === 0 && !error && (
         <div
           role="status"
@@ -369,7 +368,7 @@ export function ProductCatalog() {
         </div>
       )}
 
-      {/* Database Error */}
+      {/* DATABASE ERROR */}
       {error && (
         <div
           role="alert"
@@ -393,21 +392,23 @@ export function ProductCatalog() {
         </div>
       )}
 
-      {/* Product Grid */}
+      {/* RESPONSIVE PRODUCT GRID */}
       {!loading &&
         !error &&
         filteredProducts.length > 0 && (
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
             {filteredProducts.map((product) => (
-              <ProductCard
+              <div
                 key={product.slug}
-                product={product}
-              />
+                className="min-w-0"
+              >
+                <ProductCard product={product} />
+              </div>
             ))}
           </div>
         )}
 
-      {/* Empty State */}
+      {/* EMPTY STATE */}
       {!loading &&
         !error &&
         filteredProducts.length === 0 && (
