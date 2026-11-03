@@ -33,13 +33,29 @@ const whatsappChannelUrl =
 const facebookUrl =
   "https://www.facebook.com/share/1cbKHVxxJi/";
 
-const tickerMessages = [
-  "Premium Digital Products",
-  "Affordable Subscription Plans",
-  "Easy Order Tracking",
-  "Dedicated Customer Support",
-  "Explore AI Tools & Software",
-  "Manage Your Subscriptions",
+// These are illustrative examples, not actual customer reviews.
+// Replace with genuine customer feedback when available.
+const sampleReviews = [
+  {
+    title: "Easy Shopping",
+    text: "The product selection and checkout process are simple to understand.",
+  },
+  {
+    title: "Order Tracking",
+    text: "Having order tracking and subscription details in one place is convenient.",
+  },
+  {
+    title: "Digital Products",
+    text: "A clean way to browse digital tools, software and subscription plans.",
+  },
+  {
+    title: "Account Dashboard",
+    text: "The account dashboard makes it easier to find previous purchases.",
+  },
+  {
+    title: "Customer Support",
+    text: "Quick access to WhatsApp and Telegram support is a useful feature.",
+  },
 ];
 
 function FooterArrow() {
@@ -62,17 +78,25 @@ function FooterArrow() {
   );
 }
 
-function FooterStar() {
+function ReviewStars() {
   return (
-    <svg
-      width="15"
-      height="15"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
+    <div
+      className="flex gap-1 text-[#F5C76A]"
+      aria-label="Decorative five-star illustration"
     >
-      <path d="m12 2 3.1 6.3 7 1-5.1 5 .9 7-5.9-3.2-5.9 3.2.9-7-5.1-5 7-1L12 2Z" />
-    </svg>
+      {Array.from({ length: 5 }, (_, index) => (
+        <svg
+          key={index}
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path d="m12 2 3.1 6.3 7 1-5.1 5 .9 7-5.9-3.2-5.9 3.2.9-7-5.1-5 7-1L12 2Z" />
+        </svg>
+      ))}
+    </div>
   );
 }
 
@@ -83,20 +107,20 @@ export function Footer() {
 
   return (
     <footer className="mt-auto overflow-hidden bg-[#123B35] text-white">
-      {/* SUPPORT BANNER */}
+      {/* CUSTOMER CARE BANNER */}
       <div className="border-b border-[#38675E] bg-[#16483F]">
         <Container>
           <div className="flex flex-col items-start justify-between gap-5 py-8 sm:flex-row sm:items-center">
             <div>
-              <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#F5C76A]">
+              <p className="text-xs font-extrabold uppercase tracking-widest text-[#F5C76A]">
                 Customer Care
               </p>
 
-              <h2 className="mt-2 text-xl font-extrabold text-white sm:text-2xl">
+              <h2 className="mt-2 text-xl font-extrabold sm:text-2xl">
                 Need help with your order?
               </h2>
 
-              <p className="mt-2 text-sm leading-6 text-[#C8E5DA]">
+              <p className="mt-2 text-sm text-[#C8E5DA]">
                 Track your purchase or contact our support team.
               </p>
             </div>
@@ -104,7 +128,7 @@ export function Footer() {
             <div className="flex w-full flex-wrap gap-3 sm:w-auto">
               <Link
                 href="/track"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#F5C76A] px-5 py-3 text-sm font-extrabold text-[#123B35] transition hover:bg-[#FFE09B]"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#F5C76A] px-5 py-3 text-sm font-extrabold text-[#123B35] transition hover:bg-[#FFE09B]"
               >
                 Track Order
                 <FooterArrow />
@@ -112,7 +136,7 @@ export function Footer() {
 
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center rounded-xl border border-[#609186] bg-[#205047] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#2A6258]"
+                className="rounded-xl border border-[#609186] bg-[#205047] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#2A6258]"
               >
                 Get Support
               </Link>
@@ -121,36 +145,66 @@ export function Footer() {
         </Container>
       </div>
 
-      {/* MOVING PROMOTIONAL TICKER */}
-      <div
-        className="overflow-hidden border-b border-[#38675E] bg-[#0E302B] py-4"
-        aria-label="SastaStore marketplace highlights"
+      {/* MOVING SAMPLE REVIEW CARDS */}
+      <section
+        aria-labelledby="footer-reviews-title"
+        className="border-b border-[#38675E] bg-[#0E302B] py-12"
       >
-        <div className="sastastore-footer-marquee flex w-max">
-          {[0, 1].map((copy) => (
-            <div
-              key={copy}
-              className="flex shrink-0 items-center gap-10 pr-10"
-              aria-hidden={copy === 1 ? true : undefined}
-            >
-              {tickerMessages.map((message, index) => (
-                <div
-                  key={`${copy}-${index}`}
-                  className="flex shrink-0 items-center gap-3"
-                >
-                  <span className="text-[#F5C76A]">
-                    <FooterStar />
-                  </span>
+        <Container>
+          <div className="mb-7 text-center">
+            <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#F5C76A]">
+              Feedback Preview
+            </p>
 
-                  <span className="whitespace-nowrap text-xs font-bold uppercase tracking-[0.12em] text-[#E4F5ED] sm:text-sm">
-                    {message}
-                  </span>
-                </div>
-              ))}
-            </div>
-          ))}
+            <h2
+              id="footer-reviews-title"
+              className="mt-2 text-2xl font-extrabold text-white"
+            >
+              Sample Customer Reviews
+            </h2>
+
+            <p className="mt-2 text-xs text-[#B8D8CC]">
+              Illustrative examples only — not verified
+              customer testimonials.
+            </p>
+          </div>
+        </Container>
+
+        <div className="overflow-hidden">
+          <div className="sastastore-review-track flex w-max">
+            {[0, 1].map((copy) => (
+              <div
+                key={copy}
+                className="flex shrink-0 gap-4 pr-4"
+                aria-hidden={copy === 1 ? true : undefined}
+              >
+                {sampleReviews.map((review, index) => (
+                  <article
+                    key={`${copy}-${index}`}
+                    className="flex w-[280px] shrink-0 flex-col rounded-2xl border border-[#467C6F] bg-[#205047] p-5 shadow-lg shadow-black/10 sm:w-[330px]"
+                  >
+                    <ReviewStars />
+
+                    <h3 className="mt-4 text-base font-extrabold text-white">
+                      {review.title}
+                    </h3>
+
+                    <p className="mt-3 min-h-[72px] text-sm leading-6 text-[#D6EDE3]">
+                      &ldquo;{review.text}&rdquo;
+                    </p>
+
+                    <div className="mt-5 border-t border-[#467C6F] pt-3">
+                      <p className="text-xs font-semibold text-[#A7F3D0]">
+                        Sample Review
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* MAIN FOOTER */}
       <Container>
@@ -161,18 +215,13 @@ export function Footer() {
               href="/"
               className="inline-flex items-center gap-3"
             >
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F5C76A] to-[#DCA447] text-2xl font-black text-[#123B35] shadow-lg shadow-black/10">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F5C76A] to-[#DCA447] text-2xl font-black text-[#123B35]">
                 S
               </span>
 
               <span className="text-2xl font-extrabold tracking-tight">
-                <span className="text-white">
-                  Sasta
-                </span>
-
-                <span className="text-[#F5C76A]">
-                  Store
-                </span>
+                <span className="text-white">Sasta</span>
+                <span className="text-[#F5C76A]">Store</span>
               </span>
             </Link>
 
@@ -188,7 +237,6 @@ export function Footer() {
 
             <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#467C6F] bg-[#205047] px-4 py-2">
               <span className="h-2 w-2 rounded-full bg-[#A7F3D0]" />
-
               <span className="text-xs font-semibold text-[#D6F5E6]">
                 Made for Digital Shoppers
               </span>
@@ -206,7 +254,7 @@ export function Footer() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="w-fit text-sm text-[#C8E5DA] transition-colors hover:text-[#F5C76A]"
+                  className="w-fit text-sm text-[#C8E5DA] transition hover:text-[#F5C76A]"
                 >
                   {item.label}
                 </Link>
@@ -225,7 +273,7 @@ export function Footer() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="w-fit text-sm text-[#C8E5DA] transition-colors hover:text-[#F5C76A]"
+                  className="w-fit text-sm text-[#C8E5DA] transition hover:text-[#F5C76A]"
                 >
                   {item.label}
                 </Link>
@@ -270,14 +318,14 @@ export function Footer() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="w-fit text-sm text-[#C8E5DA] transition-colors hover:text-[#F5C76A]"
+                  className="w-fit text-sm text-[#C8E5DA] transition hover:text-[#F5C76A]"
                 >
                   {item.label}
                 </Link>
               ))}
             </div>
 
-            <div className="mt-8 rounded-2xl border border-[#46796F] bg-[#205047] p-5 shadow-lg shadow-black/10">
+            <div className="mt-8 rounded-2xl border border-[#46796F] bg-[#205047] p-5">
               <p className="text-sm font-extrabold text-white">
                 Need assistance?
               </p>
@@ -289,7 +337,7 @@ export function Footer() {
 
               <Link
                 href="/contact"
-                className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#F5C76A] transition hover:text-[#FFE09B]"
+                className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#F5C76A] hover:text-[#FFE09B]"
               >
                 Contact Us
                 <FooterArrow />
@@ -299,7 +347,7 @@ export function Footer() {
         </div>
       </Container>
 
-      {/* SOCIAL CONNECTIONS */}
+      {/* SOCIAL LINKS */}
       <div className="border-t border-[#38675E] bg-[#16483F]">
         <Container>
           <div className="flex flex-col justify-between gap-5 py-7 md:flex-row md:items-center">
@@ -318,7 +366,7 @@ export function Footer() {
                 href={whatsappChannelUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-xl border border-[#528578] bg-[#205047] px-4 py-2.5 text-xs font-bold text-white transition hover:bg-[#2B6459]"
+                className="rounded-xl border border-[#528578] bg-[#205047] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#2B6459]"
               >
                 WhatsApp Channel
               </a>
@@ -327,7 +375,7 @@ export function Footer() {
                 href={facebookUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-xl border border-[#528578] bg-[#205047] px-4 py-2.5 text-xs font-bold text-white transition hover:bg-[#2B6459]"
+                className="rounded-xl border border-[#528578] bg-[#205047] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#2B6459]"
               >
                 Facebook
               </a>
@@ -336,7 +384,7 @@ export function Footer() {
         </Container>
       </div>
 
-      {/* BOTTOM FOOTER */}
+      {/* COPYRIGHT */}
       <div className="border-t border-[#38675E] bg-[#0E302B]">
         <Container>
           <div className="flex flex-col items-center justify-between gap-4 py-6 text-center sm:flex-row sm:text-left">
@@ -348,21 +396,21 @@ export function Footer() {
             <div className="flex flex-wrap items-center justify-center gap-5">
               <Link
                 href="/privacy"
-                className="text-xs text-[#C8E5DA] transition hover:text-[#F5C76A]"
+                className="text-xs text-[#C8E5DA] hover:text-[#F5C76A]"
               >
                 Privacy
               </Link>
 
               <Link
                 href="/terms"
-                className="text-xs text-[#C8E5DA] transition hover:text-[#F5C76A]"
+                className="text-xs text-[#C8E5DA] hover:text-[#F5C76A]"
               >
                 Terms
               </Link>
 
               <Link
                 href="/refund-policy"
-                className="text-xs text-[#C8E5DA] transition hover:text-[#F5C76A]"
+                className="text-xs text-[#C8E5DA] hover:text-[#F5C76A]"
               >
                 Refunds
               </Link>
@@ -371,9 +419,9 @@ export function Footer() {
         </Container>
       </div>
 
-      {/* SMOOTH MOVING TEXT ANIMATION */}
+      {/* MOVING REVIEW CARD ANIMATION */}
       <style>{`
-        @keyframes sastastore-footer-scroll {
+        @keyframes sastastore-reviews-scroll {
           from {
             transform: translateX(0);
           }
@@ -382,17 +430,17 @@ export function Footer() {
           }
         }
 
-        .sastastore-footer-marquee {
-          animation: sastastore-footer-scroll 35s linear infinite;
+        .sastastore-review-track {
+          animation: sastastore-reviews-scroll 45s linear infinite;
           will-change: transform;
         }
 
-        .sastastore-footer-marquee:hover {
+        .sastastore-review-track:hover {
           animation-play-state: paused;
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .sastastore-footer-marquee {
+          .sastastore-review-track {
             animation: none;
           }
         }
