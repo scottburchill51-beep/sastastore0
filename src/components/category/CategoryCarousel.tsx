@@ -2,7 +2,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
 import { CategoryIcon } from "@/components/common/CategoryIcon";
 
 type CategoryItem = {
@@ -12,182 +11,79 @@ type CategoryItem = {
   productCount: number;
 };
 
-type CategoryCarouselProps = {
+type Props = {
   items: CategoryItem[];
 };
 
-export function CategoryCarousel({
-  items,
-}: CategoryCarouselProps) {
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const groupRef = useRef<HTMLDivElement>(null);
-  const pausedUntilRef = useRef(0);
-  const touchingRef = useRef(false);
-
-  useEffect(() => {
-    const slider = sliderRef.current;
-    const group = groupRef.current;
-
-    if (!slider || !group || items.length === 0) {
-      return;
-    }
-
-    const media = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    );
-
-    let frameId = 0;
-    let lastTime = 0;
-
-    function animate(time: number) {
-      if (!slider || !group) return;
-
-      if (lastTime === 0) {
-        lastTime = time;
-      }
-
-      const delta = Math.min(time - lastTime, 50);
-      lastTime = time;
-
-      if (
-        !media.matches &&
-        !touchingRef.current &&
-        time >= pausedUntilRef.current &&
-        document.visibilityState === "visible"
-      ) {
-        const groupWidth = group.offsetWidth;
-
-        if (groupWidth > 0) {
-          slider.scrollLeft +=
-            (delta / 1000) * 35;
-
-          if (slider.scrollLeft >= groupWidth) {
-            slider.scrollLeft -= groupWidth;
-          }
-        }
-      }
-
-      frameId = requestAnimationFrame(animate);
-    }
-
-    frameId = requestAnimationFrame(animate);
-
-    return () => {
-      cancelAnimationFrame(frameId);
-    };
-  }, [items.length]);
-
-  function move(direction: number) {
-    const slider = sliderRef.current;
-    if (!slider) return;
-
-    pausedUntilRef.current = performance.now() + 2500;
-
-    slider.scrollBy({
-      left: direction * 280,
-      behavior: "smooth",
-    });
-  }
-
+export function CategoryCarousel({ items }: Props) {
   if (items.length === 0) return null;
 
   return (
-    <div className="w-full min-w-0">
-      <div className="mb-5 flex items-center justify-between">
-        <p className="text-sm font-medium text-slate-500">
-          Explore categories
+    <div className="relative w-full overflow-hidden">
+      <div className="mb-5 flex items-center justify-between gap-3">
+        <p className="text-sm font-semibold text-slate-500">
+          Explore our categories
         </p>
 
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => move(-1)}
-            aria-label="Previous categories"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-100 bg-white font-bold text-blue-600 shadow-sm"
-          >
-            ←
-          </button>
-
-          <button
-            type="button"
-            onClick={() => move(1)}
-            aria-label="Next categories"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-100 bg-white font-bold text-blue-600 shadow-sm"
-          >
-            →
-          </button>
-        </div>
+        <span className="rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700">
+          {items.length} Categories
+        </span>
       </div>
 
-      <div
-        ref={sliderRef}
-        className="w-full overflow-x-auto overscroll-x-contain pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        onTouchStart={() => {
-          touchingRef.current = true;
-        }}
-        onTouchEnd={() => {
-          touchingRef.current = false;
-          pausedUntilRef.current =
-            performance.now() + 2000;
-        }}
-        onTouchCancel={() => {
-          touchingRef.current = false;
-        }}
-        onFocusCapture={() => {
-          pausedUntilRef.current = Infinity;
-        }}
-        onBlurCapture={(event) => {
-          if (
-            !event.currentTarget.contains(
-              event.relatedTarget as Node | null,
-            )
-          ) {
-            pausedUntilRef.current =
-              performance.now() + 1000;
-          }
-        }}
-        aria-label="Product categories"
-      >
-        <div className="flex w-max">
+      <div className="relative overflow-hidden py-3">
+        <div
+          className="sastastore-category-track flex w-max"
+          style={{
+            animationDuration: `${Math.max(
+              items.length * 7,
+              25,
+            )}s`,
+          }}
+        >
           {[0, 1].map((copy) => (
             <div
               key={copy}
-              ref={copy === 0 ? groupRef : undefined}
               className="flex shrink-0 gap-4 pr-4"
               aria-hidden={copy === 1}
-              inert={copy === 1}
             >
               {items.map((item) => (
                 <Link
                   key={`${copy}-${item.slug}`}
-                  href={`/categories/${encodeURIComponent(item.slug)}`}
+                  href={`/categories/${encodeURIComponent(
+                    item.slug,
+                  )}`}
                   tabIndex={copy === 1 ? -1 : undefined}
-                  className="group flex w-[220px] shrink-0 flex-col rounded-2xl border border-blue-100 bg-white p-5 shadow-sm transition hover:border-emerald-300 hover:shadow-lg sm:w-[280px]"
+                  className="group relative flex w-[220px] shrink-0 flex-col overflow-hidden rounded-2xl border border-blue-100 bg-white p-5 shadow-sm transition-colors hover:border-emerald-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 sm:w-[270px] sm:rounded-3xl sm:p-6 lg:w-[290px]"
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-emerald-50 text-blue-600">
+                  <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-gradient-to-br from-blue-100 to-emerald-100 opacity-60 blur-3xl" />
+
+                  <div className="relative flex items-start justify-between gap-2">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-emerald-50 text-blue-600">
                       <CategoryIcon slug={item.slug} />
                     </div>
 
-                    <span className="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-700">
-                      {item.productCount} Products
+                    <span className="rounded-full border border-emerald-100 bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-700">
+                      {item.productCount}{" "}
+                      {item.productCount === 1
+                        ? "Product"
+                        : "Products"}
                     </span>
                   </div>
 
-                  <h3 className="mt-5 line-clamp-2 text-lg font-extrabold text-slate-900">
+                  <h3 className="relative mt-5 line-clamp-2 min-h-[48px] text-lg font-extrabold leading-6 text-slate-900 transition-colors group-hover:text-blue-600">
                     {item.name}
                   </h3>
 
-                  <p className="mt-3 line-clamp-3 flex-1 text-xs leading-6 text-slate-600">
+                  <p className="relative mt-3 line-clamp-3 min-h-[72px] flex-1 text-sm leading-6 text-slate-600">
                     {item.description}
                   </p>
 
-                  <div className="mt-5 flex items-center justify-between border-t border-blue-100 pt-4">
-                    <span className="text-sm font-bold text-blue-600">
+                  <div className="relative mt-5 flex items-center justify-between border-t border-blue-100 pt-4">
+                    <span className="text-sm font-extrabold text-blue-600">
                       Explore Category
                     </span>
 
-                    <span className="font-bold text-blue-600">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 font-bold text-blue-600 transition-colors group-hover:bg-blue-600 group-hover:text-white">
                       →
                     </span>
                   </div>
@@ -197,6 +93,37 @@ export function CategoryCarousel({
           ))}
         </div>
       </div>
+
+      <style>{`
+        @keyframes sastastore-category-scroll {
+          0% {
+            transform: translateX(0);
+          }
+
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+
+        .sastastore-category-track {
+          animation-name: sastastore-category-scroll;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          animation-play-state: running;
+          will-change: transform;
+        }
+
+        .sastastore-category-track:hover,
+        .sastastore-category-track:focus-within {
+          animation-play-state: paused;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .sastastore-category-track {
+            animation: none;
+          }
+        }
+      `}</style>
     </div>
   );
 }
