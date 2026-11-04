@@ -1,12 +1,9 @@
 
 import Link from "next/link";
 
-import { CategoryCarousel } from "@/components/category/CategoryCarousel";
-import { FeaturedToolsCarousel } from "@/components/product/FeaturedToolsCarousel";
+import { BrandLogoMarquee } from "@/components/product/BrandLogoMarquee";
 import { ProductCatalog } from "@/components/product/ProductCatalog";
 import { Container } from "@/components/ui/Container";
-import { categories } from "@/data/categories";
-import { products } from "@/data/products";
 
 export const metadata = {
   title: "SastaStore | Your Digital World, Upgraded",
@@ -40,15 +37,6 @@ const orderSteps = [
       "Follow your order status while delivery or subscription activation is arranged.",
   },
 ];
-
-const categoryItems = categories.map((category) => ({
-  slug: category.slug,
-  name: category.name,
-  description: category.description,
-  productCount: products.filter(
-    (product) => product.category === category.slug,
-  ).length,
-}));
 
 function ArrowIcon() {
   return (
@@ -110,7 +98,7 @@ export default function HomePage() {
 
               <Link
                 href="/deals"
-                className="inline-flex min-h-13 items-center justify-center gap-2 rounded-2xl border border-blue-200 bg-white px-8 py-3.5 text-sm font-extrabold text-blue-700 shadow-sm transition hover:border-blue-300 hover:bg-blue-50"
+                className="inline-flex min-h-13 items-center justify-center gap-2 rounded-2xl border border-blue-200 bg-white px-8 py-3.5 text-sm font-extrabold text-blue-700 shadow-sm hover:bg-blue-50"
               >
                 View Special Deals
               </Link>
@@ -119,42 +107,33 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* MOVING CATEGORIES */}
-      <section className="py-14 sm:py-20">
-        <Container>
-          <div className="flex flex-wrap items-end justify-between gap-5">
-            <div>
-              <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
-                Explore Categories
-              </p>
+      {/* MOVING BRAND LOGOS */}
+      <BrandLogoMarquee />
 
-              <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
-                Find What Inspires You
+      {/* CATEGORY NAVIGATION */}
+      <section className="bg-white py-9">
+        <Container>
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+            <div>
+              <h2 className="text-xl font-extrabold text-slate-900 sm:text-2xl">
+                Looking for a Specific Category?
               </h2>
 
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600">
-                Browse digital tools and subscriptions
-                by category.
+              <p className="mt-2 text-sm text-slate-600">
+                Explore digital tools and subscriptions by category.
               </p>
             </div>
 
             <Link
               href="/categories"
-              className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50"
+              className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-5 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-100"
             >
-              All Categories
+              Browse Categories
               <ArrowIcon />
             </Link>
           </div>
-
-          <div className="mt-10">
-            <CategoryCarousel items={categoryItems} />
-          </div>
         </Container>
       </section>
-
-      {/* MOVING FEATURED TOOLS */}
-      <FeaturedToolsCarousel />
 
       {/* DEALS PROMO */}
       <section className="border-y border-blue-100 bg-white py-14">
@@ -192,7 +171,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* LIVE PRODUCT CATALOG — UNCHANGED */}
+      {/* ORIGINAL PRODUCT GRID */}
       <section
         id="explore-products"
         className="scroll-mt-24 bg-gradient-to-b from-[#F8FBFF] to-white py-16 sm:py-20"
@@ -269,7 +248,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* ACCOUNT & TRACKING */}
+      {/* ACCOUNT AND TRACKING */}
       <section className="border-y border-blue-100 bg-gradient-to-r from-sky-50 to-emerald-50 py-16">
         <Container>
           <div className="flex flex-col items-start justify-between gap-7 lg:flex-row lg:items-center">
