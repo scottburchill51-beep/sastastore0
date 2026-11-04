@@ -2,12 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-
+import { useEffect, useRef } from "react";
 import { CategoryIcon } from "@/components/common/CategoryIcon";
 
 type CategoryItem = {
@@ -25,63 +20,68 @@ export function CategoryCarousel({
   items,
 }: CategoryCarouselProps) {
   const sliderRef = useRef<HTMLDivElement>(null);
-  const pausedRef = useRef(false);
-  const [isPaused, setIsPaused] = useState(false);
-
-  useEffect(() => {
-    pausedRef.current = isPaused;
-  }, [isPaused]);
+  const groupRef = useRef<HTMLDivElement>(null);
+  const pausedUntilRef = useRef(0);
+  const touchingRef = useRef(false);
 
   useEffect(() => {
     const slider = sliderRef.current;
+    const group = groupRef.current;
 
-    if (!slider || items.length === 0) return;
+    if (!slider || !group || items.length === 0) {
+      return;
+    }
 
-    const motion = window.matchMedia(
+    const media = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     );
 
-    let frame = 0;
-    let previous = 0;
+    let frameId = 0;
+    let lastTime = 0;
 
     function animate(time: number) {
-      if (!slider) return;
+      if (!slider || !group) return;
 
-      if (previous === 0) previous = time;
+      if (lastTime === 0) {
+        lastTime = time;
+      }
 
-      const delta = Math.min(time - previous, 50);
-      previous = time;
+      const delta = Math.min(time - lastTime, 50);
+      lastTime = time;
 
       if (
-        !pausedRef.current &&
-        !motion.matches &&
+        !media.matches &&
+        !touchingRef.current &&
+        time >= pausedUntilRef.current &&
         document.visibilityState === "visible"
       ) {
-        const half = slider.scrollWidth / 2;
+        const groupWidth = group.offsetWidth;
 
-        if (half > 0) {
-          slider.scrollLeft += (delta / 1000) * 25;
+        if (groupWidth > 0) {
+          slider.scrollLeft +=
+            (delta / 1000) * 35;
 
-          if (slider.scrollLeft >= half) {
-            slider.scrollLeft -= half;
+          if (slider.scrollLeft >= groupWidth) {
+            slider.scrollLeft -= groupWidth;
           }
         }
       }
 
-      frame = requestAnimationFrame(animate);
+      frameId = requestAnimationFrame(animate);
     }
 
-    frame = requestAnimationFrame(animate);
+    frameId = requestAnimationFrame(animate);
 
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(frameId);
+    };
   }, [items.length]);
 
   function move(direction: number) {
     const slider = sliderRef.current;
-
     if (!slider) return;
 
-    setIsPaused(true);
+    pausedUntilRef.current = performance.now() + 2500;
 
     slider.scrollBy({
       left: direction * 280,
@@ -92,9 +92,9 @@ export function CategoryCarousel({
   if (items.length === 0) return null;
 
   return (
-    <section className="w-full min-w-0">
-      <div className="mb-5 flex items-center justify-between gap-3">
-        <p className="text-xs font-semibold text-slate-500 sm:text-sm">
+    <div className="w-full min-w-0">
+      <div className="mb-5 flex items-center justify-between">
+        <p className="text-sm font-medium text-slate-500">
           Explore categories
         </p>
 
@@ -103,7 +103,7 @@ export function CategoryCarousel({
             type="button"
             onClick={() => move(-1)}
             aria-label="Previous categories"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-100 bg-white font-bold text-blue-700 shadow-sm hover:bg-blue-50"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-100 bg-white font-bold text-blue-600 shadow-sm"
           >
             ←
           </button>
@@ -112,47 +112,48 @@ export function CategoryCarousel({
             type="button"
             onClick={() => move(1)}
             aria-label="Next categories"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-100 bg-white font-bold text-blue-700 shadow-sm hover:bg-blue-50"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-100 bg-white font-bold text-blue-600 shadow-sm"
           >
             →
           </button>
-
-          {isPaused && (
-            <button
-              type="button"
-              onClick={() => setIsPaused(false)}
-              className="rounded-full border border-emerald-200 bg-emerald-50 px-4 text-xs font-bold text-emerald-700"
-            >
-              Auto Play
-            </button>
-          )}
         </div>
       </div>
 
       <div
         ref={sliderRef}
-        className="overflow-x-auto overscroll-x-contain pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-        onTouchStart={() => setIsPaused(true)}
-        onTouchEnd={() => setIsPaused(false)}
-        onFocusCapture={() => setIsPaused(true)}
+        className="w-full overflow-x-auto overscroll-x-contain pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        onTouchStart={() => {
+          touchingRef.current = true;
+        }}
+        onTouchEnd={() => {
+          touchingRef.current = false;
+          pausedUntilRef.current =
+            performance.now() + 2000;
+        }}
+        onTouchCancel={() => {
+          touchingRef.current = false;
+        }}
+        onFocusCapture={() => {
+          pausedUntilRef.current = Infinity;
+        }}
         onBlurCapture={(event) => {
           if (
             !event.currentTarget.contains(
               event.relatedTarget as Node | null,
             )
           ) {
-            setIsPaused(false);
+            pausedUntilRef.current =
+              performance.now() + 1000;
           }
         }}
         aria-label="Product categories"
       >
-        <div className="flex w-max gap-4">
+        <div className="flex w-max">
           {[0, 1].map((copy) => (
             <div
               key={copy}
-              className="flex shrink-0 gap-4"
+              ref={copy === 0 ? groupRef : undefined}
+              className="flex shrink-0 gap-4 pr-4"
               aria-hidden={copy === 1}
               inert={copy === 1}
             >
@@ -161,10 +162,10 @@ export function CategoryCarousel({
                   key={`${copy}-${item.slug}`}
                   href={`/categories/${encodeURIComponent(item.slug)}`}
                   tabIndex={copy === 1 ? -1 : undefined}
-                  className="group relative flex w-[220px] shrink-0 flex-col overflow-hidden rounded-2xl border border-blue-100 bg-white p-5 shadow-sm transition hover:border-emerald-300 hover:shadow-lg sm:w-[280px]"
+                  className="group flex w-[220px] shrink-0 flex-col rounded-2xl border border-blue-100 bg-white p-5 shadow-sm transition hover:border-emerald-300 hover:shadow-lg sm:w-[280px]"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-emerald-50 text-blue-600">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-emerald-50 text-blue-600">
                       <CategoryIcon slug={item.slug} />
                     </div>
 
@@ -173,11 +174,11 @@ export function CategoryCarousel({
                     </span>
                   </div>
 
-                  <h3 className="mt-5 line-clamp-2 text-lg font-extrabold text-slate-900 group-hover:text-blue-600">
+                  <h3 className="mt-5 line-clamp-2 text-lg font-extrabold text-slate-900">
                     {item.name}
                   </h3>
 
-                  <p className="mt-3 line-clamp-3 flex-1 text-xs leading-6 text-slate-600 sm:text-sm">
+                  <p className="mt-3 line-clamp-3 flex-1 text-xs leading-6 text-slate-600">
                     {item.description}
                   </p>
 
@@ -196,6 +197,6 @@ export function CategoryCarousel({
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }
