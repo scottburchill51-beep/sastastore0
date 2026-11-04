@@ -2,6 +2,7 @@
 import Link from "next/link";
 
 import { CategoryCarousel } from "@/components/category/CategoryCarousel";
+import { FeaturedToolsCarousel } from "@/components/product/FeaturedToolsCarousel";
 import { ProductCatalog } from "@/components/product/ProductCatalog";
 import { Container } from "@/components/ui/Container";
 import { categories } from "@/data/categories";
@@ -12,27 +13,6 @@ export const metadata = {
   description:
     "Shop digital subscriptions, AI tools, creative software and online services in Pakistan. Discover SastaStore products, deals and easy order tracking.",
 };
-
-const benefits = [
-  {
-    symbol: "✦",
-    title: "Digital Products in One Place",
-    description:
-      "Explore AI tools, software, subscriptions and useful digital services.",
-  },
-  {
-    symbol: "◇",
-    title: "Plans for Different Budgets",
-    description:
-      "Compare available plan details and prices before choosing.",
-  },
-  {
-    symbol: "✓",
-    title: "Track Your Purchases",
-    description:
-      "Check order status and subscription information from your account.",
-  },
-];
 
 const orderSteps = [
   {
@@ -130,131 +110,17 @@ export default function HomePage() {
 
               <Link
                 href="/deals"
-                className="inline-flex min-h-13 items-center justify-center gap-2 rounded-2xl border border-blue-200 bg-white px-8 py-3.5 text-sm font-extrabold text-blue-700 shadow-sm hover:bg-blue-50"
+                className="inline-flex min-h-13 items-center justify-center gap-2 rounded-2xl border border-blue-200 bg-white px-8 py-3.5 text-sm font-extrabold text-blue-700 shadow-sm transition hover:border-blue-300 hover:bg-blue-50"
               >
                 View Special Deals
               </Link>
             </div>
-
-            {/* DIGITAL SHOWCASE */}
-            <div className="mx-auto mt-16 max-w-4xl rounded-3xl border border-blue-100 bg-white/90 p-4 shadow-2xl shadow-blue-100/60 backdrop-blur sm:p-7">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-5">
-                <div className="flex gap-2">
-                  <span className="h-3 w-3 rounded-full bg-rose-300" />
-                  <span className="h-3 w-3 rounded-full bg-amber-300" />
-                  <span className="h-3 w-3 rounded-full bg-emerald-300" />
-                </div>
-
-                <p className="text-xs font-extrabold tracking-widest text-blue-500">
-                  SASTASTORE 2.0
-                </p>
-
-                <span className="text-blue-500">✦</span>
-              </div>
-
-              <div className="grid gap-4 py-5 sm:grid-cols-3">
-                <Link
-                  href="/categories"
-                  className="group flex min-h-48 flex-col justify-between rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-sky-100 p-6 text-left transition hover:-translate-y-1"
-                >
-                  <span className="text-4xl font-bold text-blue-600">
-                    ✦
-                  </span>
-
-                  <div>
-                    <h2 className="text-xl font-extrabold">
-                      AI Tools
-                    </h2>
-
-                    <p className="mt-2 text-sm text-slate-600">
-                      Work smarter every day.
-                    </p>
-
-                    <p className="mt-3 text-xs font-bold text-blue-600">
-                      Explore →
-                    </p>
-                  </div>
-                </Link>
-
-                <Link
-                  href="/categories"
-                  className="group flex min-h-48 flex-col justify-between rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-teal-100 p-6 text-left transition hover:-translate-y-1"
-                >
-                  <span className="text-4xl font-bold text-emerald-600">
-                    ◈
-                  </span>
-
-                  <div>
-                    <h2 className="text-xl font-extrabold">
-                      Creative Apps
-                    </h2>
-
-                    <p className="mt-2 text-sm text-slate-600">
-                      Design and create.
-                    </p>
-
-                    <p className="mt-3 text-xs font-bold text-emerald-700">
-                      Explore →
-                    </p>
-                  </div>
-                </Link>
-
-                <Link
-                  href="/deals"
-                  className="group flex min-h-48 flex-col justify-between rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50 to-amber-100 p-6 text-left transition hover:-translate-y-1"
-                >
-                  <span className="text-4xl font-bold text-orange-600">
-                    %
-                  </span>
-
-                  <div>
-                    <h2 className="text-xl font-extrabold">
-                      Special Deals
-                    </h2>
-
-                    <p className="mt-2 text-sm text-slate-600">
-                      Discover current offers.
-                    </p>
-
-                    <p className="mt-3 text-xs font-bold text-orange-700">
-                      View Deals →
-                    </p>
-                  </div>
-                </Link>
-              </div>
-            </div>
           </div>
         </Container>
       </section>
 
-      {/* BENEFITS */}
-      <section className="border-y border-blue-100 bg-white py-12">
-        <Container>
-          <div className="grid gap-8 md:grid-cols-3">
-            {benefits.map((benefit) => (
-              <div
-                key={benefit.title}
-                className="text-center"
-              >
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-2xl font-extrabold text-blue-600">
-                  {benefit.symbol}
-                </div>
-
-                <h2 className="mt-4 text-base font-extrabold">
-                  {benefit.title}
-                </h2>
-
-                <p className="mx-auto mt-2 max-w-xs text-sm leading-7 text-slate-500">
-                  {benefit.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* AUTOMATIC MOVING CATEGORIES */}
-      <section className="py-16 sm:py-20">
+      {/* MOVING CATEGORIES */}
+      <section className="py-14 sm:py-20">
         <Container>
           <div className="flex flex-wrap items-end justify-between gap-5">
             <div>
@@ -286,6 +152,9 @@ export default function HomePage() {
           </div>
         </Container>
       </section>
+
+      {/* MOVING FEATURED TOOLS */}
+      <FeaturedToolsCarousel />
 
       {/* DEALS PROMO */}
       <section className="border-y border-blue-100 bg-white py-14">
@@ -323,7 +192,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* LIVE PRODUCTS */}
+      {/* LIVE PRODUCT CATALOG — UNCHANGED */}
       <section
         id="explore-products"
         className="scroll-mt-24 bg-gradient-to-b from-[#F8FBFF] to-white py-16 sm:py-20"
@@ -396,65 +265,6 @@ export default function HomePage() {
               Digital delivery and subscription
               activation may require additional processing.
             </p>
-          </div>
-        </Container>
-      </section>
-
-      {/* DIGITAL SERVICES */}
-      <section className="bg-white py-16 sm:py-20">
-        <Container>
-          <div className="grid items-center gap-8 lg:grid-cols-2">
-            <div>
-              <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-600">
-                Beyond Subscriptions
-              </p>
-
-              <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
-                Professional Digital Services
-              </h2>
-
-              <p className="mt-5 text-sm leading-8 text-slate-600">
-                Need creative or technical help?
-                Explore SastaStore services including
-                video editing, graphic design,
-                Shopify store design and website development.
-              </p>
-
-              <Link
-                href="/services"
-                className="mt-7 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-extrabold text-white transition hover:bg-blue-700"
-              >
-                Explore Services
-                <ArrowIcon />
-              </Link>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              {[
-                ["VE", "Video Editing"],
-                ["GD", "Graphic Design"],
-                ["SH", "Shopify Stores"],
-                ["WD", "Website Development"],
-              ].map(([short, title]) => (
-                <Link
-                  key={short}
-                  href="/services"
-                  className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-6 transition hover:-translate-y-1 hover:border-blue-300"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-sm font-extrabold text-blue-700">
-                    {short}
-                  </div>
-
-                  <h3 className="mt-5 text-base font-extrabold">
-                    {title}
-                  </h3>
-
-                  <p className="mt-3 text-xs font-bold text-blue-600">
-                    Learn More →
-                  </p>
-                </Link>
-              ))}
-            </div>
           </div>
         </Container>
       </section>
