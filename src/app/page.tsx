@@ -1,10 +1,11 @@
 
 import Link from "next/link";
 
-import { CategoryIcon } from "@/components/common/CategoryIcon";
+import { CategoryCarousel } from "@/components/category/CategoryCarousel";
 import { ProductCatalog } from "@/components/product/ProductCatalog";
 import { Container } from "@/components/ui/Container";
 import { categories } from "@/data/categories";
+import { products } from "@/data/products";
 
 export const metadata = {
   title: "SastaStore | Your Digital World, Upgraded",
@@ -59,6 +60,15 @@ const orderSteps = [
       "Follow your order status while delivery or subscription activation is arranged.",
   },
 ];
+
+const categoryItems = categories.map((category) => ({
+  slug: category.slug,
+  name: category.name,
+  description: category.description,
+  productCount: products.filter(
+    (product) => product.category === category.slug,
+  ).length,
+}));
 
 function ArrowIcon() {
   return (
@@ -120,13 +130,13 @@ export default function HomePage() {
 
               <Link
                 href="/deals"
-                className="inline-flex min-h-13 items-center justify-center gap-2 rounded-2xl border border-blue-200 bg-white px-8 py-3.5 text-sm font-extrabold text-blue-700 shadow-sm transition hover:border-blue-300 hover:bg-blue-50"
+                className="inline-flex min-h-13 items-center justify-center gap-2 rounded-2xl border border-blue-200 bg-white px-8 py-3.5 text-sm font-extrabold text-blue-700 shadow-sm hover:bg-blue-50"
               >
                 View Special Deals
               </Link>
             </div>
 
-            {/* Digital Showcase */}
+            {/* DIGITAL SHOWCASE */}
             <div className="mx-auto mt-16 max-w-4xl rounded-3xl border border-blue-100 bg-white/90 p-4 shadow-2xl shadow-blue-100/60 backdrop-blur sm:p-7">
               <div className="flex items-center justify-between border-b border-slate-100 pb-5">
                 <div className="flex gap-2">
@@ -243,7 +253,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* CATEGORIES */}
+      {/* AUTOMATIC MOVING CATEGORIES */}
       <section className="py-16 sm:py-20">
         <Container>
           <div className="flex flex-wrap items-end justify-between gap-5">
@@ -271,43 +281,9 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {categories.slice(0, 8).map((category) => (
-              <Link
-                key={category.slug}
-                href={`/categories/${category.slug}`}
-                className="group flex h-full flex-col rounded-3xl border border-blue-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-100/60"
-              >
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-50 to-sky-100 text-blue-600 transition group-hover:scale-105">
-                  <CategoryIcon slug={category.slug} />
-                </div>
-
-                <h3 className="mt-5 text-lg font-extrabold text-slate-900">
-                  {category.name}
-                </h3>
-
-                <p className="mt-3 flex-1 text-sm leading-7 text-slate-600">
-                  {category.description}
-                </p>
-
-                <span className="mt-5 inline-flex items-center gap-2 text-sm font-extrabold text-blue-600">
-                  Explore Category
-                  <ArrowIcon />
-                </span>
-              </Link>
-            ))}
+          <div className="mt-10">
+            <CategoryCarousel items={categoryItems} />
           </div>
-
-          {categories.length > 8 && (
-            <div className="mt-9 text-center">
-              <Link
-                href="/categories"
-                className="inline-flex rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white hover:bg-blue-700"
-              >
-                View All Categories
-              </Link>
-            </div>
-          )}
         </Container>
       </section>
 
@@ -367,7 +343,6 @@ export default function HomePage() {
             plans and discover current pricing.
           </p>
 
-          {/* ProductCatalog fetches live Supabase products */}
           <ProductCatalog />
         </Container>
       </section>
@@ -562,4 +537,3 @@ export default function HomePage() {
     </main>
   );
 }
-
