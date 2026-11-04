@@ -29,7 +29,7 @@ const orderSteps = [
     number: "03",
     title: "Submit Payment Proof",
     description:
-      "Provide the transaction reference and screenshot for manual payment review.",
+      "Provide the transaction reference and screenshot for payment verification.",
   },
   {
     number: "04",
@@ -88,10 +88,9 @@ export default function HomePage() {
               track your orders with SastaStore.
             </p>
 
-            {/* SMART SEARCH BAR */}
+            {/* SMART SEARCH */}
             <SmartProductSearch />
 
-            {/* HERO BUTTONS */}
             <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
               <a
                 href="#explore-products"
@@ -176,7 +175,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* ORIGINAL LIVE PRODUCT CATALOG */}
+      {/* LIVE PRODUCT CATALOG */}
       <section
         id="explore-products"
         className="scroll-mt-24 bg-gradient-to-b from-[#F8FBFF] to-white py-16 sm:py-20"
@@ -241,14 +240,6 @@ export default function HomePage() {
                 </p>
               </div>
             ))}
-          </div>
-
-          <div className="mt-8 rounded-2xl border border-emerald-200 bg-white p-5 text-center">
-            <p className="text-sm leading-7 text-slate-600">
-              Payments are reviewed manually.
-              Digital delivery and subscription
-              activation may require additional processing.
-            </p>
           </div>
         </Container>
       </section>
