@@ -2,7 +2,6 @@
 import Link from "next/link";
 
 import { Container } from "@/components/ui/Container";
-import { siteConfig } from "@/config/site";
 import { createWhatsAppUrl } from "@/lib/whatsapp";
 
 const shopLinks = [
@@ -33,23 +32,105 @@ const whatsappChannelUrl =
 const facebookUrl =
   "https://www.facebook.com/share/1cbKHVxxJi/";
 
-function FooterArrow() {
+const highlights = [
+  {
+    title: "AI Tools",
+    subtitle: "Explore AI-powered productivity",
+    symbol: "✦",
+    href: "/categories",
+  },
+  {
+    title: "Creative Software",
+    subtitle: "Design, edit and create",
+    symbol: "◈",
+    href: "/categories",
+  },
+  {
+    title: "Digital Subscriptions",
+    subtitle: "Discover available plans",
+    symbol: "★",
+    href: "/products",
+  },
+  {
+    title: "Special Deals",
+    subtitle: "Browse current offers",
+    symbol: "%",
+    href: "/deals",
+  },
+  {
+    title: "Order Tracking",
+    subtitle: "Follow your purchase",
+    symbol: "✓",
+    href: "/track",
+  },
+  {
+    title: "Customer Support",
+    subtitle: "Get help when you need it",
+    symbol: "☎",
+    href: "/contact",
+  },
+];
+
+type FooterLink = {
+  label: string;
+  href: string;
+};
+
+function FooterLinks({
+  title,
+  links,
+}: {
+  title: string;
+  links: FooterLink[];
+}) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
+    <div className="min-w-0">
+      <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#F5C76A]">
+        {title}
+      </h3>
+
+      <nav
+        aria-label={`${title} links`}
+        className="mt-3 flex flex-col gap-2.5"
+      >
+        {links.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="w-fit text-xs leading-5 text-[#C8E5DA] transition hover:text-[#F5C76A] sm:text-sm"
+          >
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
+function HighlightCard({
+  item,
+}: {
+  item: (typeof highlights)[number];
+}) {
+  return (
+    <Link
+      href={item.href}
+      className="group flex w-[205px] shrink-0 items-center gap-3 rounded-xl border border-[#427467] bg-[#205047] p-3 transition-colors hover:border-[#F5C76A] hover:bg-[#2A6054] sm:w-[260px]"
     >
-      <path d="M5 12h14" />
-      <path d="m12 5 7 7-7 7" />
-    </svg>
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#32695C] text-lg font-black text-[#F5C76A]">
+        {item.symbol}
+      </span>
+
+      <span className="min-w-0">
+        <span className="block text-xs font-extrabold text-white sm:text-sm">
+          {item.title}
+        </span>
+
+        <span className="mt-1 block text-[10px] leading-4 text-[#C8E5DA] sm:text-xs">
+          {item.subtitle}
+        </span>
+      </span>
+    </Link>
   );
 }
 
@@ -59,211 +140,122 @@ export function Footer() {
   );
 
   return (
-    <footer className="mt-auto border-t border-blue-100 bg-gradient-to-b from-[#F8FBFF] via-white to-[#F0FAF7] text-slate-900">
-      {/* Support Banner */}
-      <div className="border-b border-blue-100 bg-gradient-to-r from-blue-50 via-white to-emerald-50">
+    <footer className="mt-auto overflow-hidden bg-[#123B35] text-white">
+      {/* MOVING DIGITAL TOOL HIGHLIGHTS */}
+      <section
+        aria-labelledby="footer-highlights-heading"
+        className="border-b border-[#38675E] bg-[#0E302B] py-5"
+      >
         <Container>
-          <div className="flex flex-col items-start justify-between gap-5 py-7 sm:flex-row sm:items-center">
-            <div>
-              <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
-                Customer Care
-              </p>
-
-              <h2 className="mt-2 text-xl font-extrabold text-slate-900 sm:text-2xl">
-                Need help with your order?
-              </h2>
-
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Track your purchase or contact our support team.
-              </p>
-            </div>
-
-            <div className="flex w-full flex-wrap gap-3 sm:w-auto">
-              <Link
-                href="/track"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
-              >
-                Track Order
-                <FooterArrow />
-              </Link>
-
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center rounded-xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-50"
-              >
-                Get Support
-              </Link>
-            </div>
-          </div>
+          <h2
+            id="footer-highlights-heading"
+            className="mb-3 text-sm font-extrabold text-white sm:text-base"
+          >
+            Explore More With SastaStore
+          </h2>
         </Container>
-      </div>
 
-      {/* Main Footer */}
+        <div className="overflow-hidden">
+          <div className="sastastore-footer-track flex w-max">
+            {[0, 1].map((copy) => (
+              <div
+                key={copy}
+                className="flex shrink-0 gap-3 pr-3"
+                aria-hidden={copy === 1}
+                inert={copy === 1}
+              >
+                {highlights.map((item) => (
+                  <HighlightCard
+                    key={`${copy}-${item.title}`}
+                    item={item}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* MAIN FOOTER */}
       <Container>
-        <div className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 lg:py-16">
-          {/* Brand */}
-          <div className="sm:col-span-2 lg:col-span-1">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-7 py-8 sm:grid-cols-4 sm:gap-7 sm:py-10">
+          {/* BRAND */}
+          <div className="col-span-2 sm:col-span-1">
             <Link
               href="/"
-              className="inline-flex items-center gap-3"
+              aria-label="SastaStore homepage"
+              className="inline-flex items-center gap-2"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 text-xl font-black text-white shadow-md shadow-blue-100">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F5C76A] text-lg font-black text-[#123B35]">
                 S
               </span>
 
               <span className="text-xl font-extrabold tracking-tight">
-                <span className="text-slate-900">
-                  Sasta
-                </span>
-                <span className="text-blue-600">
+                Sasta
+                <span className="text-[#F5C76A]">
                   Store
                 </span>
               </span>
             </Link>
 
-            <p className="mt-5 max-w-xs text-sm leading-7 text-slate-600">
-              {siteConfig.tagline}
+            <p className="mt-3 max-w-xs text-xs leading-5 text-[#C8E5DA]">
+              Your digital marketplace for premium
+              tools, software and subscriptions.
             </p>
 
-            <p className="mt-4 max-w-xs text-sm leading-7 text-slate-500">
-              Discover premium AI tools, software,
-              digital subscriptions and creative
-              products in one convenient marketplace.
-            </p>
-
-            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-4 py-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
-
-              <span className="text-xs font-semibold text-emerald-700">
-                Made for Digital Shoppers
-              </span>
-            </div>
-          </div>
-
-          {/* Shop */}
-          <div>
-            <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-900">
-              Shop
-            </h3>
-
-            <div className="mt-6 flex flex-col gap-4">
-              {shopLinks.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="w-fit text-sm text-slate-600 transition-colors hover:text-blue-600"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Support */}
-          <div>
-            <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-900">
-              Customer Support
-            </h3>
-
-            <div className="mt-6 flex flex-col gap-4">
-              {supportLinks.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="w-fit text-sm text-slate-600 transition-colors hover:text-blue-600"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-
-            <div className="mt-7 flex flex-col gap-3">
+            <div className="mt-4 flex flex-wrap gap-2">
               <a
                 href={whatsappSupportUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex w-fit items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-bold text-emerald-700 transition hover:bg-emerald-100"
+                className="inline-flex items-center rounded-lg border border-[#4F8175] bg-[#205047] px-3 py-2 text-[11px] font-bold text-white transition hover:bg-[#2A6258]"
               >
-                <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                WhatsApp Support
+                WhatsApp
               </a>
 
               <a
                 href={telegramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex w-fit items-center gap-2 rounded-xl border border-sky-200 bg-sky-50 px-4 py-2.5 text-sm font-bold text-sky-700 transition hover:bg-sky-100"
+                className="inline-flex items-center rounded-lg border border-[#4F8175] bg-[#205047] px-3 py-2 text-[11px] font-bold text-white transition hover:bg-[#2A6258]"
               >
-                <span className="h-2 w-2 rounded-full bg-sky-500" />
-                Telegram Support
+                Telegram
               </a>
-
-              <p className="text-xs text-slate-500">
-                Telegram: @Techboyy0
-              </p>
             </div>
           </div>
 
-          {/* Company */}
-          <div>
-            <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-900">
-              Company
-            </h3>
+          <FooterLinks
+            title="Shop"
+            links={shopLinks}
+          />
 
-            <div className="mt-6 flex flex-col gap-4">
-              {companyLinks.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="w-fit text-sm text-slate-600 transition-colors hover:text-blue-600"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
+          <FooterLinks
+            title="Support"
+            links={supportLinks}
+          />
 
-            <div className="mt-8 rounded-2xl border border-blue-100 bg-white p-4 shadow-sm">
-              <p className="text-sm font-extrabold text-slate-900">
-                Need assistance?
-              </p>
-
-              <p className="mt-2 text-xs leading-6 text-slate-500">
-                Our team can help with orders,
-                payments, subscriptions and services.
-              </p>
-
-              <Link
-                href="/contact"
-                className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-blue-600 transition hover:text-blue-700"
-              >
-                Contact Us
-                <FooterArrow />
-              </Link>
-            </div>
-          </div>
+          <FooterLinks
+            title="Company"
+            links={companyLinks}
+          />
         </div>
       </Container>
 
-      {/* Social Connections */}
-      <div className="border-t border-blue-100 bg-white/70">
+      {/* SOCIAL AND COPYRIGHT */}
+      <div className="border-t border-[#38675E] bg-[#0E302B]">
         <Container>
-          <div className="flex flex-col justify-between gap-5 py-6 md:flex-row md:items-center">
-            <div>
-              <p className="text-sm font-extrabold text-slate-900">
-                Stay Connected With SastaStore
-              </p>
+          <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-center text-[11px] text-[#B8D8CC] sm:text-left">
+              © {new Date().getFullYear()} SastaStore.
+              All rights reserved.
+            </p>
 
-              <p className="mt-1 text-xs text-slate-500">
-                Follow our latest products, deals and announcements.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
               <a
                 href={whatsappChannelUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs font-bold text-emerald-700 transition hover:bg-emerald-100"
+                className="text-[11px] font-semibold text-[#C8E5DA] hover:text-[#F5C76A]"
               >
                 WhatsApp Channel
               </a>
@@ -272,42 +264,28 @@ export function Footer() {
                 href={facebookUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-xs font-bold text-blue-700 transition hover:bg-blue-100"
+                className="text-[11px] font-semibold text-[#C8E5DA] hover:text-[#F5C76A]"
               >
                 Facebook
               </a>
-            </div>
-          </div>
-        </Container>
-      </div>
 
-      {/* Bottom Footer */}
-      <div className="border-t border-blue-100 bg-white">
-        <Container>
-          <div className="flex flex-col items-center justify-between gap-4 py-6 text-center sm:flex-row sm:text-left">
-            <p className="text-xs text-slate-500 sm:text-sm">
-              © {new Date().getFullYear()} SastaStore.
-              All rights reserved.
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-5">
               <Link
                 href="/privacy"
-                className="text-xs text-slate-500 transition hover:text-blue-600"
+                className="text-[11px] text-[#C8E5DA] hover:text-[#F5C76A]"
               >
                 Privacy
               </Link>
 
               <Link
                 href="/terms"
-                className="text-xs text-slate-500 transition hover:text-blue-600"
+                className="text-[11px] text-[#C8E5DA] hover:text-[#F5C76A]"
               >
                 Terms
               </Link>
 
               <Link
                 href="/refund-policy"
-                className="text-xs text-slate-500 transition hover:text-blue-600"
+                className="text-[11px] text-[#C8E5DA] hover:text-[#F5C76A]"
               >
                 Refunds
               </Link>
@@ -315,6 +293,40 @@ export function Footer() {
           </div>
         </Container>
       </div>
+
+      {/* CONTINUOUS MOVING HIGHLIGHTS */}
+      <style>{`
+        @keyframes sastastore-footer-scroll {
+          from {
+            transform: translateX(0);
+          }
+
+          to {
+            transform: translateX(-50%);
+          }
+        }
+
+        .sastastore-footer-track {
+          animation: sastastore-footer-scroll
+            45s linear infinite;
+          will-change: transform;
+        }
+
+        .sastastore-footer-track:hover,
+        .sastastore-footer-track:focus-within {
+          animation-play-state: paused;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .sastastore-footer-track {
+            animation: none;
+          }
+
+          .sastastore-footer-track > div:last-child {
+            display: none;
+          }
+        }
+      `}</style>
     </footer>
   );
 }

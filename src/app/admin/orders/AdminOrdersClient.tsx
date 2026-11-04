@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -48,6 +47,7 @@ function statusName(status: string) {
     delivered: "Delivered",
     cancelled: "Cancelled",
   };
+
   return labels[status] || status.replace(/_/g, " ");
 }
 
@@ -78,12 +78,15 @@ export default function AdminOrdersClient() {
   const [receiptId, setReceiptId] = useState("");
 
   const [notes, setNotes] = useState<Record<string, string>>({});
+
   const [expiryDates, setExpiryDates] = useState<
     Record<string, string>
   >({});
+
   const [deliveredChecks, setDeliveredChecks] = useState<
     Record<string, boolean>
   >({});
+
   const [confirmId, setConfirmId] = useState("");
 
   const loadOrders = useCallback(async () => {
@@ -170,6 +173,85 @@ export default function AdminOrdersClient() {
     return true;
   });
 
+  // DELETE ORDER FUNCTION
+  async function deleteOrder(order: StoreOrder) {
+    if (busyId) return;
+
+    const confirmation = window.prompt(
+      `PERMANENT DELETE
+
+Order: ${order.tracking_id}
+Customer: ${order.customer_email}
+
+This removes the order from customer and admin history.
+Linked subscription or payment records may prevent deletion.
+
+Type the tracking ID exactly to confirm:`,
+    );
+
+    if (confirmation === null) return;
+
+    if (confirmation.trim() !== order.tracking_id) {
+      setError(
+        "Tracking ID did not match. Order was not deleted.",
+      );
+      return;
+    }
+
+    setError("");
+    setMessage("");
+    setBusyId(order.order_id);
+
+    try {
+      const response = await fetch(
+        "/api/admin/orders/delete",
+        {
+          method: "POST",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            orderId: order.order_id,
+          }),
+        },
+      );
+
+      const data = await readResponse(response);
+
+      if (!response.ok || data.success !== true) {
+        throw new Error(
+          data.error || "Could not delete order.",
+        );
+      }
+
+      setReceiptId("");
+      setConfirmId("");
+
+      setOrders((existing) =>
+        existing.filter(
+          (item) => item.order_id !== order.order_id,
+        ),
+      );
+
+      setMessage(
+        `${order.tracking_id} was permanently deleted.`,
+      );
+
+      await loadOrders();
+    } catch (caught) {
+      setError(
+        caught instanceof Error
+          ? caught.message
+          : "Could not delete order.",
+      );
+    } finally {
+      setBusyId("");
+    }
+  }
+
+  // PAYMENT APPROVAL / REJECTION
   async function review(
     order: StoreOrder,
     decision: "approve" | "reject",
@@ -209,11 +291,15 @@ export default function AdminOrdersClient() {
       const data = await readResponse(response);
 
       if (!response.ok || !data.success) {
-        throw new Error(data.error || "Payment review failed.");
+        throw new Error(
+          data.error || "Payment review failed.",
+        );
       }
 
       setMessage(
-        `${order.tracking_id}: Payment ${decision === "approve" ? "approved" : "rejected"}.`,
+        `${order.tracking_id}: Payment ${
+          decision === "approve" ? "approved" : "rejected"
+        }.`,
       );
 
       await loadOrders();
@@ -228,6 +314,7 @@ export default function AdminOrdersClient() {
     }
   }
 
+  // PREPARE SUBSCRIPTION ACTIVATION
   function prepareActivation(order: StoreOrder) {
     setError("");
     setMessage("");
@@ -235,7 +322,9 @@ export default function AdminOrdersClient() {
     const expiryInput = expiryDates[order.order_id];
 
     if (!expiryInput) {
-      setError("Select the subscription expiry date and time.");
+      setError(
+        "Select the subscription expiry date and time.",
+      );
       return;
     }
 
@@ -250,7 +339,9 @@ export default function AdminOrdersClient() {
     }
 
     if (deliveredChecks[order.order_id] !== true) {
-      setError("Confirm the customer has received real access.");
+      setError(
+        "Confirm the customer has received real access.",
+      );
       return;
     }
 
@@ -262,10 +353,10 @@ export default function AdminOrdersClient() {
       return;
     }
 
-    // Inline confirmation instead of a browser popup.
     setConfirmId(order.order_id);
   }
 
+  // ACTIVATE AND DELIVER SUBSCRIPTION
   async function activate(order: StoreOrder) {
     if (busyId || confirmId !== order.order_id) return;
 
@@ -281,7 +372,9 @@ export default function AdminOrdersClient() {
       }
 
       if (deliveredChecks[order.order_id] !== true) {
-        throw new Error("Delivery confirmation is required.");
+        throw new Error(
+          "Delivery confirmation is required.",
+        );
       }
 
       const expiry = new Date(expiryInput);
@@ -290,7 +383,9 @@ export default function AdminOrdersClient() {
         !Number.isFinite(expiry.getTime()) ||
         expiry.getTime() <= Date.now()
       ) {
-        throw new Error("Choose a future expiry date.");
+        throw new Error(
+          "Choose a future expiry date.",
+        );
       }
 
       const response = await fetch(
@@ -351,14 +446,17 @@ export default function AdminOrdersClient() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 px-4 py-10 text-slate-900">
       <div className="mx-auto max-w-6xl">
+        {/* PAGE HEADER */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-blue-600">
               SASTASTORE ADMIN
             </p>
+
             <h1 className="mt-2 text-3xl font-extrabold">
               Orders & Subscription Delivery
             </h1>
+
             <p className="mt-2 text-sm text-slate-600">
               Verify payments and confirm actual digital delivery.
             </p>
@@ -371,6 +469,7 @@ export default function AdminOrdersClient() {
             >
               Admin Home
             </Link>
+
             <button
               type="button"
               disabled={loading || Boolean(busyId)}
@@ -385,6 +484,7 @@ export default function AdminOrdersClient() {
           </div>
         </div>
 
+        {/* ORDER COUNTS */}
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
             ["Pending Review", needsReview.length],
@@ -396,7 +496,10 @@ export default function AdminOrdersClient() {
               key={String(label)}
               className="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm"
             >
-              <p className="text-sm text-slate-500">{label}</p>
+              <p className="text-sm text-slate-500">
+                {label}
+              </p>
+
               <p className="mt-2 text-3xl font-extrabold">
                 {count}
               </p>
@@ -404,6 +507,7 @@ export default function AdminOrdersClient() {
           ))}
         </div>
 
+        {/* ORDER FILTERS */}
         <div className="mt-8 flex flex-wrap gap-2">
           {(
             [
@@ -429,6 +533,7 @@ export default function AdminOrdersClient() {
           ))}
         </div>
 
+        {/* ERROR MESSAGE */}
         {error && (
           <div
             role="alert"
@@ -438,6 +543,7 @@ export default function AdminOrdersClient() {
           </div>
         )}
 
+        {/* SUCCESS MESSAGE */}
         {message && (
           <div
             role="status"
@@ -469,39 +575,47 @@ export default function AdminOrdersClient() {
                 );
 
               const busy = busyId === order.order_id;
-              const confirming = confirmId === order.order_id;
+              const confirming =
+                confirmId === order.order_id;
 
               return (
                 <article
                   key={order.order_id}
                   className="overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-sm"
                 >
+                  {/* ORDER HEADER */}
                   <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-50 px-6 py-4">
                     <div>
                       <p className="font-extrabold">
                         {order.tracking_id}
                       </p>
+
                       <p className="mt-1 text-xs text-slate-500">
                         {formatDate(order.created_at)}
                       </p>
                     </div>
+
                     <span className="rounded-full bg-blue-100 px-3 py-2 text-xs font-bold text-blue-700">
                       {statusName(order.order_status)}
                     </span>
                   </div>
 
+                  {/* ORDER DETAILS */}
                   <div className="grid gap-6 p-6 md:grid-cols-2">
                     <div className="space-y-4">
                       <div>
                         <p className="text-xs text-slate-500">
                           Customer
                         </p>
+
                         <p className="font-bold">
                           {order.customer_name}
                         </p>
+
                         <p className="break-all text-sm text-slate-600">
                           {order.customer_email}
                         </p>
+
                         <p className="text-sm text-slate-600">
                           {order.whatsapp_number}
                         </p>
@@ -511,9 +625,11 @@ export default function AdminOrdersClient() {
                         <p className="text-xs text-slate-500">
                           Product / Plan
                         </p>
+
                         <p className="font-bold">
                           {order.product_name}
                         </p>
+
                         <p className="text-sm text-slate-600">
                           {order.plan_name}
                         </p>
@@ -529,10 +645,12 @@ export default function AdminOrdersClient() {
                         <p className="text-xs text-slate-500">
                           Payment Method
                         </p>
+
                         <p className="font-bold">
                           {order.payment_method === "sadapay"
                             ? "SadaPay"
-                            : order.payment_method === "bank_transfer"
+                            : order.payment_method ===
+                                "bank_transfer"
                               ? "UBL Bank Transfer"
                               : order.payment_method}
                         </p>
@@ -542,6 +660,7 @@ export default function AdminOrdersClient() {
                         <p className="text-xs text-slate-500">
                           Transaction Reference
                         </p>
+
                         <p className="break-all font-semibold">
                           {order.payment_reference ||
                             "Not submitted"}
@@ -552,6 +671,7 @@ export default function AdminOrdersClient() {
                         <p className="text-xs text-slate-500">
                           Payment Status
                         </p>
+
                         <p className="font-semibold capitalize">
                           {order.payment_status}
                         </p>
@@ -581,6 +701,7 @@ export default function AdminOrdersClient() {
                     </div>
                   </div>
 
+                  {/* PAYMENT REVIEW */}
                   {canReview && (
                     <div className="border-t border-slate-100 px-6 py-5">
                       <label className="text-sm font-bold">
@@ -590,7 +711,9 @@ export default function AdminOrdersClient() {
                       <textarea
                         rows={3}
                         maxLength={1000}
-                        value={notes[order.order_id] || ""}
+                        value={
+                          notes[order.order_id] || ""
+                        }
                         onChange={(e) =>
                           setNotes((old) => ({
                             ...old,
@@ -604,7 +727,9 @@ export default function AdminOrdersClient() {
                       <div className="mt-4 flex flex-wrap gap-3">
                         <button
                           type="button"
-                          disabled={busy || Boolean(busyId)}
+                          disabled={
+                            busy || Boolean(busyId)
+                          }
                           onClick={() =>
                             void review(order, "approve")
                           }
@@ -615,7 +740,9 @@ export default function AdminOrdersClient() {
 
                         <button
                           type="button"
-                          disabled={busy || Boolean(busyId)}
+                          disabled={
+                            busy || Boolean(busyId)
+                          }
                           onClick={() =>
                             void review(order, "reject")
                           }
@@ -632,11 +759,13 @@ export default function AdminOrdersClient() {
                     </div>
                   )}
 
+                  {/* SUBSCRIPTION ACTIVATION */}
                   {canActivate && (
                     <div className="border-t border-emerald-100 bg-emerald-50/50 px-6 py-6">
                       <h3 className="text-xl font-extrabold">
                         Activate & Deliver
                       </h3>
+
                       <p className="mt-2 text-sm text-slate-600">
                         First provide real subscription access,
                         then confirm activation here.
@@ -652,12 +781,15 @@ export default function AdminOrdersClient() {
                       <input
                         id={`expiry-${order.order_id}`}
                         type="datetime-local"
-                        value={expiryDates[order.order_id] || ""}
+                        value={
+                          expiryDates[order.order_id] || ""
+                        }
                         disabled={busy || confirming}
                         onChange={(e) =>
                           setExpiryDates((old) => ({
                             ...old,
-                            [order.order_id]: e.target.value,
+                            [order.order_id]:
+                              e.target.value,
                           }))
                         }
                         className="mt-2 w-full max-w-sm rounded-xl border border-slate-200 bg-white px-4 py-3"
@@ -667,13 +799,16 @@ export default function AdminOrdersClient() {
                         <input
                           type="checkbox"
                           checked={
-                            deliveredChecks[order.order_id] === true
+                            deliveredChecks[
+                              order.order_id
+                            ] === true
                           }
                           disabled={busy || confirming}
                           onChange={(e) =>
                             setDeliveredChecks((old) => ({
                               ...old,
-                              [order.order_id]: e.target.checked,
+                              [order.order_id]:
+                                e.target.checked,
                             }))
                           }
                           className="mt-1 h-4 w-4 accent-emerald-600"
@@ -690,7 +825,9 @@ export default function AdminOrdersClient() {
                         <button
                           type="button"
                           disabled={Boolean(busyId)}
-                          onClick={() => prepareActivation(order)}
+                          onClick={() =>
+                            prepareActivation(order)
+                          }
                           className="mt-5 rounded-xl bg-emerald-600 px-6 py-3 text-sm font-extrabold text-white disabled:opacity-50"
                         >
                           Continue to Activation Confirmation
@@ -702,18 +839,22 @@ export default function AdminOrdersClient() {
                           </p>
 
                           <p className="mt-2 text-sm leading-6 text-amber-900">
-                            {order.product_name} — {order.plan_name}
+                            {order.product_name} —{" "}
+                            {order.plan_name}
                           </p>
 
                           <p className="mt-1 text-sm text-amber-900">
-                            Tracking: {order.tracking_id}
+                            Tracking:{" "}
+                            {order.tracking_id}
                           </p>
 
                           <p className="mt-1 text-sm text-amber-900">
                             Expiry:{" "}
                             {formatDate(
                               new Date(
-                                expiryDates[order.order_id],
+                                expiryDates[
+                                  order.order_id
+                                ],
                               ).toISOString(),
                             )}
                           </p>
@@ -728,7 +869,9 @@ export default function AdminOrdersClient() {
                             <button
                               type="button"
                               disabled={busy}
-                              onClick={() => void activate(order)}
+                              onClick={() =>
+                                void activate(order)
+                              }
                               className="rounded-xl bg-emerald-700 px-5 py-3 text-sm font-bold text-white disabled:opacity-50"
                             >
                               {busy
@@ -739,7 +882,9 @@ export default function AdminOrdersClient() {
                             <button
                               type="button"
                               disabled={busy}
-                              onClick={() => setConfirmId("")}
+                              onClick={() =>
+                                setConfirmId("")
+                              }
                               className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-bold"
                             >
                               Cancel
@@ -750,6 +895,7 @@ export default function AdminOrdersClient() {
                     </div>
                   )}
 
+                  {/* DELIVERED STATUS */}
                   {order.order_status === "delivered" && (
                     <div className="border-t border-emerald-100 bg-emerald-50 px-6 py-4">
                       <p className="font-bold text-emerald-800">
@@ -757,12 +903,34 @@ export default function AdminOrdersClient() {
                       </p>
                     </div>
                   )}
+
+                  {/* NEW DELETE ORDER BUTTON */}
+                  <div className="border-t border-red-100 px-6 py-4">
+                    <button
+                      type="button"
+                      disabled={Boolean(busyId)}
+                      onClick={() =>
+                        void deleteOrder(order)
+                      }
+                      className="rounded-xl border border-red-200 bg-white px-4 py-2 text-sm font-bold text-red-700 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {busy
+                        ? "Please wait..."
+                        : "Delete Order"}
+                    </button>
+
+                    <p className="mt-2 text-xs text-slate-500">
+                      Permanent deletion. Enter the tracking ID
+                      to confirm.
+                    </p>
+                  </div>
                 </article>
               );
             })}
           </div>
         )}
 
+        {/* PRIVATE PAYMENT RECEIPT VIEWER */}
         {receiptId && (
           <div
             role="dialog"
@@ -775,6 +943,7 @@ export default function AdminOrdersClient() {
                 <h2 className="font-extrabold">
                   Private Payment Receipt
                 </h2>
+
                 <button
                   type="button"
                   onClick={() => setReceiptId("")}
