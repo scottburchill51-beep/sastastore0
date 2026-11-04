@@ -1,242 +1,201 @@
 
+"use client";
+
 import Link from "next/link";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-import { CategoryCarousel } from "@/components/category/CategoryCarousel";
-import { Container } from "@/components/ui/Container";
-import { categories } from "@/data/categories";
-import { products } from "@/data/products";
+import { CategoryIcon } from "@/components/common/CategoryIcon";
 
-export const metadata = {
-  title: "Browse Categories | SastaStore",
-  description:
-    "Explore SastaStore digital product categories, including AI tools, creative software, productivity apps, entertainment, subscriptions and more.",
+type CategoryItem = {
+  slug: string;
+  name: string;
+  description: string;
+  productCount: number;
 };
 
-const categoryCounts = new Map<string, number>();
+type CategoryCarouselProps = {
+  items: CategoryItem[];
+};
 
-for (const product of products) {
-  categoryCounts.set(
-    product.category,
-    (categoryCounts.get(product.category) ?? 0) + 1,
-  );
-}
+export function CategoryCarousel({
+  items,
+}: CategoryCarouselProps) {
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const pausedRef = useRef(false);
+  const [isPaused, setIsPaused] = useState(false);
 
-const categoryItems = categories.map((category) => ({
-  slug: category.slug,
-  name: category.name,
-  description: category.description,
-  productCount:
-    categoryCounts.get(category.slug) ?? 0,
-}));
+  useEffect(() => {
+    pausedRef.current = isPaused;
+  }, [isPaused]);
 
-export default function CategoriesPage() {
+  useEffect(() => {
+    const slider = sliderRef.current;
+
+    if (!slider || items.length === 0) return;
+
+    const motion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
+
+    let frame = 0;
+    let previous = 0;
+
+    function animate(time: number) {
+      if (!slider) return;
+
+      if (previous === 0) previous = time;
+
+      const delta = Math.min(time - previous, 50);
+      previous = time;
+
+      if (
+        !pausedRef.current &&
+        !motion.matches &&
+        document.visibilityState === "visible"
+      ) {
+        const half = slider.scrollWidth / 2;
+
+        if (half > 0) {
+          slider.scrollLeft += (delta / 1000) * 25;
+
+          if (slider.scrollLeft >= half) {
+            slider.scrollLeft -= half;
+          }
+        }
+      }
+
+      frame = requestAnimationFrame(animate);
+    }
+
+    frame = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(frame);
+  }, [items.length]);
+
+  function move(direction: number) {
+    const slider = sliderRef.current;
+
+    if (!slider) return;
+
+    setIsPaused(true);
+
+    slider.scrollBy({
+      left: direction * 280,
+      behavior: "smooth",
+    });
+  }
+
+  if (items.length === 0) return null;
+
   return (
-    <main className="min-h-screen overflow-hidden bg-gradient-to-b from-[#EFF8FF] via-white to-[#ECFDF5] text-slate-900">
-      {/* HERO */}
-      <section className="relative overflow-hidden border-b border-blue-100 py-16 sm:py-20">
-        <div className="pointer-events-none absolute -left-20 top-0 h-64 w-64 rounded-full bg-sky-200/40 blur-3xl" />
-        <div className="pointer-events-none absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-emerald-200/40 blur-3xl" />
+    <section className="w-full min-w-0">
+      <div className="mb-5 flex items-center justify-between gap-3">
+        <p className="text-xs font-semibold text-slate-500 sm:text-sm">
+          Explore categories
+        </p>
 
-        <Container>
-          <div className="relative mx-auto max-w-4xl text-center">
-            <span className="inline-flex items-center rounded-full border border-blue-200 bg-white px-5 py-2 text-xs font-extrabold uppercase tracking-widest text-blue-600 shadow-sm">
-              Explore SastaStore
-            </span>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => move(-1)}
+            aria-label="Previous categories"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-100 bg-white font-bold text-blue-700 shadow-sm hover:bg-blue-50"
+          >
+            ←
+          </button>
 
-            <h1 className="mt-7 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-              Find Your Next{" "}
-              <span className="text-blue-600">
-                Digital Tool
-              </span>
-            </h1>
+          <button
+            type="button"
+            onClick={() => move(1)}
+            aria-label="Next categories"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-100 bg-white font-bold text-blue-700 shadow-sm hover:bg-blue-50"
+          >
+            →
+          </button>
 
-            <p className="mx-auto mt-5 max-w-2xl text-sm leading-8 text-slate-600 sm:text-base">
-              Discover AI tools, creative software,
-              productivity applications, premium
-              subscriptions and more. Browse the
-              categories that match your needs.
-            </p>
-
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link
-                href="/products"
-                className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
-              >
-                Browse All Products
-              </Link>
-
-              <Link
-                href="/deals"
-                className="inline-flex items-center justify-center rounded-xl border border-blue-200 bg-white px-6 py-3.5 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
-              >
-                Explore Deals
-              </Link>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* MOVING CATEGORIES */}
-      <section className="py-14 sm:py-20">
-        <Container>
-          <div className="mb-9 flex flex-wrap items-end justify-between gap-5">
-            <div>
-              <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-600">
-                Product Categories
-              </p>
-
-              <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-                Browse by Category
-              </h2>
-
-              <p className="mt-3 max-w-xl text-sm leading-7 text-slate-600">
-                Explore our digital products by
-                category and find the tools
-                you&apos;re looking for.
-              </p>
-            </div>
-
-            <div className="rounded-full border border-blue-100 bg-white px-5 py-2.5 text-sm font-bold text-blue-700 shadow-sm">
-              {categories.length}{" "}
-              {categories.length === 1
-                ? "Category"
-                : "Categories"}
-            </div>
-          </div>
-
-          {categoryItems.length === 0 ? (
-            <div className="rounded-3xl border border-dashed border-blue-200 bg-white p-10 text-center">
-              <h3 className="text-xl font-extrabold">
-                Categories Coming Soon
-              </h3>
-
-              <p className="mt-3 text-sm leading-7 text-slate-500">
-                You can still browse all available
-                digital products from our catalog.
-              </p>
-
-              <Link
-                href="/products"
-                className="mt-6 inline-flex rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white hover:bg-blue-700"
-              >
-                Browse Products
-              </Link>
-            </div>
-          ) : (
-            <CategoryCarousel items={categoryItems} />
+          {isPaused && (
+            <button
+              type="button"
+              onClick={() => setIsPaused(false)}
+              className="rounded-full border border-emerald-200 bg-emerald-50 px-4 text-xs font-bold text-emerald-700"
+            >
+              Auto Play
+            </button>
           )}
-        </Container>
-      </section>
+        </div>
+      </div>
 
-      {/* SHOPPING EXPERIENCE */}
-      <section className="border-y border-blue-100 bg-white/70 py-14 sm:py-16">
-        <Container>
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
-              Your Shopping Experience
-            </p>
-
-            <h2 className="mt-3 text-2xl font-extrabold sm:text-3xl">
-              Browse. Choose. Track.
-            </h2>
-
-            <p className="mt-4 text-sm leading-8 text-slate-600">
-              Explore digital tools, select a
-              suitable subscription plan and
-              follow your order through your
-              SastaStore account.
-            </p>
-          </div>
-
-          <div className="mt-9 grid gap-5 md:grid-cols-3">
-            <div className="rounded-2xl border border-blue-100 bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-lg font-extrabold text-blue-700">
-                01
-              </div>
-
-              <h3 className="mt-5 text-lg font-extrabold">
-                Browse Products
-              </h3>
-
-              <p className="mt-3 text-sm leading-7 text-slate-600">
-                Discover tools and subscriptions
-                across different categories.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-sky-100 bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-100 text-lg font-extrabold text-sky-700">
-                02
-              </div>
-
-              <h3 className="mt-5 text-lg font-extrabold">
-                Select Your Plan
-              </h3>
-
-              <p className="mt-3 text-sm leading-7 text-slate-600">
-                Review plan information and
-                continue to secure checkout.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-lg font-extrabold text-emerald-700">
-                03
-              </div>
-
-              <h3 className="mt-5 text-lg font-extrabold">
-                Track Your Order
-              </h3>
-
-              <p className="mt-3 text-sm leading-7 text-slate-600">
-                Check payment review and
-                delivery progress from your account.
-              </p>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* BOTTOM CTA */}
-      <section className="py-16">
-        <Container>
-          <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-sky-600 p-8 text-white shadow-xl shadow-blue-200/40 sm:p-12">
-            <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
-              <div className="max-w-xl">
-                <p className="text-xs font-extrabold uppercase tracking-widest text-blue-100">
-                  Discover More
-                </p>
-
-                <h2 className="mt-3 text-2xl font-extrabold sm:text-3xl">
-                  Can&apos;t Find What You Need?
-                </h2>
-
-                <p className="mt-3 text-sm leading-7 text-blue-50">
-                  Browse our complete catalog or
-                  contact SastaStore for product
-                  availability and assistance.
-                </p>
-              </div>
-
-              <div className="flex w-full flex-col gap-3 sm:w-auto">
+      <div
+        ref={sliderRef}
+        className="overflow-x-auto overscroll-x-contain pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onTouchStart={() => setIsPaused(true)}
+        onTouchEnd={() => setIsPaused(false)}
+        onFocusCapture={() => setIsPaused(true)}
+        onBlurCapture={(event) => {
+          if (
+            !event.currentTarget.contains(
+              event.relatedTarget as Node | null,
+            )
+          ) {
+            setIsPaused(false);
+          }
+        }}
+        aria-label="Product categories"
+      >
+        <div className="flex w-max gap-4">
+          {[0, 1].map((copy) => (
+            <div
+              key={copy}
+              className="flex shrink-0 gap-4"
+              aria-hidden={copy === 1}
+              inert={copy === 1}
+            >
+              {items.map((item) => (
                 <Link
-                  href="/products"
-                  className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3.5 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                  key={`${copy}-${item.slug}`}
+                  href={`/categories/${encodeURIComponent(item.slug)}`}
+                  tabIndex={copy === 1 ? -1 : undefined}
+                  className="group relative flex w-[220px] shrink-0 flex-col overflow-hidden rounded-2xl border border-blue-100 bg-white p-5 shadow-sm transition hover:border-emerald-300 hover:shadow-lg sm:w-[280px]"
                 >
-                  All Products
-                </Link>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-emerald-50 text-blue-600">
+                      <CategoryIcon slug={item.slug} />
+                    </div>
 
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center justify-center rounded-xl border border-white/50 bg-white/10 px-6 py-3.5 text-sm font-extrabold text-white transition hover:bg-white/20"
-                >
-                  Contact Support
+                    <span className="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-700">
+                      {item.productCount} Products
+                    </span>
+                  </div>
+
+                  <h3 className="mt-5 line-clamp-2 text-lg font-extrabold text-slate-900 group-hover:text-blue-600">
+                    {item.name}
+                  </h3>
+
+                  <p className="mt-3 line-clamp-3 flex-1 text-xs leading-6 text-slate-600 sm:text-sm">
+                    {item.description}
+                  </p>
+
+                  <div className="mt-5 flex items-center justify-between border-t border-blue-100 pt-4">
+                    <span className="text-sm font-bold text-blue-600">
+                      Explore Category
+                    </span>
+
+                    <span className="font-bold text-blue-600">
+                      →
+                    </span>
+                  </div>
                 </Link>
-              </div>
+              ))}
             </div>
-          </div>
-        </Container>
-      </section>
-    </main>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
