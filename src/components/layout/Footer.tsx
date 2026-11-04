@@ -32,69 +32,42 @@ const whatsappChannelUrl =
 const facebookUrl =
   "https://www.facebook.com/share/1cbKHVxxJi/";
 
-// These are illustrative review examples, not verified
-// customer testimonials. Replace with real customer
-// feedback before labelling them as actual reviews.
-const reviews = [
+const highlights = [
   {
-    name: "Ahmad",
-    profession: "Video Editor",
-    product: "CapCut Pro",
-    review: "Great tools for editing videos.",
+    title: "AI Tools",
+    subtitle: "Explore AI-powered productivity",
+    symbol: "✦",
+    href: "/categories",
   },
   {
-    name: "Ayesha",
-    profession: "Graphic Designer",
-    product: "Canva Pro",
-    review: "Helpful templates for my designs.",
+    title: "Creative Software",
+    subtitle: "Design, edit and create",
+    symbol: "◈",
+    href: "/categories",
   },
   {
-    name: "Hamza",
-    profession: "Content Creator",
-    product: "ChatGPT Plus",
-    review: "Useful for planning and writing.",
+    title: "Digital Subscriptions",
+    subtitle: "Discover available plans",
+    symbol: "★",
+    href: "/products",
   },
   {
-    name: "Ali",
-    profession: "Freelancer",
-    product: "HeyGen",
-    review: "Makes AI video creation easier.",
+    title: "Special Deals",
+    subtitle: "Browse current offers",
+    symbol: "%",
+    href: "/deals",
   },
   {
-    name: "Sana",
-    profession: "Social Media Manager",
-    product: "Canva Business",
-    review: "Excellent branding features.",
+    title: "Order Tracking",
+    subtitle: "Follow your purchase",
+    symbol: "✓",
+    href: "/track",
   },
   {
-    name: "Bilal",
-    profession: "Video Creator",
-    product: "CapCut Pro",
-    review: "Really useful editing features.",
-  },
-  {
-    name: "Hira",
-    profession: "Student",
-    product: "Gemini Pro",
-    review: "Helpful for research and ideas.",
-  },
-  {
-    name: "Usman",
-    profession: "YouTuber",
-    product: "ElevenLabs",
-    review: "Useful voice generation tools.",
-  },
-  {
-    name: "Fatima",
-    profession: "Digital Marketer",
-    product: "Canva Pro",
-    review: "Makes content design much easier.",
-  },
-  {
-    name: "Zain",
-    profession: "Content Creator",
-    product: "Netflix",
-    review: "A convenient entertainment option.",
+    title: "Customer Support",
+    subtitle: "Get help when you need it",
+    symbol: "☎",
+    href: "/contact",
   },
 ];
 
@@ -134,35 +107,30 @@ function FooterLinks({
   );
 }
 
-function ReviewCard({
-  review,
+function HighlightCard({
+  item,
 }: {
-  review: (typeof reviews)[number];
+  item: (typeof highlights)[number];
 }) {
   return (
-    <div className="flex w-[210px] shrink-0 items-start gap-2.5 rounded-xl border border-[#427467] bg-[#205047] p-3 sm:w-[250px]">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#32695C] text-sm font-black text-[#F5C76A]">
-        {review.name.charAt(0)}
-      </div>
+    <Link
+      href={item.href}
+      className="group flex w-[205px] shrink-0 items-center gap-3 rounded-xl border border-[#427467] bg-[#205047] p-3 transition-colors hover:border-[#F5C76A] hover:bg-[#2A6054] sm:w-[260px]"
+    >
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#32695C] text-lg font-black text-[#F5C76A]">
+        {item.symbol}
+      </span>
 
-      <div className="min-w-0">
-        <p className="text-xs font-extrabold text-white">
-          {review.name}
-        </p>
+      <span className="min-w-0">
+        <span className="block text-xs font-extrabold text-white sm:text-sm">
+          {item.title}
+        </span>
 
-        <p className="mt-0.5 truncate text-[10px] text-[#ACD9C7]">
-          {review.profession}
-        </p>
-
-        <p className="mt-1.5 text-[11px] font-bold text-[#F5C76A]">
-          {review.product}
-        </p>
-
-        <p className="mt-1 line-clamp-2 text-[11px] leading-4 text-[#DFEEE7]">
-          {review.review}
-        </p>
-      </div>
-    </div>
+        <span className="mt-1 block text-[10px] leading-4 text-[#C8E5DA] sm:text-xs">
+          {item.subtitle}
+        </span>
+      </span>
+    </Link>
   );
 }
 
@@ -173,24 +141,18 @@ export function Footer() {
 
   return (
     <footer className="mt-auto overflow-hidden bg-[#123B35] text-white">
-      {/* COMPACT REVIEW STRIP */}
+      {/* MOVING DIGITAL TOOL HIGHLIGHTS */}
       <section
-        aria-labelledby="footer-reviews-heading"
+        aria-labelledby="footer-highlights-heading"
         className="border-b border-[#38675E] bg-[#0E302B] py-5"
       >
         <Container>
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <h2
-              id="footer-reviews-heading"
-              className="text-sm font-extrabold text-white sm:text-base"
-            >
-              Customer Review Examples
-            </h2>
-
-            <span className="text-[10px] font-medium text-[#B8D8CC]">
-              Illustrative feedback
-            </span>
-          </div>
+          <h2
+            id="footer-highlights-heading"
+            className="mb-3 text-sm font-extrabold text-white sm:text-base"
+          >
+            Explore More With SastaStore
+          </h2>
         </Container>
 
         <div className="overflow-hidden">
@@ -202,10 +164,10 @@ export function Footer() {
                 aria-hidden={copy === 1}
                 inert={copy === 1}
               >
-                {reviews.map((review, index) => (
-                  <ReviewCard
-                    key={`${copy}-${index}`}
-                    review={review}
+                {highlights.map((item) => (
+                  <HighlightCard
+                    key={`${copy}-${item.title}`}
+                    item={item}
                   />
                 ))}
               </div>
@@ -332,6 +294,7 @@ export function Footer() {
         </Container>
       </div>
 
+      {/* CONTINUOUS MOVING HIGHLIGHTS */}
       <style>{`
         @keyframes sastastore-footer-scroll {
           from {
@@ -345,7 +308,7 @@ export function Footer() {
 
         .sastastore-footer-track {
           animation: sastastore-footer-scroll
-            65s linear infinite;
+            45s linear infinite;
           will-change: transform;
         }
 
