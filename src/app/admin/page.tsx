@@ -37,23 +37,19 @@ const TEST_TRACKING_IDS = [
   "SS-D7586820EA9F",
 ] as const;
 
-const testOrderIds = new Set<string>(
-  TEST_TRACKING_IDS,
-);
+const testOrderIds = new Set<string>(TEST_TRACKING_IDS);
 
 function isTestOrder(order: AdminOrder) {
   return testOrderIds.has(
-    String(order.tracking_id || "")
-      .trim()
-      .toUpperCase(),
+    String(order.tracking_id || "").trim().toUpperCase(),
   );
 }
 
 function money(amount: number) {
-  return `PKR ${(Number.isFinite(amount) ? amount : 0)
-    .toLocaleString("en-PK", {
-      maximumFractionDigits: 2,
-    })}`;
+  return `PKR ${(Number.isFinite(amount) ? amount : 0).toLocaleString(
+    "en-PK",
+    { maximumFractionDigits: 2 },
+  )}`;
 }
 
 function paymentLabel(method: string) {
@@ -75,7 +71,7 @@ function statusStyle(status: string) {
     case "rejected":
       return "border-red-200 bg-red-50 text-red-700";
     default:
-      return "border-blue-200 bg-blue-50 text-blue-700";
+      return "border-[#C8D2DF] bg-[#F1F4F8] text-[#29415F]";
   }
 }
 
@@ -96,7 +92,7 @@ function OrdersTable({
 }) {
   if (orders.length === 0) {
     return (
-      <div className="mt-6 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-9 text-center text-sm text-slate-500">
+      <div className="mt-6 rounded-2xl border border-dashed border-[#D5DDE7] bg-[#F4F6F9] p-9 text-center text-sm text-slate-500">
         {emptyMessage}
       </div>
     );
@@ -106,22 +102,12 @@ function OrdersTable({
     <div className="mt-6 overflow-x-auto">
       <table className="w-full min-w-[700px] text-left text-sm">
         <thead>
-          <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
-            <th className="px-3 py-4 font-semibold">
-              Tracking ID
-            </th>
-            <th className="px-3 py-4 font-semibold">
-              Customer / Product
-            </th>
-            <th className="px-3 py-4 font-semibold">
-              Payment
-            </th>
-            <th className="px-3 py-4 font-semibold">
-              Amount
-            </th>
-            <th className="px-3 py-4 font-semibold">
-              Status
-            </th>
+          <tr className="border-b border-[#D5DDE7] text-xs uppercase tracking-wider text-slate-500">
+            <th className="px-3 py-4 font-semibold">Tracking ID</th>
+            <th className="px-3 py-4 font-semibold">Customer / Product</th>
+            <th className="px-3 py-4 font-semibold">Payment</th>
+            <th className="px-3 py-4 font-semibold">Amount</th>
+            <th className="px-3 py-4 font-semibold">Status</th>
           </tr>
         </thead>
 
@@ -129,9 +115,9 @@ function OrdersTable({
           {orders.map((order) => (
             <tr
               key={order.order_id}
-              className="border-b border-slate-100 last:border-0"
+              className="border-b border-[#E5EAF0] last:border-0"
             >
-              <td className="px-3 py-4 font-bold text-blue-700">
+              <td className="px-3 py-4 font-bold text-[#29415F]">
                 {order.tracking_id}
               </td>
 
@@ -158,8 +144,10 @@ function OrdersTable({
                     order.order_status,
                   )}`}
                 >
-                  {String(order.order_status || "unknown")
-                    .replace(/_/g, " ")}
+                  {String(order.order_status || "unknown").replace(
+                    /_/g,
+                    " ",
+                  )}
                 </span>
               </td>
             </tr>
@@ -181,8 +169,8 @@ export default async function AdminDashboardPage() {
 
   if (!admin) {
     return (
-      <main className="flex min-h-[70vh] items-center justify-center bg-slate-50 px-4 py-16">
-        <div className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-9 text-center shadow-sm">
+      <main className="flex min-h-[70vh] items-center justify-center bg-[#F4F6F9] px-4 py-16">
+        <div className="w-full max-w-lg rounded-3xl border border-[#D5DDE7] bg-white p-9 text-center shadow-sm">
           <h1 className="text-2xl font-extrabold">
             Access Denied
           </h1>
@@ -193,7 +181,7 @@ export default async function AdminDashboardPage() {
 
           <Link
             href="/"
-            className="mt-6 inline-flex rounded-xl bg-blue-600 px-6 py-3 font-bold text-white hover:bg-blue-700"
+            className="mt-6 inline-flex rounded-xl bg-[#142B49] px-6 py-3 font-bold text-white transition hover:bg-[#0D1D33]"
           >
             Return to Store
           </Link>
@@ -204,7 +192,6 @@ export default async function AdminDashboardPage() {
 
   let orders: AdminOrder[] = [];
   let ordersAvailable = false;
-
   let registeredCustomers: number | null = null;
 
   // Existing secure admin order listing.
@@ -226,19 +213,13 @@ export default async function AdminDashboardPage() {
         ordersAvailable = true;
       }
     } else {
-      console.error(
-        "Admin orders fetch failed:",
-        response.status,
-      );
+      console.error("Admin orders fetch failed:", response.status);
     }
   } catch (error) {
-    console.error(
-      "Admin orders fetch error:",
-      error,
-    );
+    console.error("Admin orders fetch error:", error);
   }
 
-  // New secure admin-only customer counter.
+  // Secure admin-only customer counter.
   try {
     const response = await backend(
       "/rest/v1/rpc/admin_customer_stats",
@@ -258,14 +239,9 @@ export default async function AdminDashboardPage() {
         !Array.isArray(data) &&
         "registered_customers" in data
       ) {
-        const count = Number(
-          data.registered_customers,
-        );
+        const count = Number(data.registered_customers);
 
-        if (
-          Number.isSafeInteger(count) &&
-          count >= 0
-        ) {
+        if (Number.isSafeInteger(count) && count >= 0) {
           registeredCustomers = count;
         }
       }
@@ -276,14 +252,10 @@ export default async function AdminDashboardPage() {
       );
     }
   } catch (error) {
-    console.error(
-      "Admin customer stats error:",
-      error,
-    );
+    console.error("Admin customer stats error:", error);
   }
 
-  // Test orders are separated from real orders
-  // without changing or deleting database records.
+  // Separate test orders without modifying database records.
   const testOrders = orders.filter(isTestOrder);
 
   const realOrders = orders.filter(
@@ -306,19 +278,14 @@ export default async function AdminDashboardPage() {
     0,
   );
 
-  const recentOrders = sortNewest(realOrders).slice(
-    0,
-    5,
-  );
-
+  const recentOrders = sortNewest(realOrders).slice(0, 5);
   const sortedTestOrders = sortNewest(testOrders);
 
   const missingTestIds = TEST_TRACKING_IDS.filter(
     (id) =>
       !testOrders.some(
         (order) =>
-          String(order.tracking_id || "")
-            .toUpperCase() === id,
+          String(order.tracking_id || "").toUpperCase() === id,
       ),
   );
 
@@ -330,7 +297,7 @@ export default async function AdminDashboardPage() {
           ? "Unavailable"
           : registeredCustomers.toLocaleString("en-PK"),
       detail: "Customer accounts, excluding admins",
-      accent: "text-indigo-600",
+      accent: "text-[#29415F]",
     },
     {
       label: "Verified Revenue",
@@ -338,7 +305,7 @@ export default async function AdminDashboardPage() {
         ? money(verifiedRevenue)
         : "Unavailable",
       detail: "Approved real orders only",
-      accent: "text-emerald-600",
+      accent: "text-[#142B49]",
     },
     {
       label: "Real Orders",
@@ -346,7 +313,7 @@ export default async function AdminDashboardPage() {
         ? realOrders.length.toString()
         : "Unavailable",
       detail: "Excludes designated test orders",
-      accent: "text-blue-600",
+      accent: "text-[#142B49]",
     },
     {
       label: "Pending Reviews",
@@ -362,18 +329,18 @@ export default async function AdminDashboardPage() {
         ? approvedOrders.length.toString()
         : "Unavailable",
       detail: "Approved real-order payments",
-      accent: "text-violet-600",
+      accent: "text-[#718096]",
     },
   ];
 
   return (
-    <main className="min-h-screen flex-1 bg-gradient-to-br from-[#F8FAFC] via-[#EFF7FF] to-[#E8FBF4] px-4 py-10 text-slate-900">
+    <main className="min-h-screen flex-1 bg-gradient-to-br from-[#F4F6F9] via-[#E9EDF3] to-[#DCE3EC] px-4 py-10 text-slate-900">
       <div className="mx-auto max-w-7xl space-y-8">
 
         {/* Dashboard Header */}
         <section className="flex flex-wrap items-center justify-between gap-5">
           <div>
-            <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+            <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#536780]">
               SastaStore / Administration
             </p>
 
@@ -390,14 +357,14 @@ export default async function AdminDashboardPage() {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/"
-              className="rounded-xl border border-blue-200 bg-white px-5 py-3 text-sm font-semibold text-blue-700 hover:bg-blue-50"
+              className="rounded-xl border border-[#C8D2DF] bg-white px-5 py-3 text-sm font-semibold text-[#29415F] transition hover:bg-[#F1F4F8]"
             >
               View Website
             </Link>
 
             <Link
               href="/admin/orders"
-              className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700"
+              className="rounded-xl bg-[#142B49] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#0D1D33]"
             >
               Manage Orders
               {pendingOrders.length > 0
@@ -412,7 +379,7 @@ export default async function AdminDashboardPage() {
           {stats.map((stat) => (
             <article
               key={stat.label}
-              className="rounded-2xl border border-blue-100 bg-white p-6 shadow-sm"
+              className="rounded-2xl border border-[#DCE3EC] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
             >
               <p className="text-sm font-semibold text-slate-500">
                 {stat.label}
@@ -432,13 +399,12 @@ export default async function AdminDashboardPage() {
         </section>
 
         <p className="text-xs leading-6 text-slate-500">
-          Registered Customers comes from the
-          secure Supabase admin customer stats
-          function. Order and revenue statistics
-          use the existing admin orders API,
-          currently limited to the latest 200
-          orders. Designated test orders are
-          excluded from business statistics.
+          Registered Customers comes from the secure Supabase
+          admin customer stats function. Order and revenue
+          statistics use the existing admin orders API,
+          currently limited to the latest 200 orders.
+          Designated test orders are excluded from business
+          statistics.
         </p>
 
         {!ordersAvailable && (
@@ -447,9 +413,8 @@ export default async function AdminDashboardPage() {
               Order Statistics Unavailable
             </h2>
             <p className="mt-2 text-sm text-amber-800">
-              The order listing could not be
-              loaded. Product management remains
-              available.
+              The order listing could not be loaded.
+              Product management remains available.
             </p>
           </div>
         )}
@@ -460,9 +425,8 @@ export default async function AdminDashboardPage() {
               Customer Counter Unavailable
             </h2>
             <p className="mt-2 text-sm text-amber-800">
-              Please check the admin_customer_stats
-              function and the authenticated
-              admin permissions in Supabase.
+              Please check the admin_customer_stats function
+              and the authenticated admin permissions in Supabase.
             </p>
           </div>
         )}
@@ -471,9 +435,9 @@ export default async function AdminDashboardPage() {
         <section className="grid gap-5 md:grid-cols-2">
           <a
             href="#manage-products"
-            className="rounded-3xl border border-blue-100 bg-white p-7 shadow-sm transition hover:border-blue-300 hover:shadow-md"
+            className="rounded-3xl border border-[#DCE3EC] bg-white p-7 shadow-sm transition hover:border-[#AEBBCC] hover:shadow-md"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-2xl">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#E4EAF1] text-2xl">
               📦
             </div>
 
@@ -482,21 +446,20 @@ export default async function AdminDashboardPage() {
             </h2>
 
             <p className="mt-3 text-sm leading-7 text-slate-600">
-              Add products, edit listings,
-              upload product images and manage
-              subscription pricing plans.
+              Add products, edit listings, upload product images
+              and manage subscription pricing plans.
             </p>
 
-            <span className="mt-5 inline-block text-sm font-bold text-blue-600">
+            <span className="mt-5 inline-block text-sm font-bold text-[#142B49]">
               Open Product Manager →
             </span>
           </a>
 
           <Link
             href="/admin/orders"
-            className="rounded-3xl border border-emerald-100 bg-white p-7 shadow-sm transition hover:border-emerald-300 hover:shadow-md"
+            className="rounded-3xl border border-[#DCE3EC] bg-white p-7 shadow-sm transition hover:border-[#9EADBF] hover:shadow-md"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-2xl">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#E4EAF1] text-2xl">
               🧾
             </div>
 
@@ -505,22 +468,21 @@ export default async function AdminDashboardPage() {
             </h2>
 
             <p className="mt-3 text-sm leading-7 text-slate-600">
-              Review customer payment proofs,
-              approve payments and deliver
-              customer orders.
+              Review customer payment proofs, approve payments
+              and deliver customer orders.
             </p>
 
-            <span className="mt-5 inline-block text-sm font-bold text-emerald-700">
+            <span className="mt-5 inline-block text-sm font-bold text-[#29415F]">
               Open Order Manager →
             </span>
           </Link>
         </section>
 
         {/* Real Customer Orders */}
-        <section className="rounded-3xl border border-blue-100 bg-white p-6 shadow-sm sm:p-8">
+        <section className="rounded-3xl border border-[#DCE3EC] bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+              <p className="text-xs font-extrabold uppercase tracking-widest text-[#142B49]">
                 Real Customer Activity
               </p>
 
@@ -535,7 +497,7 @@ export default async function AdminDashboardPage() {
 
             <Link
               href="/admin/orders"
-              className="text-sm font-bold text-blue-600 hover:underline"
+              className="text-sm font-bold text-[#142B49] hover:underline"
             >
               View All Orders →
             </Link>
@@ -568,9 +530,8 @@ export default async function AdminDashboardPage() {
                 </h2>
 
                 <p className="mt-3 max-w-2xl text-sm leading-7 text-amber-900">
-                  These four designated testing
-                  orders are excluded from the
-                  real-order dashboard statistics.
+                  These four designated testing orders are
+                  excluded from the real-order dashboard statistics.
                 </p>
               </div>
 
@@ -580,9 +541,7 @@ export default async function AdminDashboardPage() {
                 </p>
 
                 <p className="mt-2 text-3xl font-extrabold text-amber-900">
-                  {ordersAvailable
-                    ? testOrders.length
-                    : "—"}
+                  {ordersAvailable ? testOrders.length : "—"}
                 </p>
 
                 <p className="mt-1 text-xs text-slate-500">
@@ -602,40 +561,35 @@ export default async function AdminDashboardPage() {
               }
             />
 
-            {ordersAvailable &&
-              missingTestIds.length > 0 && (
-                <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-5">
-                  <h3 className="text-sm font-extrabold text-amber-900">
-                    Test Orders Not in Loaded Records
-                  </h3>
+            {ordersAvailable && missingTestIds.length > 0 && (
+              <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-5">
+                <h3 className="text-sm font-extrabold text-amber-900">
+                  Test Orders Not in Loaded Records
+                </h3>
 
-                  <p className="mt-2 text-xs leading-6 text-amber-800">
-                    These orders were not returned
-                    by the current order list.
-                    They have not been deleted
-                    by this dashboard.
-                  </p>
+                <p className="mt-2 text-xs leading-6 text-amber-800">
+                  These orders were not returned by the current
+                  order list. They have not been deleted by this dashboard.
+                </p>
 
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {missingTestIds.map((id) => (
-                      <span
-                        key={id}
-                        className="rounded-lg border border-amber-200 bg-white px-3 py-2 font-mono text-xs font-semibold text-amber-900"
-                      >
-                        {id}
-                      </span>
-                    ))}
-                  </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {missingTestIds.map((id) => (
+                    <span
+                      key={id}
+                      className="rounded-lg border border-amber-200 bg-white px-3 py-2 font-mono text-xs font-semibold text-amber-900"
+                    >
+                      {id}
+                    </span>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
 
             <p className="mt-6 text-xs leading-6 text-slate-500">
-              Test classification affects this
-              dashboard only. Original database
-              records, payments and order statuses
-              remain unchanged. Test orders may
-              still appear in the existing order
-              manager and customer history.
+              Test classification affects this dashboard only.
+              Original database records, payments and order statuses
+              remain unchanged. Test orders may still appear in the
+              existing order manager and customer history.
             </p>
 
             <Link
@@ -650,7 +604,7 @@ export default async function AdminDashboardPage() {
         {/* Existing Product Management */}
         <section
           id="manage-products"
-          className="scroll-mt-24 rounded-3xl border border-blue-100 bg-white p-5 shadow-sm sm:p-8"
+          className="scroll-mt-24 rounded-3xl border border-[#DCE3EC] bg-white p-5 shadow-sm sm:p-8"
         >
           <div className="mb-7">
             <h2 className="text-2xl font-extrabold">
@@ -658,8 +612,8 @@ export default async function AdminDashboardPage() {
             </h2>
 
             <p className="mt-2 text-sm text-slate-500">
-              Add, edit and manage digital products,
-              images and subscription prices.
+              Add, edit and manage digital products, images
+              and subscription prices.
             </p>
           </div>
 
