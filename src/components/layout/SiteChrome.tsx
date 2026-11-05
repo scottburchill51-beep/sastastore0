@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
-import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
+import { Preloader } from "@/components/layout/Preloader";
 
 export function SiteChrome({
   children,
@@ -29,47 +29,21 @@ export function SiteChrome({
       pathname.startsWith(`${path}/`)
   );
 
-  // Keep admin and checkout screens free
-  // from mobile shopping navigation.
-  const isAdminPage =
-    pathname === "/admin" ||
-    pathname.startsWith("/admin/");
-
-  const isCheckoutPage =
-    pathname === "/checkout" ||
-    pathname.startsWith("/checkout/");
-
-  const showMobileNavigation =
-    !isAuthPage &&
-    !isAdminPage &&
-    !isCheckoutPage;
-
-  // Preserve the original auth page layout.
   if (isAuthPage) {
-    return <>{children}</>;
+    return (
+      <>
+        <Preloader />
+        {children}
+      </>
+    );
   }
 
   return (
     <>
+      <Preloader />
       <Header />
-
       {children}
-
       <Footer />
-
-      {showMobileNavigation && (
-        <>
-          {/* Space so footer is not hidden
-              behind the fixed bottom bar. */}
-          <div
-            aria-hidden="true"
-            className="h-[calc(76px+env(safe-area-inset-bottom,0px))] md:hidden"
-          />
-
-          <MobileBottomNav />
-        </>
-      )}
-
       <FloatingWhatsApp />
     </>
   );
