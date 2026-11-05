@@ -1,3 +1,4 @@
+
 import type { MetadataRoute } from "next";
 
 import { siteConfig } from "@/config/site";
@@ -19,30 +20,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/refund-policy",
   ];
 
-  const staticRoutes = staticPages.map((path) => ({
-    url: `${siteConfig.url}${path}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: path === "" ? 1 : 0.8,
-  }));
+  const staticRoutes: MetadataRoute.Sitemap =
+    staticPages.map((path) => ({
+      url: new URL(path, siteConfig.url).toString(),
+      changeFrequency: "weekly",
+      priority: path === "" ? 1 : 0.8,
+    }));
 
-  const productRoutes = products.map((product) => ({
-    url: `${siteConfig.url}/products/${product.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.9,
-  }));
+  const productRoutes: MetadataRoute.Sitemap =
+    products.map((product) => ({
+      url: new URL(
+        `/products/${encodeURIComponent(product.slug)}`,
+        siteConfig.url
+      ).toString(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    }));
 
-  const categoryRoutes = categories.map((category) => ({
-    url: `${siteConfig.url}/categories/${category.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
-  }));
+  const categoryRoutes: MetadataRoute.Sitemap =
+    categories.map((category) => ({
+      url: new URL(
+        `/categories/${encodeURIComponent(category.slug)}`,
+        siteConfig.url
+      ).toString(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    }));
 
-  return [
-    ...staticRoutes,
-    ...productRoutes,
-    ...categoryRoutes,
-  ];
+  // Prevent duplicate URLs.
+  const uniqueRoutes = new Map(
+    [...staticRoutes, ...productRoutes, ...categoryRoutes].map(
+      (route) => [route.url, route]
+    )
+  );
+
+  return Array.from(uniqueRoutes.values());
 }
