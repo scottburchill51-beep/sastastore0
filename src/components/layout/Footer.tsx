@@ -43,20 +43,20 @@ function FooterColumn({ title, links }: { title: string; links: { label: string;
 export function Footer() {
   const whatsappUrl = createWhatsAppUrl("Hello SastaStore, I need help with a product or order.");
   return (
-    <footer className="mt-auto overflow-hidden border-t border-[#e3ece5] bg-[#f6f9f6] text-[#24352b]">
-      <div className="border-b border-[#e0ebe2] bg-[#edf5ef]">
+    <footer className="mt-auto overflow-hidden border-t border-[#e3ece5] bg-[#edf4ee] text-[#24352b]">
+      <div className="border-b border-[#e0ebe2] bg-[#e3eee5]">
         <Container>
           <div className="flex flex-col items-center justify-between gap-4 py-6 text-center sm:flex-row sm:text-left">
             <div className="flex items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#267253] text-white"><Sparkles className="h-5 w-5" /></span>
-              <div><p className="text-sm font-extrabold">Need help choosing a digital product?</p><p className="mt-1 text-xs text-[#647568]">Our team can help you check plans and availability.</p></div>
+              <div><p className="text-sm font-extrabold">Need help choosing a digital product?</p><p className="mt-1 text-xs text-[#455b4b]">Our team can help you check plans and availability.</p></div>
             </div>
             <a href={whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-[#267253] px-5 py-3 text-xs font-black text-white transition hover:-translate-y-0.5 hover:bg-[#1f5e43]"><MessageCircle className="h-4 w-4" /> Chat on WhatsApp</a>
           </div>
         </Container>
       </div>
 
-      <div className="border-b border-[#e3ece5] bg-[#eef4ef] py-3">
+      <div className="border-b border-[#e3ece5] bg-[#e5efe6] py-3">
         <div className="sastastore-footer-marquee flex w-max items-center gap-8 whitespace-nowrap text-[10px] font-extrabold uppercase tracking-[.18em] text-[#65776a]">
           {[0, 1].map((copy) => <div key={copy} aria-hidden={copy === 1} className="flex items-center gap-8 pr-8"><span>AI tools</span><span className="text-[#267253]">✦</span><span>Creative software</span><span className="text-[#267253]">✦</span><span>Digital subscriptions</span><span className="text-[#267253]">✦</span><span>Productivity apps</span><span className="text-[#267253]">✦</span><span>Learning resources</span><span className="text-[#267253]">✦</span></div>)}
         </div>
@@ -71,11 +71,11 @@ export function Footer() {
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-7 text-[#647568]">Premium digital tools at Sasta prices. Explore software, AI tools and subscriptions for your everyday work.</p>
             <div className="mt-5 flex flex-wrap gap-2">
-              <a href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="WhatsApp support" className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[.05] text-[#d9e4db] transition hover:border-[#e8c875]/50 hover:bg-[#e8c875] hover:text-[#17251e]"><MessageCircle className="h-4 w-4" /></a>
+              <a href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="WhatsApp support" className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#cbdccf] border-[#cbdccf] bg-white text-[#267253] transition hover:border-[#267253] hover:bg-[#267253] hover:text-white"><MessageCircle className="h-4 w-4" /></a>
               <a href={telegramUrl} target="_blank" rel="noreferrer" aria-label="Telegram" className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[.05] text-[#d9e4db] transition hover:border-[#e8c875]/50 hover:bg-[#e8c875] hover:text-[#17251e]"><Send className="h-4 w-4" /></a>
               <a href={facebookUrl} target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[.05] text-[#d9e4db] transition hover:border-[#e8c875]/50 hover:bg-[#e8c875] hover:text-[#17251e]"><Globe className="h-4 w-4" /></a>
             </div>
-            <p className="mt-5 text-xs text-[#718174]">WhatsApp: <a className="font-bold text-[#267253] hover:text-[#1f5e43]" href={whatsappUrl} target="_blank" rel="noreferrer">{siteConfig.whatsapp.display}</a></p>
+            <p className="mt-5 text-xs text-[#526657]">WhatsApp: <a className="font-bold text-[#267253] hover:text-[#1f5e43]" href={whatsappUrl} target="_blank" rel="noreferrer">{siteConfig.whatsapp.display}</a></p>
           </div>
           <FooterColumn title="Explore" links={shopLinks} />
           <FooterColumn title="Customer Care" links={helpLinks} />
