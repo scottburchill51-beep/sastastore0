@@ -28,6 +28,7 @@ export default async function CourseDetailsPage({ params }: Props) {
 
   const message = encodeURIComponent(`Hi SastaStore, I would like to request free access to: ${course.title}`);
   const accessUrl = `https://wa.me/${siteConfig.whatsapp.number}?text=${message}`;
+  const hasDirectAccess = Boolean(course.driveUrl);
 
   return (
     <main className="min-h-screen bg-[#08090c] py-10 text-white sm:py-16">
@@ -45,10 +46,10 @@ export default async function CourseDetailsPage({ params }: Props) {
             <p className="mt-5 text-sm leading-7 text-zinc-400">{course.description}</p>
             <div className="mt-7 space-y-3">
               <p className="flex items-center gap-3 text-sm text-zinc-300"><CheckCircle2 className="h-4 w-4 text-emerald-400" /> No course fee</p>
-              <p className="flex items-center gap-3 text-sm text-zinc-300"><BookOpen className="h-4 w-4 text-emerald-400" /> Learning material and access details confirmed by SastaStore</p>
+              <p className="flex items-center gap-3 text-sm text-zinc-300"><BookOpen className="h-4 w-4 text-emerald-400" /> {hasDirectAccess ? "Open the shared course folder in Google Drive" : "Contact SastaStore for course access details"}</p>
             </div>
-            <a href={accessUrl} target="_blank" rel="noreferrer" className="mt-9 inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-400 px-6 py-4 text-sm font-extrabold text-[#07110a] transition hover:bg-emerald-300">Request Free Course Access <ArrowUpRight className="h-4 w-4" /></a>
-            <p className="mt-4 text-xs leading-6 text-zinc-500">This button contacts our team to provide the course material. Direct course downloads will be enabled once the authorized files are restored and uploaded.</p>
+            <a href={course.driveUrl ?? accessUrl} target="_blank" rel="noreferrer" className="mt-9 inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-400 px-6 py-4 text-sm font-extrabold text-[#07110a] transition hover:bg-emerald-300">{hasDirectAccess ? "Open Course in Google Drive" : "Request Free Course Access"} <ArrowUpRight className="h-4 w-4" /></a>
+            <p className="mt-4 text-xs leading-6 text-zinc-500">{hasDirectAccess ? "This opens the original shared Google Drive folder. Access depends on the folder owner's sharing settings." : "This button contacts our team to provide the course material. Direct links will be added when verified."}</p>
           </div>
         </div>
       </Container>
