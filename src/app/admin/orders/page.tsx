@@ -46,7 +46,7 @@ export default async function AdminOrdersPage() {
 
           <Link
             href="/"
-            className="mt-6 inline-flex rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white"
+            className="mt-6 inline-flex rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white"
           >
             Back to Store
           </Link>
