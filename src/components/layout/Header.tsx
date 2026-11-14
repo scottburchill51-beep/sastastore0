@@ -235,6 +235,45 @@ export function Header() {
         }
       `}</style>
 
+      <style jsx global>{`
+        header.sticky {
+          background: rgba(13, 48, 41, 0.97) !important;
+          border-color: rgba(200, 229, 218, 0.16) !important;
+          color: #f7faf8 !important;
+          box-shadow: 0 8px 30px rgba(5, 24, 19, 0.18) !important;
+        }
+        header.sticky .sastastore-marquee {
+          background: linear-gradient(90deg, #0a2823, #17483b, #0a2823) !important;
+          border-color: rgba(200, 229, 218, 0.13) !important;
+        }
+        header.sticky .sastastore-marquee span { color: #d6e9df !important; }
+        header.sticky .sastastore-marquee span:first-child { background: #f5ce78 !important; }
+        header.sticky a { color: #d6e9df; }
+        header.sticky a:hover { color: #f5ce78; }
+        header.sticky a[aria-current="page"] { color: #f5ce78 !important; }
+        header.sticky a.group > span:first-child {
+          background: linear-gradient(135deg, #f5ce78, #e9b94f) !important;
+          color: #17372e !important;
+          box-shadow: 0 6px 18px rgba(0,0,0,.2) !important;
+        }
+        header.sticky a.group > span:last-child { color: #fff !important; }
+        header.sticky a.group > span:last-child span { color: #f5ce78 !important; }
+        header.sticky nav a span { background: #f5ce78 !important; }
+        header.sticky button {
+          border-color: rgba(214,233,223,.2) !important;
+          background-color: #17483b !important;
+          color: #fff !important;
+        }
+        header.sticky button:hover { background-color: #205b49 !important; }
+        header.sticky #sastastore-mobile-menu {
+          border-color: rgba(214,233,223,.16) !important;
+          background: #0d3029 !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          header.sticky .sastastore-marquee-track { animation: none !important; }
+        }
+      `}</style>
+
       <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 text-slate-900 shadow-sm shadow-blue-100/40 backdrop-blur-xl">
         {/* Announcement Bar */}
         <div className="sastastore-marquee overflow-hidden border-b border-blue-100 bg-gradient-to-r from-[#EAF4FF] via-[#F4FAFF] to-[#E5FBF3]">
