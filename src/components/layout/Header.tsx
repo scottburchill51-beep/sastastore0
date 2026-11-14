@@ -277,9 +277,15 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
               className="group flex shrink-0 items-center gap-2.5"
             >
-              <span aria-label="SastaStore" className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#267253] text-2xl font-black tracking-tight text-white shadow-sm">
-                S
-              </span>
+              <img
+                src="/images/sastastore-logo.png"
+                alt="SastaStore"
+                width="48"
+                height="48"
+                fetchPriority="high"
+                decoding="async"
+                className="h-12 w-12 shrink-0 rounded-xl object-contain"
+              />
 
               <span className="text-xl font-extrabold tracking-tight">
                 <span className="text-slate-900">
