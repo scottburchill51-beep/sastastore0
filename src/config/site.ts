@@ -13,6 +13,7 @@ export const siteConfig = {
   navigation: [
     { label: "Home", href: "/" },
     { label: "Products", href: "/products" },
+    { label: "Courses", href: "/courses" },
     { label: "Categories", href: "/categories" },
     { label: "Services", href: "/services" },
     { label: "Deals", href: "/deals" },
