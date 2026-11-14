@@ -120,7 +120,7 @@ export function MobileBottomNav() {
   return (
     <nav
       aria-label="Mobile primary navigation"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-[#38675E] bg-[#123B35] shadow-[0_-5px_25px_rgba(18,59,53,0.15)] md:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-[#38675E] bg-[#17372e] shadow-[0_-5px_25px_rgba(18,59,53,0.15)] md:hidden"
       style={{
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
@@ -134,10 +134,10 @@ export function MobileBottomNav() {
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`mx-0.5 flex min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C76A] ${
+              className={`mx-0.5 flex min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#267253] ${
                 active
-                  ? "bg-[#F5C76A] text-[#123B35]"
-                  : "text-[#E0EEE9] hover:bg-[#205047] hover:text-white"
+                  ? "bg-[#267253] text-[#17372e]"
+                  : "text-[#E0EEE9] hover:bg-[#1f5e43] hover:text-white"
               }`}
             >
               <NavigationIcon
