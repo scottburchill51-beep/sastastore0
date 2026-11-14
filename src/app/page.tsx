@@ -14,7 +14,8 @@ export const metadata = {
   description: "Shop AI tools, creative software, productivity subscriptions and digital services at SastaStore.",
 };
 
-const featuredProducts = products.filter((product) => product.featured || product.popular).slice(0, 6);\nconst spotlightProduct = featuredProducts[0];
+const featuredProducts = products.filter((product) => product.featured || product.popular).slice(0, 6);
+const spotlightProduct = featuredProducts[0];
 const categories = [
   { title: "AI & Automation", subtitle: "ChatGPT, Claude, AI assistants", icon: "✦", href: "/categories?category=ai-tools", count: "AI tools" },
   { title: "Design & Video", subtitle: "Canva, CapCut, Figma and more", icon: "◈", href: "/categories?category=design-creative", count: "Creative tools" },
