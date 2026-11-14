@@ -26,20 +26,20 @@ export default function DealsPage() {
   return (
     <main className="min-h-screen overflow-hidden bg-gradient-to-b from-[#EFF8FF] via-white to-[#ECFDF5] text-slate-900">
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-blue-100 py-16 sm:py-24">
-        <div className="pointer-events-none absolute -left-20 top-0 h-72 w-72 rounded-full bg-sky-200/50 blur-3xl" />
+      <section className="relative overflow-hidden border-b border-emerald-100 py-16 sm:py-24">
+        <div className="pointer-events-none absolute -left-20 top-0 h-72 w-72 rounded-full bg-emerald-200/50 blur-3xl" />
         <div className="pointer-events-none absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-emerald-200/50 blur-3xl" />
 
         <Container>
           <div className="relative mx-auto max-w-4xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-5 py-2 text-xs font-extrabold uppercase tracking-widest text-blue-600 shadow-sm">
-              <span className="h-2 w-2 rounded-full bg-blue-500" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-5 py-2 text-xs font-extrabold uppercase tracking-widest text-emerald-700 shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-emerald-600" />
               SastaStore Special Offers
             </span>
 
             <h1 className="mt-7 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
               Premium Digital Tools.
-              <span className="block text-blue-600">
+              <span className="block text-emerald-700">
                 Better Deals.
               </span>
             </h1>
@@ -54,14 +54,14 @@ export default function DealsPage() {
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <a
                 href="#active-deals"
-                className="rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+                className="rounded-xl bg-emerald-700 px-6 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-emerald-200 transition hover:bg-emerald-800"
               >
                 Explore Deals
               </a>
 
               <Link
                 href="/products"
-                className="rounded-xl border border-blue-200 bg-white px-6 py-3.5 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                className="rounded-xl border border-emerald-200 bg-white px-6 py-3.5 text-sm font-extrabold text-emerald-800 transition hover:bg-emerald-50"
               >
                 All Products
               </Link>
@@ -75,7 +75,7 @@ export default function DealsPage() {
               ].map((label) => (
                 <div
                   key={label}
-                  className="rounded-2xl border border-blue-100 bg-white/80 px-4 py-4 text-center text-xs font-bold text-slate-700 shadow-sm"
+                  className="rounded-2xl border border-emerald-100 bg-white/80 px-4 py-4 text-center text-xs font-bold text-slate-700 shadow-sm"
                 >
                   <span className="mr-2 text-emerald-600">
                     ✓
@@ -99,7 +99,7 @@ export default function DealsPage() {
       </section>
 
       {/* How Deals Work */}
-      <section className="border-y border-blue-100 bg-white/70 py-14 sm:py-20">
+      <section className="border-y border-emerald-100 bg-white/70 py-14 sm:py-20">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-600">
@@ -117,8 +117,8 @@ export default function DealsPage() {
           </div>
 
           <div className="mt-10 grid gap-5 md:grid-cols-3">
-            <article className="rounded-3xl border border-blue-100 bg-white p-7 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 font-extrabold text-blue-700">
+            <article className="rounded-3xl border border-emerald-100 bg-white p-7 shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 font-extrabold text-emerald-800">
                 01
               </div>
 
@@ -134,8 +134,8 @@ export default function DealsPage() {
               </p>
             </article>
 
-            <article className="rounded-3xl border border-blue-100 bg-white p-7 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-100 font-extrabold text-sky-700">
+            <article className="rounded-3xl border border-emerald-100 bg-white p-7 shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 font-extrabold text-sky-700">
                 02
               </div>
 
@@ -172,10 +172,10 @@ export default function DealsPage() {
       {/* Updates and Support */}
       <section className="py-16">
         <Container>
-          <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-sky-600 p-8 text-white shadow-xl shadow-blue-200/40 sm:p-12">
+          <div className="rounded-3xl bg-gradient-to-r from-emerald-700 to-emerald-700 p-8 text-white shadow-xl shadow-emerald-200/40 sm:p-12">
             <div className="flex flex-col justify-between gap-7 lg:flex-row lg:items-center">
               <div className="max-w-xl">
-                <p className="text-xs font-extrabold uppercase tracking-widest text-blue-100">
+                <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-100">
                   More Offers & Updates
                 </p>
 
@@ -183,7 +183,7 @@ export default function DealsPage() {
                   Looking for a Special Offer?
                 </h2>
 
-                <p className="mt-4 text-sm leading-8 text-blue-50">
+                <p className="mt-4 text-sm leading-8 text-emerald-50">
                   Follow our WhatsApp Channel
                   for product announcements or
                   ask our team about the latest
@@ -196,7 +196,7 @@ export default function DealsPage() {
                   href={whatsappChannelUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-xl bg-white px-6 py-3.5 text-center text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                  className="rounded-xl bg-white px-6 py-3.5 text-center text-sm font-extrabold text-emerald-800 transition hover:bg-emerald-50"
                 >
                   WhatsApp Channel
                 </a>
