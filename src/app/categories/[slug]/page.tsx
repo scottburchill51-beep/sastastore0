@@ -55,8 +55,8 @@ export default async function CategoryPage({
   return (
     <main className="min-h-screen overflow-hidden bg-gradient-to-b from-[#EFF8FF] via-white to-[#ECFDF5] text-slate-900">
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-blue-100 py-12 sm:py-16">
-        <div className="pointer-events-none absolute -left-20 top-0 h-56 w-56 rounded-full bg-sky-200/40 blur-3xl" />
+      <section className="relative overflow-hidden border-b border-emerald-100 py-12 sm:py-16">
+        <div className="pointer-events-none absolute -left-20 top-0 h-56 w-56 rounded-full bg-emerald-200/40 blur-3xl" />
 
         <Container>
           <nav
@@ -65,7 +65,7 @@ export default async function CategoryPage({
           >
             <Link
               href="/"
-              className="hover:text-blue-600"
+              className="hover:text-emerald-700"
             >
               Home
             </Link>
@@ -74,25 +74,25 @@ export default async function CategoryPage({
 
             <Link
               href="/categories"
-              className="hover:text-blue-600"
+              className="hover:text-emerald-700"
             >
               Categories
             </Link>
 
             <span>/</span>
 
-            <span className="font-semibold text-blue-700">
+            <span className="font-semibold text-emerald-800">
               {category.name}
             </span>
           </nav>
 
           <div className="relative flex flex-col items-start gap-6 sm:flex-row sm:items-center">
-            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl border border-blue-200 bg-white text-blue-600 shadow-md shadow-blue-100">
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl border border-emerald-200 bg-white text-emerald-700 shadow-md shadow-emerald-100">
               <CategoryIcon slug={category.slug} />
             </div>
 
             <div>
-              <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+              <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-700">
                 SastaStore Category
               </p>
 
@@ -124,7 +124,7 @@ export default async function CategoryPage({
 
             <Link
               href="/categories"
-              className="rounded-xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-50"
+              className="rounded-xl border border-emerald-200 bg-white px-5 py-3 text-sm font-bold text-emerald-800 transition hover:bg-emerald-50"
             >
               All Categories
             </Link>
@@ -138,16 +138,16 @@ export default async function CategoryPage({
       </section>
 
       {/* Bottom CTA */}
-      <section className="border-t border-blue-100 bg-white/60 py-14">
+      <section className="border-t border-emerald-100 bg-white/60 py-14">
         <Container>
-          <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-sky-600 p-8 text-white shadow-lg shadow-blue-100 sm:p-10">
+          <div className="rounded-3xl bg-gradient-to-r from-emerald-700 to-emerald-700 p-8 text-white shadow-lg shadow-emerald-100 sm:p-10">
             <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
               <div>
                 <h2 className="text-2xl font-extrabold">
                   Explore More Digital Products
                 </h2>
 
-                <p className="mt-3 max-w-xl text-sm leading-7 text-blue-50">
+                <p className="mt-3 max-w-xl text-sm leading-7 text-emerald-50">
                   Discover more subscriptions and
                   digital tools across SastaStore.
                 </p>
@@ -156,7 +156,7 @@ export default async function CategoryPage({
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/products"
-                  className="rounded-xl bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50"
+                  className="rounded-xl bg-white px-5 py-3 text-sm font-bold text-emerald-800 hover:bg-emerald-50"
                 >
                   All Products
                 </Link>
