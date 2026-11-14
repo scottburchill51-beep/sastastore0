@@ -1,331 +1,112 @@
-
 import Link from "next/link";
+import { ArrowUpRight, Facebook, MessageCircle, Send, ShieldCheck, Sparkles } from "lucide-react";
 
 import { Container } from "@/components/ui/Container";
+import { siteConfig } from "@/config/site";
 import { createWhatsAppUrl } from "@/lib/whatsapp";
 
 const shopLinks = [
   { label: "All Products", href: "/products" },
-  { label: "Categories", href: "/categories" },
-  { label: "Latest Deals", href: "/deals" },
+  { label: "Browse Categories", href: "/categories" },
+  { label: "Special Deals", href: "/deals" },
+  { label: "Free Course Library", href: "/courses" },
+  { label: "Our Services", href: "/services" },
 ];
-
-const supportLinks = [
-  { label: "Track Your Order", href: "/track" },
+const helpLinks = [
+  { label: "Track an Order", href: "/track" },
   { label: "My Account", href: "/account" },
-  { label: "Help & FAQ", href: "/faq" },
+  { label: "Frequently Asked Questions", href: "/faq" },
   { label: "Contact Support", href: "/contact" },
   { label: "Refund Policy", href: "/refund-policy" },
 ];
-
 const companyLinks = [
   { label: "About SastaStore", href: "/about" },
   { label: "Privacy Policy", href: "/privacy" },
   { label: "Terms & Conditions", href: "/terms" },
 ];
 
+const whatsappChannelUrl = "https://whatsapp.com/channel/0029Vb7BXu2B4hdMiWIlwY1v";
 const telegramUrl = "https://t.me/Techboyy0";
+const facebookUrl = "https://www.facebook.com/share/1cbKHVxxJi/";
 
-const whatsappChannelUrl =
-  "https://whatsapp.com/channel/0029Vb7BXu2B4hdMiWIlwY1v";
-
-const facebookUrl =
-  "https://www.facebook.com/share/1cbKHVxxJi/";
-
-const highlights = [
-  {
-    title: "AI Tools",
-    subtitle: "Explore AI-powered productivity",
-    symbol: "✦",
-    href: "/categories",
-  },
-  {
-    title: "Creative Software",
-    subtitle: "Design, edit and create",
-    symbol: "◈",
-    href: "/categories",
-  },
-  {
-    title: "Digital Subscriptions",
-    subtitle: "Discover available plans",
-    symbol: "★",
-    href: "/products",
-  },
-  {
-    title: "Special Deals",
-    subtitle: "Browse current offers",
-    symbol: "%",
-    href: "/deals",
-  },
-  {
-    title: "Order Tracking",
-    subtitle: "Follow your purchase",
-    symbol: "✓",
-    href: "/track",
-  },
-  {
-    title: "Customer Support",
-    subtitle: "Get help when you need it",
-    symbol: "☎",
-    href: "/contact",
-  },
-];
-
-type FooterLink = {
-  label: string;
-  href: string;
-};
-
-function FooterLinks({
-  title,
-  links,
-}: {
-  title: string;
-  links: FooterLink[];
-}) {
+function FooterColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
   return (
-    <div className="min-w-0">
-      <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#F5C76A]">
-        {title}
-      </h3>
-
-      <nav
-        aria-label={`${title} links`}
-        className="mt-3 flex flex-col gap-2.5"
-      >
-        {links.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="w-fit text-xs leading-5 text-[#C8E5DA] transition hover:text-[#F5C76A] sm:text-sm"
-          >
-            {item.label}
-          </Link>
-        ))}
-      </nav>
+    <div>
+      <h3 className="text-[11px] font-black uppercase tracking-[.18em] text-[#e8c875]">{title}</h3>
+      <ul className="mt-5 space-y-3">
+        {links.map((link) => <li key={link.href}><Link href={link.href} className="group inline-flex items-center gap-1.5 text-sm text-[#c1cec4] transition hover:translate-x-1 hover:text-white">{link.label}<ArrowUpRight className="h-3 w-3 opacity-0 transition group-hover:opacity-100" /></Link></li>)}
+      </ul>
     </div>
   );
 }
 
-function HighlightCard({
-  item,
-}: {
-  item: (typeof highlights)[number];
-}) {
-  return (
-    <Link
-      href={item.href}
-      className="group flex w-[205px] shrink-0 items-center gap-3 rounded-xl border border-[#427467] bg-[#205047] p-3 transition-colors hover:border-[#F5C76A] hover:bg-[#2A6054] sm:w-[260px]"
-    >
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#32695C] text-lg font-black text-[#F5C76A]">
-        {item.symbol}
-      </span>
-
-      <span className="min-w-0">
-        <span className="block text-xs font-extrabold text-white sm:text-sm">
-          {item.title}
-        </span>
-
-        <span className="mt-1 block text-[10px] leading-4 text-[#C8E5DA] sm:text-xs">
-          {item.subtitle}
-        </span>
-      </span>
-    </Link>
-  );
-}
-
 export function Footer() {
-  const whatsappSupportUrl = createWhatsAppUrl(
-    "Hello SastaStore, I need help with my order, payment or subscription.",
-  );
-
+  const whatsappUrl = createWhatsAppUrl("Hello SastaStore, I need help with a product or order.");
   return (
-    <footer className="mt-auto overflow-hidden bg-[#123B35] text-white">
-      {/* MOVING DIGITAL TOOL HIGHLIGHTS */}
-      <section
-        aria-labelledby="footer-highlights-heading"
-        className="border-b border-[#38675E] bg-[#0E302B] py-5"
-      >
+    <footer className="mt-auto overflow-hidden bg-[#101a16] text-white">
+      <div className="border-b border-white/10 bg-[#17251e]">
         <Container>
-          <h2
-            id="footer-highlights-heading"
-            className="mb-3 text-sm font-extrabold text-white sm:text-base"
-          >
-            Explore More With SastaStore
-          </h2>
-        </Container>
-
-        <div className="overflow-hidden">
-          <div className="sastastore-footer-track flex w-max">
-            {[0, 1].map((copy) => (
-              <div
-                key={copy}
-                className="flex shrink-0 gap-3 pr-3"
-                aria-hidden={copy === 1}
-                inert={copy === 1}
-              >
-                {highlights.map((item) => (
-                  <HighlightCard
-                    key={`${copy}-${item.title}`}
-                    item={item}
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* MAIN FOOTER */}
-      <Container>
-        <div className="grid grid-cols-2 gap-x-5 gap-y-7 py-8 sm:grid-cols-4 sm:gap-7 sm:py-10">
-          {/* BRAND */}
-          <div className="col-span-2 sm:col-span-1">
-            <Link
-              href="/"
-              aria-label="SastaStore homepage"
-              className="inline-flex items-center gap-2"
-            >
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F5C76A] text-lg font-black text-[#123B35]">
-                S
-              </span>
-
-              <span className="text-xl font-extrabold tracking-tight">
-                Sasta
-                <span className="text-[#F5C76A]">
-                  Store
-                </span>
-              </span>
-            </Link>
-
-            <p className="mt-3 max-w-xs text-xs leading-5 text-[#C8E5DA]">
-              Your digital marketplace for premium
-              tools, software and subscriptions.
-            </p>
-
-            <div className="mt-4 flex flex-wrap gap-2">
-              <a
-                href={whatsappSupportUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center rounded-lg border border-[#4F8175] bg-[#205047] px-3 py-2 text-[11px] font-bold text-white transition hover:bg-[#2A6258]"
-              >
-                WhatsApp
-              </a>
-
-              <a
-                href={telegramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center rounded-lg border border-[#4F8175] bg-[#205047] px-3 py-2 text-[11px] font-bold text-white transition hover:bg-[#2A6258]"
-              >
-                Telegram
-              </a>
+          <div className="flex flex-col items-center justify-between gap-4 py-6 text-center sm:flex-row sm:text-left">
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e8c875] text-[#18251c]"><Sparkles className="h-5 w-5" /></span>
+              <div><p className="text-sm font-extrabold">Need help choosing a digital product?</p><p className="mt-1 text-xs text-[#b9c9bd]">Our team can help you check plans and availability.</p></div>
             </div>
-          </div>
-
-          <FooterLinks
-            title="Shop"
-            links={shopLinks}
-          />
-
-          <FooterLinks
-            title="Support"
-            links={supportLinks}
-          />
-
-          <FooterLinks
-            title="Company"
-            links={companyLinks}
-          />
-        </div>
-      </Container>
-
-      {/* SOCIAL AND COPYRIGHT */}
-      <div className="border-t border-[#38675E] bg-[#0E302B]">
-        <Container>
-          <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-center text-[11px] text-[#B8D8CC] sm:text-left">
-              © {new Date().getFullYear()} SastaStore.
-              All rights reserved.
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-              <a
-                href={whatsappChannelUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[11px] font-semibold text-[#C8E5DA] hover:text-[#F5C76A]"
-              >
-                WhatsApp Channel
-              </a>
-
-              <a
-                href={facebookUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[11px] font-semibold text-[#C8E5DA] hover:text-[#F5C76A]"
-              >
-                Facebook
-              </a>
-
-              <Link
-                href="/privacy"
-                className="text-[11px] text-[#C8E5DA] hover:text-[#F5C76A]"
-              >
-                Privacy
-              </Link>
-
-              <Link
-                href="/terms"
-                className="text-[11px] text-[#C8E5DA] hover:text-[#F5C76A]"
-              >
-                Terms
-              </Link>
-
-              <Link
-                href="/refund-policy"
-                className="text-[11px] text-[#C8E5DA] hover:text-[#F5C76A]"
-              >
-                Refunds
-              </Link>
-            </div>
+            <a href={whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-[#e8c875] px-5 py-3 text-xs font-black text-[#18251c] transition hover:-translate-y-0.5 hover:bg-[#f4d994]"><MessageCircle className="h-4 w-4" /> Chat on WhatsApp</a>
           </div>
         </Container>
       </div>
 
-      {/* CONTINUOUS MOVING HIGHLIGHTS */}
+      <div className="border-b border-white/[.08] bg-[#0c1511] py-3">
+        <div className="sastastore-footer-marquee flex w-max items-center gap-8 whitespace-nowrap text-[10px] font-extrabold uppercase tracking-[.18em] text-[#b8c8bc]">
+          {[0, 1].map((copy) => <div key={copy} aria-hidden={copy === 1} className="flex items-center gap-8 pr-8"><span>AI tools</span><span className="text-[#e8c875]">✦</span><span>Creative software</span><span className="text-[#e8c875]">✦</span><span>Digital subscriptions</span><span className="text-[#e8c875]">✦</span><span>Productivity apps</span><span className="text-[#e8c875]">✦</span><span>Learning resources</span><span className="text-[#e8c875]">✦</span></div>)}
+        </div>
+      </div>
+
+      <Container>
+        <div className="grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.45fr_1fr_1fr_1fr] lg:gap-12 lg:py-16">
+          <div>
+            <Link href="/" className="inline-flex items-center gap-3" aria-label="SastaStore homepage">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#e8c875] text-xl font-black text-[#18251c]">S</span>
+              <span className="text-2xl font-black tracking-tight">Sasta<span className="text-[#e8c875]">Store</span></span>
+            </Link>
+            <p className="mt-5 max-w-sm text-sm leading-7 text-[#b9c9bd]">Premium digital tools at Sasta prices. Explore software, AI tools and subscriptions for your everyday work.</p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <a href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="WhatsApp support" className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[.05] text-[#d9e4db] transition hover:border-[#e8c875]/50 hover:bg-[#e8c875] hover:text-[#17251e]"><MessageCircle className="h-4 w-4" /></a>
+              <a href={telegramUrl} target="_blank" rel="noreferrer" aria-label="Telegram" className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[.05] text-[#d9e4db] transition hover:border-[#e8c875]/50 hover:bg-[#e8c875] hover:text-[#17251e]"><Send className="h-4 w-4" /></a>
+              <a href={facebookUrl} target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[.05] text-[#d9e4db] transition hover:border-[#e8c875]/50 hover:bg-[#e8c875] hover:text-[#17251e]"><Facebook className="h-4 w-4" /></a>
+            </div>
+            <p className="mt-5 text-xs text-[#93a69a]">WhatsApp: <a className="font-bold text-[#e8c875] hover:text-white" href={whatsappUrl} target="_blank" rel="noreferrer">{siteConfig.whatsapp.display}</a></p>
+          </div>
+          <FooterColumn title="Explore" links={shopLinks} />
+          <FooterColumn title="Customer Care" links={helpLinks} />
+          <div>
+            <FooterColumn title="Company" links={companyLinks} />
+            <div className="mt-8 rounded-xl border border-white/10 bg-white/[.04] p-4">
+              <div className="flex items-center gap-2 text-xs font-extrabold text-white"><ShieldCheck className="h-4 w-4 text-[#e8c875]" /> Shop with clarity</div>
+              <p className="mt-2 text-xs leading-5 text-[#aebeb2]">Check the product details, plan duration and terms with our team before confirming an order.</p>
+            </div>
+          </div>
+        </div>
+      </Container>
+
+      <div className="border-t border-white/[.09] bg-[#0a120e]">
+        <Container>
+          <div className="flex flex-col items-center justify-between gap-3 py-5 text-center sm:flex-row sm:text-left">
+            <p className="text-[11px] text-[#93a69a]">© {new Date().getFullYear()} SastaStore. All rights reserved.</p>
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11px] font-semibold text-[#b9c9bd]">
+              <a href={whatsappChannelUrl} target="_blank" rel="noreferrer" className="hover:text-[#e8c875]">WhatsApp Channel</a>
+              <Link href="/privacy" className="hover:text-[#e8c875]">Privacy</Link>
+              <Link href="/terms" className="hover:text-[#e8c875]">Terms</Link>
+              <Link href="/refund-policy" className="hover:text-[#e8c875]">Refunds</Link>
+            </div>
+          </div>
+        </Container>
+      </div>
       <style>{`
-        @keyframes sastastore-footer-scroll {
-          from {
-            transform: translateX(0);
-          }
-
-          to {
-            transform: translateX(-50%);
-          }
-        }
-
-        .sastastore-footer-track {
-          animation: sastastore-footer-scroll
-            45s linear infinite;
-          will-change: transform;
-        }
-
-        .sastastore-footer-track:hover,
-        .sastastore-footer-track:focus-within {
-          animation-play-state: paused;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .sastastore-footer-track {
-            animation: none;
-          }
-
-          .sastastore-footer-track > div:last-child {
-            display: none;
-          }
-        }
+        @keyframes sastastore-footer-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .sastastore-footer-marquee { animation: sastastore-footer-marquee 34s linear infinite; }
+        .sastastore-footer-marquee:hover { animation-play-state: paused; }
+        @media (prefers-reduced-motion: reduce) { .sastastore-footer-marquee { animation: none; } }
       `}</style>
     </footer>
   );
