@@ -100,12 +100,12 @@ export default function HomePage() {
                 </div>
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   {featuredProducts.slice(0, 4).map((product, index) => (
-                    <Link key={product.slug} href={`/products/${encodeURIComponent(product.slug)}`} className="group relative rounded-xl border border-[#e1e7df] bg-white p-3 transition duration-300 hover:-translate-y-1 hover:border-[#b5c8ad] hover:shadow-lg">
+                    <Link key={product.slug} href={`/products/${encodeURIComponent(product.slug)}`} className="group relative rounded-2xl border border-[#e1e7df] bg-white p-4 shadow-[0_5px_18px_rgba(23,55,46,.04)] transition duration-300 hover:-translate-y-1 hover:border-[#b5c8ad] hover:shadow-[0_16px_32px_rgba(23,55,46,.12)]">
                       <div className="flex items-start justify-between gap-2">
-                        <ProductLogo name={product.name} logo={product.logo} priority={index < 2} />
+                        <ProductLogo name={product.name} logo={product.logo} size="large" priority={index < 2} />
                         <span className="rounded-full bg-[#eff4ed] px-2 py-1 text-[9px] font-extrabold uppercase tracking-wide text-[#477052]">{product.badge || "Featured"}</span>
                       </div>
-                      <h3 className="mt-3 line-clamp-1 text-sm font-extrabold">{product.name}</h3>
+                      <h3 className="mt-4 line-clamp-1 text-sm font-extrabold tracking-tight">{product.name}</h3>
                       <p className="mt-1 text-[11px] text-[#7b887e]">{product.plans.length > 1 ? `${product.plans.length} plans available` : product.plans[0]?.duration || "Digital access"}</p>
                       <div className="mt-3 flex items-center justify-between border-t border-[#edf0eb] pt-3">
                         <span className="text-[10px] text-[#829086]">From</span>
