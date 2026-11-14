@@ -278,7 +278,7 @@ export function Header() {
               className="group flex shrink-0 items-center gap-2.5"
             >
               <img
-                src="/images/sastastore-logo.png"
+                src="/images/Futuristic%20Gradient%20S%20Logo.png"
                 alt="SastaStore"
                 width="48"
                 height="48"
