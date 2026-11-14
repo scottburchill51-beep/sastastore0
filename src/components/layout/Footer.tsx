@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, Facebook, MessageCircle, Send, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowUpRight, Globe, MessageCircle, Send, ShieldCheck, Sparkles } from "lucide-react";
 
 import { Container } from "@/components/ui/Container";
 import { siteConfig } from "@/config/site";
@@ -73,7 +73,7 @@ export function Footer() {
             <div className="mt-5 flex flex-wrap gap-2">
               <a href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="WhatsApp support" className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[.05] text-[#d9e4db] transition hover:border-[#e8c875]/50 hover:bg-[#e8c875] hover:text-[#17251e]"><MessageCircle className="h-4 w-4" /></a>
               <a href={telegramUrl} target="_blank" rel="noreferrer" aria-label="Telegram" className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[.05] text-[#d9e4db] transition hover:border-[#e8c875]/50 hover:bg-[#e8c875] hover:text-[#17251e]"><Send className="h-4 w-4" /></a>
-              <a href={facebookUrl} target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[.05] text-[#d9e4db] transition hover:border-[#e8c875]/50 hover:bg-[#e8c875] hover:text-[#17251e]"><Facebook className="h-4 w-4" /></a>
+              <a href={facebookUrl} target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[.05] text-[#d9e4db] transition hover:border-[#e8c875]/50 hover:bg-[#e8c875] hover:text-[#17251e]"><Globe className="h-4 w-4" /></a>
             </div>
             <p className="mt-5 text-xs text-[#93a69a]">WhatsApp: <a className="font-bold text-[#e8c875] hover:text-white" href={whatsappUrl} target="_blank" rel="noreferrer">{siteConfig.whatsapp.display}</a></p>
           </div>
