@@ -240,44 +240,7 @@ export function Header() {
         @media (prefers-reduced-motion: reduce) { .sastastore-marquee-track { animation: none !important; } }
       `}</style>
 
-      <style jsx global>{`
-        header.sticky {
-          background: rgba(30, 58, 138, 0.97) !important;
-          border-color: rgba(219, 234, 254, 0.16) !important;
-          color: #f7faf8 !important;
-          box-shadow: 0 8px 30px rgba(30, 64, 175, 0.18) !important;
-        }
-        header.sticky .sastastore-marquee {
-          background: linear-gradient(90deg, #1e3a8a, #267253, #1e3a8a) !important;
-          border-color: rgba(219, 234, 254, 0.13) !important;
-        }
-        header.sticky .sastastore-marquee span { color: #dbeafe !important; }
-        header.sticky .sastastore-marquee span:first-child { background: #60a5fa !important; }
-        header.sticky a { color: #dbeafe; }
-        header.sticky a:hover { color: #60a5fa; }
-        header.sticky a[aria-current="page"] { color: #60a5fa !important; }
-        header.sticky a.group > span:first-child {
-          background: linear-gradient(135deg, #60a5fa, #3b82f6) !important;
-          color: #1e3a8a !important;
-          box-shadow: 0 6px 18px rgba(30,64,175,.12) !important;
-        }
-        header.sticky a.group > span:last-child { color: #fff !important; }
-        header.sticky a.group > span:last-child span { color: #60a5fa !important; }
-        header.sticky nav a span { background: #60a5fa !important; }
-        header.sticky button {
-          border-color: rgba(219,234,254,.2) !important;
-          background-color: #267253 !important;
-          color: #fff !important;
-        }
-        header.sticky button:hover { background-color: #123b32 !important; }
-        header.sticky #sastastore-mobile-menu {
-          border-color: rgba(219,234,254,.16) !important;
-          background: #1e3a8a !important;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          header.sticky .sastastore-marquee-track { animation: none !important; }
-        }
-      `}</style>
+      
 
       <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 text-slate-900 shadow-sm shadow-emerald-100/40 backdrop-blur-xl">
         {/* Announcement Bar */}
