@@ -251,19 +251,19 @@ export default function FAQPage() {
   return (
     <main className="min-h-screen overflow-hidden bg-gradient-to-b from-[#EFF8FF] via-white to-[#ECFDF5] text-slate-900">
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-blue-100 py-16 sm:py-20">
-        <div className="pointer-events-none absolute -left-20 top-0 h-64 w-64 rounded-full bg-sky-200/40 blur-3xl" />
+      <section className="relative overflow-hidden border-b border-emerald-100 py-16 sm:py-20">
+        <div className="pointer-events-none absolute -left-20 top-0 h-64 w-64 rounded-full bg-emerald-200/40 blur-3xl" />
         <div className="pointer-events-none absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-emerald-200/40 blur-3xl" />
 
         <Container>
           <div className="relative mx-auto max-w-3xl text-center">
-            <span className="inline-flex rounded-full border border-blue-200 bg-white px-5 py-2 text-xs font-extrabold uppercase tracking-widest text-blue-600">
+            <span className="inline-flex rounded-full border border-emerald-200 bg-white px-5 py-2 text-xs font-extrabold uppercase tracking-widest text-emerald-700">
               SastaStore Help Center
             </span>
 
             <h1 className="mt-6 text-4xl font-extrabold tracking-tight sm:text-5xl">
               Frequently Asked{" "}
-              <span className="text-blue-600">
+              <span className="text-emerald-700">
                 Questions
               </span>
             </h1>
@@ -277,14 +277,14 @@ export default function FAQPage() {
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/track"
-                className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
+                className="rounded-xl bg-emerald-700 px-6 py-3 text-sm font-bold text-white transition hover:bg-emerald-800"
               >
                 Track My Order
               </Link>
 
               <Link
                 href="/contact"
-                className="rounded-xl border border-blue-200 bg-white px-6 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-50"
+                className="rounded-xl border border-emerald-200 bg-white px-6 py-3 text-sm font-bold text-emerald-800 transition hover:bg-emerald-50"
               >
                 Contact Support
               </Link>
@@ -299,7 +299,7 @@ export default function FAQPage() {
       </section>
 
       {/* Category Navigation */}
-      <section className="border-b border-blue-100 bg-white/80 py-7">
+      <section className="border-b border-emerald-100 bg-white/80 py-7">
         <Container>
           <p className="mb-4 text-sm font-extrabold text-slate-900">
             Jump to a topic
@@ -313,7 +313,7 @@ export default function FAQPage() {
               <a
                 key={category.id}
                 href={`#${category.id}`}
-                className="inline-flex items-center rounded-full border border-blue-100 bg-blue-50 px-4 py-2.5 text-xs font-bold text-blue-700 transition hover:border-blue-300 hover:bg-blue-100 sm:text-sm"
+                className="inline-flex items-center rounded-full border border-emerald-100 bg-emerald-50 px-4 py-2.5 text-xs font-bold text-emerald-800 transition hover:border-emerald-300 hover:bg-emerald-100 sm:text-sm"
               >
                 {category.title}
               </a>
@@ -334,7 +334,7 @@ export default function FAQPage() {
                 aria-labelledby={`${category.id}-heading`}
               >
                 <div className="mb-6 flex items-start gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-blue-100 bg-blue-50 text-lg font-extrabold text-blue-600">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-100 bg-emerald-50 text-lg font-extrabold text-emerald-700">
                     {String(categoryIndex + 1).padStart(
                       2,
                       "0",
@@ -359,7 +359,7 @@ export default function FAQPage() {
                   {category.items.map((faq) => (
                     <details
                       key={faq.question}
-                      className="group overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm transition-all duration-200 open:border-blue-300 open:shadow-md"
+                      className="group overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-sm transition-all duration-200 open:border-emerald-300 open:shadow-md"
                     >
                       <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5 marker:hidden sm:px-6 [&::-webkit-details-marker]:hidden">
                         <span className="text-sm font-bold leading-6 text-slate-900 sm:text-base">
@@ -368,13 +368,13 @@ export default function FAQPage() {
 
                         <span
                           aria-hidden="true"
-                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-blue-100 bg-blue-50 text-xl font-bold text-blue-600 transition-transform group-open:rotate-45 group-open:bg-blue-600 group-open:text-white"
+                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-emerald-100 bg-emerald-50 text-xl font-bold text-emerald-700 transition-transform group-open:rotate-45 group-open:bg-emerald-700 group-open:text-white"
                         >
                           +
                         </span>
                       </summary>
 
-                      <div className="border-t border-blue-50 px-5 pb-6 pt-4 sm:px-6">
+                      <div className="border-t border-emerald-50 px-5 pb-6 pt-4 sm:px-6">
                         <p className="text-sm leading-8 text-slate-600">
                           {faq.answer}
                         </p>
@@ -382,7 +382,7 @@ export default function FAQPage() {
                         {category.id === "tracking" && (
                           <Link
                             href="/track"
-                            className="mt-4 inline-flex text-sm font-bold text-blue-600 hover:underline"
+                            className="mt-4 inline-flex text-sm font-bold text-emerald-700 hover:underline"
                           >
                             Open Order Tracking →
                           </Link>
@@ -391,7 +391,7 @@ export default function FAQPage() {
                         {category.id === "refunds" && (
                           <Link
                             href="/refund-policy"
-                            className="mt-4 inline-flex text-sm font-bold text-blue-600 hover:underline"
+                            className="mt-4 inline-flex text-sm font-bold text-emerald-700 hover:underline"
                           >
                             Read Refund Policy →
                           </Link>
@@ -407,7 +407,7 @@ export default function FAQPage() {
       </section>
 
       {/* Quick Access */}
-      <section className="border-y border-blue-100 bg-white/70 py-14">
+      <section className="border-y border-emerald-100 bg-white/70 py-14">
         <Container>
           <div className="mx-auto mb-8 max-w-2xl text-center">
             <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-600">
@@ -422,9 +422,9 @@ export default function FAQPage() {
           <div className="grid gap-4 md:grid-cols-3">
             <Link
               href="/account"
-              className="rounded-2xl border border-blue-100 bg-white p-6 shadow-sm transition hover:border-blue-300 hover:shadow-md"
+              className="rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm transition hover:border-emerald-300 hover:shadow-md"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-xl font-extrabold text-blue-700">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-xl font-extrabold text-emerald-800">
                 1
               </div>
 
@@ -437,16 +437,16 @@ export default function FAQPage() {
                 and recorded expiry dates.
               </p>
 
-              <p className="mt-4 text-sm font-bold text-blue-600">
+              <p className="mt-4 text-sm font-bold text-emerald-700">
                 Open Dashboard →
               </p>
             </Link>
 
             <Link
               href="/track"
-              className="rounded-2xl border border-blue-100 bg-white p-6 shadow-sm transition hover:border-blue-300 hover:shadow-md"
+              className="rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm transition hover:border-emerald-300 hover:shadow-md"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-100 text-xl font-extrabold text-sky-700">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-xl font-extrabold text-sky-700">
                 2
               </div>
 
@@ -459,14 +459,14 @@ export default function FAQPage() {
                 and subscription status.
               </p>
 
-              <p className="mt-4 text-sm font-bold text-blue-600">
+              <p className="mt-4 text-sm font-bold text-emerald-700">
                 Track Purchase →
               </p>
             </Link>
 
             <Link
               href="/refund-policy"
-              className="rounded-2xl border border-blue-100 bg-white p-6 shadow-sm transition hover:border-blue-300 hover:shadow-md"
+              className="rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm transition hover:border-emerald-300 hover:shadow-md"
             >
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-xl font-extrabold text-emerald-700">
                 3
@@ -481,7 +481,7 @@ export default function FAQPage() {
                 conditions and request guidance.
               </p>
 
-              <p className="mt-4 text-sm font-bold text-blue-600">
+              <p className="mt-4 text-sm font-bold text-emerald-700">
                 View Policy →
               </p>
             </Link>
@@ -492,10 +492,10 @@ export default function FAQPage() {
       {/* Support CTA */}
       <section className="py-16">
         <Container>
-          <div className="rounded-3xl border border-blue-100 bg-white p-7 shadow-lg shadow-blue-100/50 sm:p-10">
+          <div className="rounded-3xl border border-emerald-100 bg-white p-7 shadow-lg shadow-emerald-100/50 sm:p-10">
             <div className="flex flex-col items-start justify-between gap-7 lg:flex-row lg:items-center">
               <div className="max-w-xl">
-                <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+                <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-700">
                   Still Need Help?
                 </p>
 
@@ -525,14 +525,14 @@ export default function FAQPage() {
                   href={telegramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-xl bg-sky-600 px-6 py-3.5 text-sm font-extrabold text-white transition hover:bg-sky-700"
+                  className="inline-flex items-center justify-center rounded-xl bg-emerald-700 px-6 py-3.5 text-sm font-extrabold text-white transition hover:bg-sky-700"
                 >
                   Telegram @Techboyy0
                 </a>
 
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center rounded-xl border border-blue-200 bg-blue-50 px-6 py-3.5 text-sm font-extrabold text-blue-700 transition hover:bg-blue-100"
+                  className="inline-flex items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 px-6 py-3.5 text-sm font-extrabold text-emerald-800 transition hover:bg-emerald-100"
                 >
                   All Support Options
                 </Link>
@@ -545,7 +545,7 @@ export default function FAQPage() {
               href={whatsappChannelUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex text-sm font-bold text-blue-600 hover:underline"
+              className="inline-flex text-sm font-bold text-emerald-700 hover:underline"
             >
               Follow our WhatsApp Channel for Updates →
             </a>
