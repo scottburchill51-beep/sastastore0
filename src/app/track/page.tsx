@@ -76,7 +76,7 @@ function getOrderStatus(order: OrderRecord) {
       title: "Payment Approved",
       description:
         "Your payment has been approved. Your order is awaiting delivery.",
-      color: "border-blue-200 bg-blue-50 text-blue-800",
+      color: "border-emerald-200 bg-emerald-50 text-blue-800",
     };
   }
 
@@ -200,11 +200,11 @@ export default async function TrackingPage({
     <main className="min-h-screen bg-gradient-to-b from-[#f0f9ff] via-white to-[#f0fdf4] px-4 py-12 text-slate-900 sm:px-6 sm:py-16">
       <div className="mx-auto max-w-3xl">
         <div className="text-center">
-          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 text-3xl font-extrabold text-white shadow-lg shadow-blue-100">
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-700 text-3xl font-extrabold text-white shadow-lg shadow-emerald-100">
             SS
           </div>
 
-          <p className="text-xs font-extrabold uppercase tracking-[0.25em] text-blue-600">
+          <p className="text-xs font-extrabold uppercase tracking-[0.25em] text-emerald-700">
             SastaStore 2.0
           </p>
 
@@ -219,7 +219,7 @@ export default async function TrackingPage({
           </p>
         </div>
 
-        <section className="mt-10 rounded-3xl border border-blue-100 bg-white p-6 shadow-xl shadow-blue-100/40 sm:p-9">
+        <section className="mt-10 rounded-3xl border border-emerald-100 bg-white p-6 shadow-xl shadow-emerald-100/40 sm:p-9">
           {!user || !token ? (
             <div className="text-center">
               <h2 className="text-xl font-extrabold">
@@ -234,7 +234,7 @@ export default async function TrackingPage({
 
               <Link
                 href="/login"
-                className="mt-6 inline-flex rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white hover:bg-blue-700"
+                className="mt-6 inline-flex rounded-xl bg-emerald-700 px-6 py-3 text-sm font-bold text-white hover:bg-emerald-800"
               >
                 Sign In
               </Link>
@@ -263,12 +263,12 @@ export default async function TrackingPage({
                   defaultValue={tracking}
                   placeholder="SS-XXXXXXXXXXXX"
                   aria-label="Tracking ID"
-                  className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold uppercase outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold uppercase outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
                 />
 
                 <button
                   type="submit"
-                  className="rounded-xl bg-blue-600 px-7 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700"
+                  className="rounded-xl bg-emerald-700 px-7 py-3 text-sm font-extrabold text-white transition hover:bg-emerald-800"
                 >
                   Track Order
                 </button>
@@ -284,7 +284,7 @@ export default async function TrackingPage({
               )}
 
               {!tracking && (
-                <div className="mt-6 rounded-2xl border border-dashed border-blue-200 bg-blue-50 p-5">
+                <div className="mt-6 rounded-2xl border border-dashed border-emerald-200 bg-emerald-50 p-5">
                   <p className="text-sm leading-7 text-blue-800">
                     You can find your Tracking ID in
                     the order confirmation or in your
@@ -297,9 +297,9 @@ export default async function TrackingPage({
         </section>
 
         {order && status && user && token && (
-          <section className="mt-6 overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-xl shadow-blue-100/40">
+          <section className="mt-6 overflow-hidden rounded-3xl border border-emerald-100 bg-white shadow-xl shadow-emerald-100/40">
             <div className="border-b border-slate-100 p-6 sm:p-9">
-              <p className="text-xs font-bold uppercase tracking-widest text-blue-600">
+              <p className="text-xs font-bold uppercase tracking-widest text-emerald-700">
                 Tracking Details
               </p>
 
@@ -399,14 +399,14 @@ export default async function TrackingPage({
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/account"
-                  className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700"
+                  className="rounded-xl bg-emerald-700 px-5 py-3 text-sm font-bold text-white hover:bg-emerald-800"
                 >
                   My Dashboard
                 </Link>
 
                 <Link
                   href="/"
-                  className="rounded-xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50"
+                  className="rounded-xl border border-emerald-200 bg-white px-5 py-3 text-sm font-bold text-emerald-800 hover:bg-emerald-50"
                 >
                   Back to Store
                 </Link>
