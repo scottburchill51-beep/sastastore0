@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, BookOpen, Search, Sparkles } from "lucide-react";
+import { ArrowUpRight, Search, Sparkles } from "lucide-react";
 
 import { courses, courseCategories } from "@/data/courses";
 import { getCourseImage } from "@/data/course-images";
@@ -11,6 +11,7 @@ import { getCourseImage } from "@/data/course-images";
 export function CourseCatalog() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All Courses");
+  const [failedImages, setFailedImages] = useState<string[]>([]);
 
   const filteredCourses = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -40,25 +41,37 @@ export function CourseCatalog() {
 
       {filteredCourses.length > 0 ? (
         <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {filteredCourses.map((course, index) => (
-            <article key={course.slug} className="group flex min-h-[370px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#111318] transition duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-[0_18px_55px_rgba(0,0,0,0.28)]">
-              <Link href={`/courses/${course.slug}`} className="relative block h-44 overflow-hidden" aria-label={`View ${course.title}`}>
-                <Image src={getCourseImage(course.category)} alt={course.category + " course"} fill sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw" className="object-cover transition duration-500 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#090b0f] via-black/10 to-black/10" />
-                <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/55 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur">{course.category}</span>
-                <span className="absolute right-4 top-4 rounded-full bg-emerald-400 px-3 py-1.5 text-[11px] font-extrabold text-[#07110a]">FREE</span>
-                <span className="absolute bottom-3 right-4 text-5xl font-black text-white/40">{String(index + 1).padStart(2, "0")}</span>
-              </Link>
-              <div className="flex flex-1 flex-col p-5">
-                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-emerald-400">Free learning resource</p>
-                <h2 className="mt-3 text-base font-bold leading-6 text-white">{course.title}</h2>
-                <p className="mt-3 flex-1 text-sm leading-6 text-zinc-400">{course.description}</p>
-                <Link href={`/courses/${course.slug}`} className="mt-5 inline-flex items-center justify-between rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-sm font-bold text-emerald-300 transition hover:border-emerald-400/60 hover:bg-emerald-500/15">
-                  View course details <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+          {filteredCourses.map((course, index) => {
+            const message = encodeURIComponent(`Hi SastaStore, I would like to ask about access to: ${course.title}`);
+            const accessUrl = `https://wa.me/923136093501?text=${message}`;
+            const imageSrc = failedImages.includes(course.slug) ? getCourseImage(course.category) : course.imageUrl;
+            return (
+              <article key={course.slug} className="group flex min-h-[390px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#111318] transition duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-[0_18px_55px_rgba(0,0,0,0.28)]">
+                <Link href={`/courses/${course.slug}`} className="relative block h-44 overflow-hidden" aria-label={`View ${course.title}`}>
+                  <Image
+                    src={imageSrc}
+                    alt={course.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                    className="object-cover transition duration-500 group-hover:scale-105"
+                    onError={() => setFailedImages((current) => current.includes(course.slug) ? current : [...current, course.slug])}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#090b0f] via-black/10 to-black/10" />
+                  <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/55 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur">{course.category}</span>
+                  <span className="absolute right-4 top-4 rounded-full bg-emerald-400 px-3 py-1.5 text-[11px] font-extrabold text-[#07110a]">COURSE</span>
+                  <span className="absolute bottom-3 right-4 text-5xl font-black text-white/40">{String(index + 1).padStart(2, "0")}</span>
                 </Link>
-              </div>
-            </article>
-          ))}
+                <div className="flex flex-1 flex-col p-5">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-emerald-400">SastaStore Learning Library</p>
+                  <h2 className="mt-3 text-base font-bold leading-6 text-white">{course.title}</h2>
+                  <p className="mt-3 flex-1 text-sm leading-6 text-zinc-400">{course.description}</p>
+                  <a href={accessUrl} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center justify-between rounded-xl bg-emerald-400 px-4 py-3 text-sm font-extrabold text-[#07110a] transition hover:bg-emerald-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300">
+                    Ask About Course Access <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                  </a>
+                </div>
+              </article>
+            );
+          })}
         </div>
       ) : (
         <div className="mt-5 rounded-2xl border border-dashed border-white/15 bg-[#111318] px-6 py-16 text-center">

@@ -1,4 +1,5 @@
 
+import Image from "next/image";
 import Link from "next/link";
 
 import { Container } from "@/components/ui/Container";
@@ -14,14 +15,14 @@ const teamMembers = [
   {
     name: "Shaloom Victor",
     role: "CEO",
-    initials: "SV",
+    image: "/images/team/shaloom-victor.jpg",
     description:
       "Leading SastaStore with a vision to make useful digital tools, premium subscriptions and online services more accessible and affordable for customers in Pakistan.",
   },
   {
     name: "Scott Burchill",
     role: "Admin",
-    initials: "SB",
+    image: "/images/team/scott-burchill.jpg",
     description:
       "Supporting day-to-day SastaStore operations, platform management and a smooth, organised experience for customers using the storefront.",
   },
@@ -419,8 +420,14 @@ export default function AboutPage() {
                 <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-sky-100/60 blur-3xl" />
 
                 <div className="relative flex items-center gap-5">
-                  <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-600 to-sky-500 text-2xl font-black text-white shadow-lg shadow-blue-100">
-                    {member.initials}
+                  <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl border-4 border-white shadow-lg ring-1 ring-blue-100 sm:h-28 sm:w-28">
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      fill
+                      sizes="(max-width: 640px) 96px, 112px"
+                      className="object-cover object-center transition duration-500 group-hover:scale-105"
+                    />
                   </div>
 
                   <div>

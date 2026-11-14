@@ -323,15 +323,14 @@ export function Header() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden items-center gap-5 lg:flex">
+            <div className="hidden min-w-0 flex-1 items-center justify-end gap-3 lg:flex">
               <nav
                 aria-label="Main navigation"
-                className="flex items-center gap-6"
+                className="flex min-w-0 items-center gap-3 xl:gap-5"
               >
-                {navigation.map((item) => {
+                {navigation.filter((item) => item.href !== "/track").map((item) => {
                   const active = isActive(item.href);
-                  const isTracking =
-                    item.href === "/track";
+                  const isTracking = false;
 
                   return (
                     <Link
@@ -389,7 +388,11 @@ export function Header() {
                 })}
               </nav>
 
-              <div className="flex items-center gap-2 border-l border-slate-200 pl-5">
+              <Link href="/track" aria-current={isActive("/track") ? "page" : undefined} className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl border-2 border-[#24583d] bg-[#e8c875] px-3 py-2.5 text-sm font-extrabold text-[#173d30] shadow-sm transition hover:bg-[#f3d994] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8c875]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3" /><path d="M12 3v3M12 18v3M3 12h3M18 12h3" /></svg>
+                Track Order
+              </Link>
+              <div className="flex shrink-0 items-center gap-2 border-l border-slate-200 pl-3">
                 {desktopAuth()}
               </div>
             </div>

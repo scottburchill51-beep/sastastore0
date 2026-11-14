@@ -195,11 +195,11 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section id="popular-products" className="scroll-mt-24 border-y border-[#e3e9e1] bg-white py-14 sm:py-16">
+      <section id="popular-products" className="scroll-mt-24 border-y border-[#294b3d] bg-[#10251e] py-14 text-white sm:py-16">
         <Container>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div><p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#54775d]">Hand-picked for you</p><h2 className="mt-2 text-2xl font-black tracking-tight text-[#1b2d22] sm:text-3xl">Popular digital products</h2><p className="mt-2 text-sm text-[#778279]">Explore available plans and product information.</p></div>
-            <Link href="/products" className="inline-flex items-center gap-2 text-sm font-extrabold text-[#285b3c] transition hover:gap-3">View all products <ArrowRight className="h-4 w-4" /></Link>
+            <div><p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#e8c875]">Live store catalogue</p><h2 className="mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl">Explore digital products</h2><p className="mt-2 text-sm text-[#c4d5ca]">Browse the latest products, compare plans and filter by category or price.</p></div>
+            <Link href="/products" className="inline-flex items-center gap-2 rounded-xl border border-[#e8c875]/50 bg-[#e8c875] px-4 py-2.5 text-sm font-extrabold text-[#17372e] transition hover:bg-[#f3d994]">View all products <ArrowRight className="h-4 w-4" /></Link>
           </div>
           <ProductCatalog />
         </Container>
