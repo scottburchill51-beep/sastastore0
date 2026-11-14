@@ -136,6 +136,14 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased bg-background`}
     >
+      <head>
+        <link
+          rel="preload"
+          as="image"
+          href="/images/sastastore-logo.jpg?v=2"
+          fetchPriority="high"
+        />
+      </head>
       <body className="flex min-h-screen flex-col bg-background text-foreground">
         <script
           type="application/ld+json"
