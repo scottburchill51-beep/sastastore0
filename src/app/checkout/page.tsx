@@ -49,7 +49,7 @@ function Unavailable({
 }) {
   return (
     <main className="flex min-h-[75vh] items-center justify-center bg-gradient-to-br from-[#EFF8FF] via-white to-[#ECFDF5] px-4 py-16 text-slate-900">
-      <div className="w-full max-w-xl rounded-3xl border border-blue-100 bg-white p-8 text-center shadow-xl shadow-blue-100/40 sm:p-12">
+      <div className="w-full max-w-xl rounded-3xl border border-emerald-100 bg-white p-8 text-center shadow-xl shadow-emerald-100/40 sm:p-12">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50 text-3xl font-extrabold text-amber-600">
           !
         </div>
@@ -65,14 +65,14 @@ function Unavailable({
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Link
             href="/products"
-            className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
+            className="rounded-xl bg-emerald-700 px-6 py-3 text-sm font-bold text-white transition hover:bg-emerald-800"
           >
             Browse Products
           </Link>
 
           <Link
             href="/contact"
-            className="rounded-xl border border-blue-200 bg-white px-6 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-50"
+            className="rounded-xl border border-emerald-200 bg-white px-6 py-3 text-sm font-bold text-emerald-800 transition hover:bg-emerald-50"
           >
             Contact Support
           </Link>
@@ -184,7 +184,7 @@ export default async function CheckoutPage({
           >
             <Link
               href="/products"
-              className="transition hover:text-blue-600"
+              className="transition hover:text-emerald-700"
             >
               Products
             </Link>
@@ -193,27 +193,27 @@ export default async function CheckoutPage({
 
             <Link
               href={`/products/${slug}`}
-              className="transition hover:text-blue-600"
+              className="transition hover:text-emerald-700"
             >
               {product.name || slug}
             </Link>
 
             <span>/</span>
 
-            <span className="font-bold text-blue-700">
+            <span className="font-bold text-emerald-800">
               Checkout
             </span>
           </nav>
 
           {/* Heading */}
           <div className="mt-10">
-            <span className="inline-flex items-center rounded-full border border-blue-200 bg-white px-4 py-2 text-xs font-extrabold uppercase tracking-widest text-blue-600 shadow-sm">
+            <span className="inline-flex items-center rounded-full border border-emerald-200 bg-white px-4 py-2 text-xs font-extrabold uppercase tracking-widest text-emerald-700 shadow-sm">
               SastaStore Checkout
             </span>
 
             <h1 className="mt-5 text-3xl font-extrabold tracking-tight sm:text-5xl">
               Complete Your{" "}
-              <span className="text-blue-600">
+              <span className="text-emerald-700">
                 Order
               </span>
             </h1>
@@ -227,10 +227,10 @@ export default async function CheckoutPage({
           </div>
 
           {/* Selected Order Summary */}
-          <section className="mt-9 rounded-3xl border border-blue-100 bg-white p-6 shadow-sm sm:p-8">
+          <section className="mt-9 rounded-3xl border border-emerald-100 bg-white p-6 shadow-sm sm:p-8">
             <div className="flex flex-wrap items-start justify-between gap-5">
               <div>
-                <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+                <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-700">
                   Selected Product
                 </p>
 
@@ -258,7 +258,7 @@ export default async function CheckoutPage({
               </div>
             </div>
 
-            <div className="mt-6 border-t border-blue-50 pt-5">
+            <div className="mt-6 border-t border-emerald-50 pt-5">
               <p className="text-sm leading-7 text-slate-600">
                 <span className="font-bold text-slate-900">
                   Payment verification:
@@ -285,8 +285,8 @@ export default async function CheckoutPage({
 
           {/* Information */}
           <section className="mt-10 grid gap-4 md:grid-cols-3">
-            <div className="rounded-2xl border border-blue-100 bg-white p-6 shadow-sm">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-sm font-extrabold text-blue-700">
+            <div className="rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-sm font-extrabold text-emerald-800">
                 01
               </div>
 
@@ -301,8 +301,8 @@ export default async function CheckoutPage({
               </p>
             </div>
 
-            <div className="rounded-2xl border border-blue-100 bg-white p-6 shadow-sm">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-50 text-sm font-extrabold text-sky-700">
+            <div className="rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-sm font-extrabold text-sky-700">
                 02
               </div>
 
@@ -372,21 +372,21 @@ export default async function CheckoutPage({
           <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3 text-xs font-semibold text-slate-500">
             <Link
               href="/terms"
-              className="hover:text-blue-600"
+              className="hover:text-emerald-700"
             >
               Terms & Conditions
             </Link>
 
             <Link
               href="/privacy"
-              className="hover:text-blue-600"
+              className="hover:text-emerald-700"
             >
               Privacy Policy
             </Link>
 
             <Link
               href="/refund-policy"
-              className="hover:text-blue-600"
+              className="hover:text-emerald-700"
             >
               Refund Policy
             </Link>
