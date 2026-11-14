@@ -66,17 +66,17 @@ export function ProductCard({
     <Link
       href={`/products/${encodeURIComponent(product.slug)}`}
       aria-label={`View ${product.name} product details`}
-      className="group block h-full min-w-0 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 sm:rounded-[24px]"
+      className="group block h-full min-w-0 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 sm:rounded-[24px]"
     >
-      <article className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_5px_25px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_20px_55px_rgba(37,99,235,0.12)] sm:rounded-[24px] sm:p-6">
+      <article className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-[#dce8df] bg-white p-3 shadow-[0_8px_30px_rgba(16,45,34,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-[#9bc9ad] hover:shadow-[0_20px_55px_rgba(18,59,53,0.13)] sm:rounded-[24px] sm:p-6">
 
         {/* Decorative Background */}
-        <div className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-gradient-to-br from-blue-100/70 to-emerald-100/40 blur-3xl transition-transform duration-500 group-hover:scale-125" />
+        <div className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-gradient-to-br from-emerald-100/70 to-[#f5ce78]/20 blur-3xl transition-transform duration-500 group-hover:scale-125" />
 
         {/* Product Logo and Badges */}
         <div className="relative flex min-h-[64px] items-start justify-between gap-1.5 sm:min-h-[76px] sm:gap-3">
 
-          <div className="flex h-[58px] w-[58px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-1 shadow-sm sm:h-[76px] sm:w-[76px] sm:rounded-2xl sm:p-2">
+          <div className="flex h-[58px] w-[58px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#dce8df] bg-gradient-to-br from-[#edf6f0] to-white p-1 shadow-sm sm:h-[76px] sm:w-[76px] sm:rounded-2xl sm:p-2">
             <ProductLogo
               name={product.name}
               logo={product.logo}
@@ -87,13 +87,13 @@ export function ProductCard({
           <div className="flex max-w-[65%] flex-col items-end gap-1.5">
 
             {hasDiscount && (
-              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-1 text-[9px] font-extrabold text-emerald-700 sm:px-3 sm:py-1.5 sm:text-xs">
+              <span className="rounded-full border border-[#d8e9dc] bg-[#edf6f0] px-2 py-1 text-[9px] font-extrabold text-[#267253] sm:px-3 sm:py-1.5 sm:text-xs">
                 {discountPercent}% OFF
               </span>
             )}
 
             {product.badge && (
-              <span className="max-w-full break-words rounded-lg border border-blue-100 bg-blue-50 px-2 py-1 text-right text-[9px] font-bold leading-3 text-blue-700 sm:rounded-full sm:px-3 sm:py-1.5 sm:text-[11px] sm:leading-4">
+              <span className="max-w-full break-words rounded-lg border border-[#e8d9ae] bg-[#fbf5e7] px-2 py-1 text-right text-[9px] font-bold leading-3 text-[#806022] sm:rounded-full sm:px-3 sm:py-1.5 sm:text-[11px] sm:leading-4">
                 {product.badge}
               </span>
             )}
@@ -103,7 +103,7 @@ export function ProductCard({
 
         {/* Product Name and Description */}
         <div className="relative mt-3 sm:mt-6">
-          <h3 className="line-clamp-2 min-h-[40px] break-words text-[14px] font-extrabold leading-5 tracking-tight text-slate-900 transition-colors group-hover:text-blue-600 sm:min-h-0 sm:text-lg sm:leading-normal">
+          <h3 className="line-clamp-2 min-h-[40px] break-words text-[14px] font-extrabold leading-5 tracking-tight text-[#17372e] transition-colors group-hover:text-[#267253] sm:min-h-0 sm:text-lg sm:leading-normal">
             {product.name}
           </h3>
 
@@ -126,7 +126,7 @@ export function ProductCard({
           )}
 
           <p className={`break-words text-[18px] font-extrabold leading-6 tracking-tight sm:text-2xl sm:leading-normal ${
-            hasDiscount ? "text-emerald-700" : "text-slate-900"
+            hasDiscount ? "text-[#267253]" : "text-slate-900"
           }`}>
             {lowestPrice !== null
               ? `Rs. ${formatPrice(lowestPrice)}`
@@ -134,19 +134,19 @@ export function ProductCard({
           </p>
 
           {hasDiscount && (
-            <p className="mt-1 text-[10px] font-semibold text-emerald-700 sm:text-xs">
+            <p className="mt-1 text-[10px] font-semibold text-[#267253] sm:text-xs">
               Save Rs. {formatPrice(originalPrice! - lowestPrice!)}
             </p>
           )}
 
           {hasMultiplePlans ? (
-            <span className="mt-2 inline-flex max-w-full items-center gap-1 rounded-full border border-blue-100 bg-blue-50 px-2 py-1 text-[9px] font-semibold leading-4 text-blue-700 sm:mt-3 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs">
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
+            <span className="mt-2 inline-flex max-w-full items-center gap-1 rounded-full border border-[#dce8df] bg-[#edf6f0] px-2 py-1 text-[9px] font-semibold leading-4 text-[#267253] sm:mt-3 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs">
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#267253]" />
               {product.plans.length} Plans Available
             </span>
           ) : (
-            <span className="mt-2 inline-flex max-w-full items-center gap-1 rounded-full border border-emerald-100 bg-emerald-50 px-2 py-1 text-[9px] font-semibold leading-4 text-emerald-700 sm:mt-3 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs">
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+            <span className="mt-2 inline-flex max-w-full items-center gap-1 rounded-full border border-emerald-100 bg-emerald-50 px-2 py-1 text-[9px] font-semibold leading-4 text-[#267253] sm:mt-3 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs">
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#267253]" />
               Digital Product
             </span>
           )}
@@ -154,7 +154,7 @@ export function ProductCard({
 
         {/* View Details Button */}
         <div className="relative mt-auto pt-4 sm:pt-7">
-          <div className="flex min-h-[42px] items-center justify-center gap-1.5 rounded-lg bg-[#142B49] px-2 text-[11px] font-bold text-white shadow-sm transition-all duration-300 group-hover:bg-[#0D1D33] sm:min-h-[46px] sm:justify-between sm:rounded-xl sm:px-4 sm:text-sm">
+          <div className="flex min-h-[42px] items-center justify-center gap-1.5 rounded-lg bg-[#123b32] px-2 text-[11px] font-bold text-white shadow-sm transition-all duration-300 group-hover:bg-[#1c5746] sm:min-h-[46px] sm:justify-between sm:rounded-xl sm:px-4 sm:text-sm">
             <span>View Details</span>
 
             <svg

@@ -2,17 +2,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #08090c;
-  --surface: #111318;
-  --surface-elevated: #171a20;
+  --background: #f5f6f4;
+  --surface: #ffffff;
+  --surface-elevated: #edf2ec;
 
-  --foreground: #f6f7f9;
-  --muted-foreground: #9ca3af;
+  --foreground: #17211d;
+  --muted-foreground: #738176;
 
-  --border: #272a31;
+  --border: #dfe7dc;
 
-  --brand: #22c55e;
-  --brand-hover: #16a34a;
+  --brand: #24583d;
+  --brand-hover: #173d30;
 }
 
 @theme inline {
@@ -72,6 +72,28 @@ body:has(main.bg-\[\#f6f7fb\]) {
 
 .section-space {
   padding-block: 4rem;
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes gentle-enter {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal-on-load {
+  animation: gentle-enter .7s cubic-bezier(.2,.7,.2,1) both;
+}
+
+.hover-lift {
+  transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(20, 49, 31, .10);
 }
 
 @keyframes soft-float {
@@ -240,7 +262,7 @@ body:has(main.bg-\[\#f6f7fb\]) {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--border) var(--background);
+  scrollbar-color: #9aa99b #edf1eb;
 }
 
 *::-webkit-scrollbar {
@@ -258,7 +280,7 @@ body:has(main.bg-\[\#f6f7fb\]) {
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: #363a43;
+  background: #607568;
 }
 
 @media (min-width: 768px) {

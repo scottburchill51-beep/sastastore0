@@ -33,34 +33,34 @@ const benefits = [
 
 export default function CoursesPage() {
   return (
-    <main className="min-h-screen flex-1 overflow-hidden bg-[#08090c] text-white">
-      <section className="relative overflow-hidden border-b border-white/10">
-        <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl" />
-        <div className="pointer-events-none absolute -right-24 top-10 h-80 w-80 rounded-full bg-cyan-500/[0.07] blur-3xl" />
+    <main className="min-h-screen flex-1 overflow-hidden bg-[#f6f8f6] text-[#17372e]">
+      <section className="relative overflow-hidden border-b border-[#e0e9e2]">
+        <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-emerald-100 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 top-10 h-80 w-80 rounded-full bg-amber-100/50 blur-3xl" />
         <Container>
           <div className="relative mx-auto max-w-4xl py-16 text-center sm:py-24">
-            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.07] px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-300">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#dce8df] bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-[#267253]">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
               SastaStore Learning Library
             </span>
             <h1 className="mt-7 text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">
               Learn Something
-              <span className="mt-2 block bg-gradient-to-r from-emerald-300 via-green-400 to-cyan-300 bg-clip-text text-transparent">
+              <span className="mt-2 block bg-gradient-to-r from-[#123b32] via-[#267253] to-[#b38a42] bg-clip-text text-transparent">
                 New Today
               </span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-zinc-400 sm:text-base">
+            <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-slate-500 sm:text-base">
               Explore courses covering AI, content creation, e-commerce,
               freelancing, marketing, design and more. Search the library
               and contact our team for current course details.
             </p>
             <a
               href="#course-library"
-              className="mt-8 inline-flex items-center justify-center rounded-xl bg-emerald-400 px-6 py-3.5 text-sm font-extrabold text-[#07110a] shadow-lg shadow-emerald-950/30 transition hover:bg-emerald-300"
+              className="mt-8 inline-flex items-center justify-center rounded-xl bg-[#123b32] px-6 py-3.5 text-sm font-extrabold text-[#17372e] shadow-lg shadow-emerald-950/30 transition hover:bg-[#1c5746]"
             >
               Explore Courses
             </a>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-xs font-medium text-zinc-500">
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-xs font-medium text-slate-500">
               <span>AI & Technology</span>
               <span className="text-emerald-500">•</span>
               <span>Creative Skills</span>
@@ -71,17 +71,17 @@ export default function CoursesPage() {
         </Container>
       </section>
 
-      <section className="border-b border-white/10 bg-[#0d0f13] py-8 sm:py-10">
+      <section className="border-b border-[#e0e9e2] bg-[#edf4ef] py-8 sm:py-10">
         <Container>
           <div className="grid gap-4 md:grid-cols-3">
             {benefits.map(({ icon: Icon, title, description }) => (
-              <div key={title} className="flex gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-5">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-emerald-400/15 bg-emerald-400/[0.07] text-emerald-300">
+              <div key={title} className="flex gap-4 rounded-2xl border border-[#dce8df] bg-white p-5">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#dce8df] bg-[#edf6f0] text-[#267253]">
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-white">{title}</h2>
-                  <p className="mt-2 text-xs leading-6 text-zinc-500">{description}</p>
+                  <h2 className="text-sm font-bold text-[#17372e]">{title}</h2>
+                  <p className="mt-2 text-xs leading-6 text-slate-500">{description}</p>
                 </div>
               </div>
             ))}
@@ -99,12 +99,12 @@ export default function CoursesPage() {
               <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
                 Course Library
               </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-zinc-400">
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-500">
                 Find a topic that interests you. Course availability, access
                 method and any applicable charges are confirmed by our team.
               </p>
             </div>
-            <span className="w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-semibold text-zinc-400">
+            <span className="w-fit rounded-full border border-[#e0e9e2] bg-white px-3 py-1.5 text-xs font-semibold text-slate-500">
               15 listings
             </span>
           </div>
@@ -112,17 +112,17 @@ export default function CoursesPage() {
         </Container>
       </section>
 
-      <section className="border-t border-white/10 bg-[#0d0f13] py-14">
+      <section className="border-t border-[#e0e9e2] bg-[#edf4ef] py-14">
         <Container>
-          <div className="flex flex-col items-start justify-between gap-6 rounded-3xl border border-emerald-400/15 bg-gradient-to-br from-emerald-500/[0.09] to-cyan-500/[0.04] p-7 sm:flex-row sm:items-center sm:p-10">
+          <div className="flex flex-col items-start justify-between gap-6 rounded-3xl border border-emerald-400/15 bg-gradient-to-br from-[#e8f3eb] to-[#f7f3e8] p-7 sm:flex-row sm:items-center sm:p-10">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-300">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#267253]">
                 Need help choosing?
               </p>
-              <h2 className="mt-3 text-2xl font-extrabold text-white">
+              <h2 className="mt-3 text-2xl font-extrabold text-[#17372e]">
                 Talk to the SastaStore team
               </h2>
-              <p className="mt-3 max-w-xl text-sm leading-7 text-zinc-400">
+              <p className="mt-3 max-w-xl text-sm leading-7 text-slate-500">
                 Contact us to confirm the latest course information and
                 availability before placing an order.
               </p>
@@ -131,7 +131,7 @@ export default function CoursesPage() {
               href="https://wa.me/923136093501?text=Hi%20SastaStore%2C%20I%20need%20help%20with%20the%20courses%20library."
               target="_blank"
               rel="noreferrer"
-              className="shrink-0 rounded-xl bg-emerald-400 px-6 py-3.5 text-sm font-extrabold text-[#07110a] transition hover:bg-emerald-300"
+              className="shrink-0 rounded-xl bg-[#123b32] px-6 py-3.5 text-sm font-extrabold text-[#17372e] transition hover:bg-[#1c5746]"
             >
               Contact on WhatsApp
             </a>

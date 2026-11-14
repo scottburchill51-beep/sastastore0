@@ -223,7 +223,7 @@ export function ProductCatalog() {
   return (
     <>
       {/* SEARCH AND FILTER CONTROLS */}
-      <div className="mt-10 rounded-2xl border border-blue-100 bg-white p-4 shadow-sm sm:p-5">
+      <div className="mt-10 rounded-2xl border border-[#244c40] bg-[#123b32] p-4 text-white shadow-lg shadow-[#123b32]/10 sm:p-5">
         <div className="grid gap-3 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           {/* SEARCH */}
           <div className="relative">
@@ -235,7 +235,7 @@ export function ProductCatalog() {
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden="true"
-              className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+              className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#b5cfc2]"
             >
               <circle cx="11" cy="11" r="7" />
               <path d="m20 20-3.5-3.5" />
@@ -248,7 +248,7 @@ export function ProductCatalog() {
                 setSearch(event.target.value)
               }
               placeholder="Search subscriptions..."
-              className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-12 pr-4 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="h-12 w-full rounded-xl border border-[#d8e6dc] bg-[#f8fbf8] pl-12 pr-4 text-sm text-[#17372e] outline-none transition focus:border-[#267253] focus:ring-2 focus:ring-emerald-100"
             />
           </div>
 
@@ -258,7 +258,7 @@ export function ProductCatalog() {
             onChange={(event) =>
               setCategory(event.target.value)
             }
-            className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none focus:border-blue-500"
+            className="h-12 w-full min-w-0 rounded-xl border border-[#d8e6dc] bg-[#f8fbf8] px-4 text-sm text-[#17372e] outline-none focus:border-[#267253]"
           >
             <option value="all">
               All Categories
@@ -282,7 +282,7 @@ export function ProductCatalog() {
                 event.target.value as ProductTypeFilter,
               )
             }
-            className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none focus:border-blue-500"
+            className="h-12 w-full min-w-0 rounded-xl border border-[#d8e6dc] bg-[#f8fbf8] px-4 text-sm text-[#17372e] outline-none focus:border-[#267253]"
           >
             <option value="all">All Products</option>
             <option value="popular">Popular</option>
@@ -298,7 +298,7 @@ export function ProductCatalog() {
                 event.target.value as SortOption,
               )
             }
-            className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none focus:border-blue-500"
+            className="h-12 w-full min-w-0 rounded-xl border border-[#d8e6dc] bg-[#f8fbf8] px-4 text-sm text-[#17372e] outline-none focus:border-[#267253]"
           >
             <option value="default">
               Newest First
@@ -316,18 +316,18 @@ export function ProductCatalog() {
         </div>
 
         {/* PRODUCT COUNTER */}
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
-          <p className="text-sm text-slate-500">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#315b4d] pt-4">
+          <p className="text-sm text-[#c0d5ca]">
             {loading
               ? "Loading latest subscriptions..."
               : (
                 <>
                   Showing{" "}
-                  <span className="font-bold text-slate-900">
+                  <span className="font-bold text-white">
                     {filteredProducts.length}
                   </span>{" "}
                   of{" "}
-                  <span className="font-bold text-slate-900">
+                  <span className="font-bold text-white">
                     {products.length}
                   </span>{" "}
                   products
@@ -340,7 +340,7 @@ export function ProductCatalog() {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="text-sm font-bold text-blue-600 hover:underline"
+                className="text-sm font-bold text-[#f5ce78] hover:underline"
               >
                 Clear Filters
               </button>
@@ -350,7 +350,7 @@ export function ProductCatalog() {
               type="button"
               onClick={() => void loadProducts()}
               disabled={loading}
-              className="text-sm font-bold text-blue-600 hover:underline disabled:opacity-50"
+              className="text-sm font-bold text-[#f5ce78] hover:underline disabled:opacity-50"
             >
               Refresh Products
             </button>
@@ -362,7 +362,7 @@ export function ProductCatalog() {
       {loading && products.length === 0 && !error && (
         <div
           role="status"
-          className="mt-8 rounded-2xl border border-blue-100 bg-white p-12 text-center text-slate-600"
+          className="mt-8 rounded-2xl border border-[#dce8df] bg-white p-12 text-center text-slate-600"
         >
           Loading the latest subscriptions...
         </div>
@@ -413,11 +413,11 @@ export function ProductCatalog() {
         !error &&
         filteredProducts.length === 0 && (
           <div className="mt-8 rounded-2xl border border-blue-100 bg-white px-6 py-16 text-center">
-            <h2 className="text-xl font-extrabold text-slate-900">
+            <h2 className="text-xl font-extrabold text-white">
               No Products Found
             </h2>
 
-            <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate-500">
+            <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#c0d5ca]">
               {products.length === 0
                 ? "No subscriptions are currently listed."
                 : "Try another search term or clear your filters."}
