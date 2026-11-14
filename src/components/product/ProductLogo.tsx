@@ -40,7 +40,7 @@ function preferredSource(logo: string) {
     .map((segment) => encodeURIComponent(segment))
     .join("/");
 
-  return `${supabaseUrl.replace(/\\/+$/, "")}/storage/v1/object/public/product-images/${objectPath}`;
+  const baseUrl = supabaseUrl.endsWith("/") ? supabaseUrl.slice(0, -1) : supabaseUrl;\n  return `${baseUrl}/storage/v1/object/public/product-images/${objectPath}`;
 }
 
 function alternateSource(source: string) {
