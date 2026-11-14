@@ -15,14 +15,45 @@ const teamMembers = [
   {
     name: "Shaloom Victor",
     role: "CEO",
-    image: "/images/team/shaloom-victor.jpg",
+    image: "data:image/webp;base64,UklGRqwBAABXRUJQVlA4IKABAADwCQCdASpAAEAAPzmQuVgvKaUjrBVaaeAn
+CWIAwcRRgQJVggfe14lYfr5rA5RqG+w/TtlEAWKzodv0UQbIrndT6PshARPV
+sC5y0CZFoWQ73sY6UGVeR3gAAP7mSl2cBRCgBb3ewfRfMdNl6Alk2v+o2c1O
+21KBMyC0fZBJ8oC9piRZicQRadyC4niZBTE/csmGqIBEH10GA9a7EjRzMWBn
+rXgha6vuH9rdtC5KZnjCak5AKstVVBrk450WI2row2y6HA7B9cpFh/8EqCpW
+lH5Ljhaz7KThuk/BENyI11XICkn70JrZhkFgqxZlDYLEYe2kt7Ebzae8dAYP
+mqIBIIYiuns+Goy8SzDh4a/ZabPV9BUfA5/F7X6qX3dppC0iTAvR8NTDr1o6
+2OXKgHdWO6ujleGaKMko9XyshZXIVSxProTmRNz3LKx9vyje159gJvLDatm/
+POdVlN9nKDJWvkNnKzImm3nw9xg9aCmJ0euCVzmgCvfZIrWUeWtb4jlY0ct0
+Jx8yzyVeRPqQ2qiutxezVgPjxwH5HgMWATCF9MAAAA==
+",
     description:
       "Leading SastaStore with a vision to make useful digital tools, premium subscriptions and online services more accessible and affordable for customers in Pakistan.",
   },
   {
     name: "Scott Burchill",
     role: "Admin",
-    image: "/images/team/scott-burchill.jpg",
+    image: "data:image/webp;base64,UklGRpwDAABXRUJQVlA4IJADAADQEQCdASpAAEAAPwFgp1OrJaOivegBYCAJ
+bCcC2BmT53XPMMbyBNQr3ejfbv88rpu+9J2aA067WMYrXM4EteWCLI0jaX7j
+U6VYvf4imeN1IxTNcruqAdhQNNXa2NTTUuTul2Rr57oKl9JjcYlQ848Icr5d
+6AMUGWdSZd2Ji/ffSlaryEYWqpnm6zS41AJaCjrYExm3Q9wAANu3gbhSi0Y3
+1rHwMwu5Qj+pJtNjgyINTvWMjlsp1JlgOIK6s34wprwmrdxfgfv4hYJREYIy
+ZOWKIK0ODAy0T1AqcDSrkRzvaj4JIWfYJ5uKLdvIVexJLLNZmc9WIEo0aFEr
+ohJGF9scEKDVcAaaS99NSlJAfowYWGMTJo4/Q0J/Bsg9UY9sjWeWzoS3LbCg
+Rhawl7u8f7azYB4ajSUGzrPHljWjC+t61RvEXpQoVeyBqgt4ILxmDP+sKneY
+WIFvrRU8pUVErV54+fIqmhRJyV//42Dr6Ce5cyqNAWotvC732L8CY8aYzowV
+Q35KEQtHOdK2HcHgSRVkJhyjR+8xJR3UKW1M+29uqFN0LnSMKGkO77b0slXp
+zNSjQBhy6hoFmraYfb6hrV1uFZIrnfplHY7HB+RpKT27wYq5e1sNxzchy+DF
+lK4Rl87/aB2aLdatN24zyk+MsuRagK4NHdhsmf4EXS6uNvYzzf6/O7yWToAp
+UQAoXhvV461549EIkyqOfM/YZ+bLbopm8fMG5+SrauWdPY3Hkc5G3r04Sxlp
+gbIb9dJKDppVya7/DXgVSughglIRwXpZw7Kq97NSvEtw//6UXxJ24Alqfgdq
+DgPkpxkwjWOY4npCY2NhsUeKoT92UfBxQW/iKKGa7Rxpi+HVrgtlZzJBjpDA
+ybXzJvu8EM5YdaNnj++Isu9uwOEjewc+4qIOpCLqhu0ukRkI8e4nI3Ptg0og
+Wo7gJrHGMyoOJv2vII2ibf2Q8vSwokBsLEywcldm/e6Qrvz8rCaqYS7zRtbb
+e0J0tKgF+k3+Z/H8w69CQDnDzg4Wz/DpuxHPAoXH7eJxNGmJ7IMa57kE+tZT
+HU2COaI/WppFGbrbRjuNd0UdsiiP9pyzWj0zFdEqfU5ek2cKdt5B6/8i5nza
+vL0ttr+lg6d2pYFIl9VivHXbXxW1IcT+1/+oBz+VlrJxLZZEMMe7V+3qvwLl
+65AddnJ+MWpjMKjdFMJ8npAwE/S27hUDdC3dEkxCAAA=
+",
     description:
       "Supporting day-to-day SastaStore operations, platform management and a smooth, organised experience for customers using the storefront.",
   },
@@ -133,11 +164,11 @@ export default function AboutPage() {
   );
 
   return (
-    <main className="min-h-screen overflow-hidden bg-gradient-to-b from-[#EFF8FF] via-white to-[#ECFDF5] text-slate-900">
+    <main className="min-h-screen overflow-hidden bg-gradient-to-b from-[#EFF8FF] via-white to-[#EFF6FF] text-slate-900">
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-blue-100 py-16 sm:py-24">
         <div className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-sky-200/40 blur-3xl" />
-        <div className="pointer-events-none absolute -right-24 bottom-0 h-72 w-72 rounded-full bg-emerald-200/40 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 bottom-0 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl" />
 
         <Container>
           <div className="relative mx-auto max-w-4xl text-center">
@@ -244,8 +275,8 @@ export default function AboutPage() {
                   and accessible customer assistance.
                 </p>
 
-                <div className="mt-7 rounded-2xl border border-emerald-100 bg-emerald-50 p-5">
-                  <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-700">
+                <div className="mt-7 rounded-2xl border border-blue-100 bg-blue-50 p-5">
+                  <p className="text-xs font-extrabold uppercase tracking-widest text-blue-700">
                     Our Focus
                   </p>
 
@@ -263,7 +294,7 @@ export default function AboutPage() {
       <section className="border-y border-blue-100 bg-white/70 py-16 sm:py-20">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-600">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
               What We Offer
             </p>
 
@@ -361,7 +392,7 @@ export default function AboutPage() {
       <section className="border-y border-blue-100 bg-white/70 py-16 sm:py-20">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-600">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
               Our Approach
             </p>
 
@@ -376,7 +407,7 @@ export default function AboutPage() {
                 key={value.title}
                 className="rounded-3xl border border-blue-100 bg-white p-7 shadow-sm"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-lg font-extrabold text-emerald-700">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-lg font-extrabold text-blue-700">
                   ✓
                 </div>
 
@@ -447,7 +478,7 @@ export default function AboutPage() {
                   {member.description}
                 </p>
 
-                <div className="relative mt-6 h-1 w-14 rounded-full bg-gradient-to-r from-blue-600 to-emerald-400" />
+                <div className="relative mt-6 h-1 w-14 rounded-full bg-gradient-to-r from-blue-600 to-blue-400" />
               </article>
             ))}
           </div>
