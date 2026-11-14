@@ -180,14 +180,14 @@ export function Header() {
         <>
           <Link
             href="/login"
-            className="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-[#edf4ec] hover:text-[#24583d]"
+            className="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-[#eff6ff] hover:text-[#1d4ed8]"
           >
             Sign In
           </Link>
 
           <Link
             href="/register"
-            className="rounded-xl bg-[#24583d] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#173d30]"
+            className="rounded-xl bg-[#1d4ed8] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#1e40af]"
           >
             Get Started
           </Link>
@@ -199,7 +199,7 @@ export function Header() {
       <>
         <Link
           href={accountHref}
-          className="rounded-xl border border-[#dfe8df] bg-[#edf4ec] px-4 py-2.5 text-sm font-bold text-[#24583d] transition hover:bg-emerald-100"
+          className="rounded-xl border border-[#dbe5f5] bg-[#eff6ff] px-4 py-2.5 text-sm font-bold text-[#1d4ed8] transition hover:bg-blue-100"
         >
           {accountLabel}
         </Link>
@@ -249,46 +249,46 @@ export function Header() {
 
       <style jsx global>{`
         header.sticky {
-          background: rgba(13, 48, 41, 0.97) !important;
-          border-color: rgba(200, 229, 218, 0.16) !important;
+          background: rgba(30, 58, 138, 0.97) !important;
+          border-color: rgba(219, 234, 254, 0.16) !important;
           color: #f7faf8 !important;
-          box-shadow: 0 8px 30px rgba(5, 24, 19, 0.18) !important;
+          box-shadow: 0 8px 30px rgba(30, 64, 175, 0.18) !important;
         }
         header.sticky .sastastore-marquee {
-          background: linear-gradient(90deg, #0a2823, #17483b, #0a2823) !important;
-          border-color: rgba(200, 229, 218, 0.13) !important;
+          background: linear-gradient(90deg, #1e3a8a, #1d4ed8, #1e3a8a) !important;
+          border-color: rgba(219, 234, 254, 0.13) !important;
         }
-        header.sticky .sastastore-marquee span { color: #d6e9df !important; }
-        header.sticky .sastastore-marquee span:first-child { background: #f5ce78 !important; }
-        header.sticky a { color: #d6e9df; }
-        header.sticky a:hover { color: #f5ce78; }
-        header.sticky a[aria-current="page"] { color: #f5ce78 !important; }
+        header.sticky .sastastore-marquee span { color: #dbeafe !important; }
+        header.sticky .sastastore-marquee span:first-child { background: #60a5fa !important; }
+        header.sticky a { color: #dbeafe; }
+        header.sticky a:hover { color: #60a5fa; }
+        header.sticky a[aria-current="page"] { color: #60a5fa !important; }
         header.sticky a.group > span:first-child {
-          background: linear-gradient(135deg, #f5ce78, #e9b94f) !important;
-          color: #17372e !important;
-          box-shadow: 0 6px 18px rgba(0,0,0,.2) !important;
+          background: linear-gradient(135deg, #60a5fa, #3b82f6) !important;
+          color: #1e3a8a !important;
+          box-shadow: 0 6px 18px rgba(30,64,175,.12) !important;
         }
         header.sticky a.group > span:last-child { color: #fff !important; }
-        header.sticky a.group > span:last-child span { color: #f5ce78 !important; }
-        header.sticky nav a span { background: #f5ce78 !important; }
+        header.sticky a.group > span:last-child span { color: #60a5fa !important; }
+        header.sticky nav a span { background: #60a5fa !important; }
         header.sticky button {
-          border-color: rgba(214,233,223,.2) !important;
-          background-color: #17483b !important;
+          border-color: rgba(219,234,254,.2) !important;
+          background-color: #1d4ed8 !important;
           color: #fff !important;
         }
-        header.sticky button:hover { background-color: #205b49 !important; }
+        header.sticky button:hover { background-color: #1e40af !important; }
         header.sticky #sastastore-mobile-menu {
-          border-color: rgba(214,233,223,.16) !important;
-          background: #0d3029 !important;
+          border-color: rgba(219,234,254,.16) !important;
+          background: #1e3a8a !important;
         }
         @media (prefers-reduced-motion: reduce) {
           header.sticky .sastastore-marquee-track { animation: none !important; }
         }
       `}</style>
 
-      <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 text-slate-900 shadow-sm shadow-emerald-100/40 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 text-slate-900 shadow-sm shadow-blue-100/40 backdrop-blur-xl">
         {/* Announcement Bar */}
-        <div className="sastastore-marquee overflow-hidden border-b border-[#dfe8df] bg-gradient-to-r from-[#EAF4FF] via-[#F4FAFF] to-[#E5FBF3]">
+        <div className="sastastore-marquee overflow-hidden border-b border-[#dbe5f5] bg-gradient-to-r from-[#EAF4FF] via-[#F4FAFF] to-[#EFF6FF]">
           <div className="sastastore-marquee-track flex w-max">
             {[
               ...announcements,
@@ -298,13 +298,13 @@ export function Header() {
                 key={`${item}-${index}`}
                 className="flex shrink-0 items-center gap-3 px-7 py-2 sm:px-10"
               >
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#edf4ec]0" />
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#eff6ff]0" />
 
                 <span className="whitespace-nowrap text-xs font-semibold tracking-wide text-slate-700 sm:text-sm">
                   {item}
                 </span>
 
-                <span className="text-sm text-emerald-500">
+                <span className="text-sm text-blue-500">
                   ✦
                 </span>
               </div>
@@ -327,6 +327,7 @@ export function Header() {
                   width={56}
                   height={56}
                   priority
+                  unoptimized
                   className="h-full w-full object-contain"
                 />
               </span>
@@ -335,7 +336,7 @@ export function Header() {
                 <span className="text-slate-900">
                   Sasta
                 </span>
-                <span className="text-[#24583d]">
+                <span className="text-[#1d4ed8]">
                   Store
                 </span>
               </span>
@@ -362,13 +363,13 @@ export function Header() {
                         isTracking
                           ? `inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-bold transition ${
                               active
-                                ? "border-emerald-500 bg-[#24583d] text-white"
-                                : "border-emerald-200 bg-[#edf4ec] text-[#24583d] hover:bg-emerald-100"
+                                ? "border-blue-500 bg-[#1d4ed8] text-white"
+                                : "border-blue-200 bg-[#eff6ff] text-[#1d4ed8] hover:bg-blue-100"
                             }`
                           : `group relative py-2 text-sm font-semibold transition-colors duration-200 ${
                               active
-                                ? "text-[#24583d]"
-                                : "text-slate-600 hover:text-[#24583d]"
+                                ? "text-[#1d4ed8]"
+                                : "text-slate-600 hover:text-[#1d4ed8]"
                             }`
                       }
                     >
@@ -395,7 +396,7 @@ export function Header() {
 
                       {!isTracking && (
                         <span
-                          className={`absolute bottom-0 left-0 h-[2px] rounded-full bg-[#24583d] transition-all duration-200 ${
+                          className={`absolute bottom-0 left-0 h-[2px] rounded-full bg-[#1d4ed8] transition-all duration-200 ${
                             active
                               ? "w-full"
                               : "w-0 group-hover:w-full"
@@ -407,7 +408,7 @@ export function Header() {
                 })}
               </nav>
 
-              <Link href="/track" aria-current={isActive("/track") ? "page" : undefined} className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl border-2 border-[#24583d] bg-[#e8c875] px-3 py-2.5 text-sm font-extrabold text-[#173d30] shadow-sm transition hover:bg-[#f3d994] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e8c875]">
+              <Link href="/track" aria-current={isActive("/track") ? "page" : undefined} className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl border-2 border-[#1d4ed8] bg-[#60a5fa] px-3 py-2.5 text-sm font-extrabold text-[#1e40af] shadow-sm transition hover:bg-[#93c5fd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#60a5fa]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3" /><path d="M12 3v3M12 18v3M3 12h3M18 12h3" /></svg>
                 Track Order
               </Link>
@@ -429,7 +430,7 @@ export function Header() {
               onClick={() =>
                 setMenuOpen((current) => !current)
               }
-              className="relative inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-800 transition hover:border-emerald-200 hover:bg-[#edf4ec] lg:hidden"
+              className="relative inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-800 transition hover:border-blue-200 hover:bg-[#eff6ff] lg:hidden"
             >
               <span
                 className={`absolute h-0.5 w-5 rounded-full bg-current transition-all duration-300 ${
@@ -486,12 +487,12 @@ export function Header() {
                         isTracking
                           ? `mt-2 flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-extrabold ${
                               active
-                                ? "border-emerald-600 bg-[#24583d] text-white"
-                                : "border-emerald-200 bg-[#edf4ec] text-[#24583d]"
+                                ? "border-blue-600 bg-[#1d4ed8] text-white"
+                                : "border-blue-200 bg-[#eff6ff] text-[#1d4ed8]"
                             }`
                           : `rounded-xl px-4 py-3 text-sm font-semibold transition ${
                               active
-                                ? "bg-[#edf4ec] text-[#24583d]"
+                                ? "bg-[#eff6ff] text-[#1d4ed8]"
                                 : "text-slate-700 hover:bg-slate-50"
                             }`
                       }
@@ -543,7 +544,7 @@ export function Header() {
                       onClick={() =>
                         setMenuOpen(false)
                       }
-                      className="rounded-xl bg-[#24583d] py-3 text-center text-sm font-semibold text-white"
+                      className="rounded-xl bg-[#1d4ed8] py-3 text-center text-sm font-semibold text-white"
                     >
                       Sign Up
                     </Link>
@@ -555,7 +556,7 @@ export function Header() {
                       onClick={() =>
                         setMenuOpen(false)
                       }
-                      className="flex w-full items-center justify-center rounded-xl bg-[#edf4ec] py-3 text-sm font-bold text-[#24583d]"
+                      className="flex w-full items-center justify-center rounded-xl bg-[#eff6ff] py-3 text-sm font-bold text-[#1d4ed8]"
                     >
                       {accountLabel}
                     </Link>
