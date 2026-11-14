@@ -32,8 +32,19 @@ type NavigationItem = {
 // Widen navigation types so additional routes
 // are supported without TypeScript errors.
 const navigation: NavigationItem[] = [
-  ...siteConfig.navigation,
+  ...siteConfig.navigation.filter(
+    (item) =>
+      item.href !== "/deals" &&
+      item.label.trim().toLowerCase() !== "deals",
+  ),
 ];
+
+if (!navigation.some((item) => item.href === "/about")) {
+  navigation.push({
+    href: "/about",
+    label: "About",
+  });
+}
 
 if (!navigation.some((item) => item.href === "/track")) {
   navigation.push({

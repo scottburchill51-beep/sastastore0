@@ -420,12 +420,14 @@ export default function AboutPage() {
                 <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-sky-100/60 blur-3xl" />
 
                 <div className="relative flex items-center gap-5">
-                  <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl border-4 border-white shadow-lg ring-1 ring-blue-100 sm:h-28 sm:w-28">
+                  <div className="relative h-36 w-36 shrink-0 overflow-hidden rounded-2xl border-4 border-white shadow-lg ring-1 ring-blue-100 sm:h-40 sm:w-40">
                     <Image
                       src={member.image}
                       alt={member.name}
                       fill
-                      sizes="(max-width: 640px) 96px, 112px"
+                      sizes="(max-width: 640px) 144px, 160px"
+                      quality={100}
+                      unoptimized
                       className="object-cover object-center transition duration-500 group-hover:scale-105"
                     />
                   </div>
