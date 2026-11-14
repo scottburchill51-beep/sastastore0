@@ -121,19 +121,19 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen overflow-hidden bg-gradient-to-b from-[#EFF8FF] via-white to-[#ECFDF5] text-slate-900">
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-blue-100 py-16 sm:py-20">
-        <div className="pointer-events-none absolute -left-24 top-5 h-64 w-64 rounded-full bg-sky-200/40 blur-3xl" />
+      <section className="relative overflow-hidden border-b border-emerald-100 py-16 sm:py-20">
+        <div className="pointer-events-none absolute -left-24 top-5 h-64 w-64 rounded-full bg-emerald-200/40 blur-3xl" />
         <div className="pointer-events-none absolute -right-24 bottom-0 h-64 w-64 rounded-full bg-emerald-200/40 blur-3xl" />
 
         <Container>
           <div className="relative mx-auto max-w-3xl text-center">
-            <span className="inline-flex rounded-full border border-blue-200 bg-white px-5 py-2 text-xs font-extrabold uppercase tracking-[0.2em] text-blue-600 shadow-sm">
+            <span className="inline-flex rounded-full border border-emerald-200 bg-white px-5 py-2 text-xs font-extrabold uppercase tracking-[0.2em] text-emerald-700 shadow-sm">
               SastaStore Customer Care
             </span>
 
             <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
               How Can We
-              <span className="text-blue-600">
+              <span className="text-emerald-700">
                 {" "}Help You?
               </span>
             </h1>
@@ -150,7 +150,7 @@ export default function ContactPage() {
                 href={generalWhatsAppUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+                className="inline-flex items-center gap-2 rounded-xl bg-emerald-700 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-200 transition hover:bg-emerald-800"
               >
                 Contact Support
                 <ArrowIcon />
@@ -158,7 +158,7 @@ export default function ContactPage() {
 
               <Link
                 href="/track"
-                className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-white px-6 py-3.5 text-sm font-bold text-blue-700 transition hover:bg-blue-50"
+                className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-white px-6 py-3.5 text-sm font-bold text-emerald-800 transition hover:bg-emerald-50"
               >
                 Track My Order
               </Link>
@@ -171,7 +171,7 @@ export default function ContactPage() {
       <section className="py-14 sm:py-20">
         <Container>
           <div className="mb-9">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-700">
               Contact Options
             </p>
 
@@ -221,12 +221,12 @@ export default function ContactPage() {
             </article>
 
             {/* Telegram Support */}
-            <article className="flex h-full flex-col rounded-3xl border border-sky-200 bg-white p-7 shadow-lg shadow-sky-100/40 transition hover:-translate-y-1 hover:shadow-xl">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-100 text-sky-700">
+            <article className="flex h-full flex-col rounded-3xl border border-emerald-200 bg-white p-7 shadow-lg shadow-emerald-100/40 transition hover:-translate-y-1 hover:shadow-xl">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100 text-sky-700">
                 <SupportIcon type="telegram" />
               </div>
 
-              <p className="mt-6 text-xs font-extrabold uppercase tracking-wider text-sky-600">
+              <p className="mt-6 text-xs font-extrabold uppercase tracking-wider text-emerald-700">
                 Alternative Support
               </p>
 
@@ -252,7 +252,7 @@ export default function ContactPage() {
                 href={telegramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-7 inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-sky-700"
+                className="mt-7 inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-700 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-sky-700"
               >
                 Chat on Telegram
                 <ArrowIcon />
@@ -265,12 +265,12 @@ export default function ContactPage() {
             </article>
 
             {/* Order Tracking */}
-            <article className="flex h-full flex-col rounded-3xl border border-blue-100 bg-white p-7 shadow-lg shadow-blue-100/30 transition hover:-translate-y-1 hover:shadow-xl">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">
+            <article className="flex h-full flex-col rounded-3xl border border-emerald-100 bg-white p-7 shadow-lg shadow-emerald-100/30 transition hover:-translate-y-1 hover:shadow-xl">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-800">
                 <SupportIcon type="tracking" />
               </div>
 
-              <p className="mt-6 text-xs font-extrabold uppercase tracking-wider text-blue-600">
+              <p className="mt-6 text-xs font-extrabold uppercase tracking-wider text-emerald-700">
                 Self-Service
               </p>
 
@@ -278,7 +278,7 @@ export default function ContactPage() {
                 Order Tracking
               </h3>
 
-              <p className="mt-3 text-lg font-bold text-blue-700">
+              <p className="mt-3 text-lg font-bold text-emerald-800">
                 Track Your Purchase
               </p>
 
@@ -291,7 +291,7 @@ export default function ContactPage() {
 
               <Link
                 href="/track"
-                className="mt-7 inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-blue-700"
+                className="mt-7 inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-700 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-emerald-800"
               >
                 Track Order
                 <ArrowIcon />
@@ -302,7 +302,7 @@ export default function ContactPage() {
       </section>
 
       {/* Specific Help */}
-      <section className="border-y border-blue-100 bg-white/70 py-14 sm:py-20">
+      <section className="border-y border-emerald-100 bg-white/70 py-14 sm:py-20">
         <Container>
           <div className="mb-9 text-center">
             <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-600">
@@ -315,8 +315,8 @@ export default function ContactPage() {
           </div>
 
           <div className="grid gap-5 md:grid-cols-2">
-            <article className="rounded-3xl border border-blue-100 bg-white p-7 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-sm font-black text-blue-700">
+            <article className="rounded-3xl border border-emerald-100 bg-white p-7 shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-sm font-black text-emerald-800">
                 PR
               </div>
 
@@ -335,7 +335,7 @@ export default function ContactPage() {
                 href={productsWhatsAppUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-6 inline-flex items-center gap-2 text-sm font-extrabold text-blue-600 hover:text-blue-800"
+                className="mt-6 inline-flex items-center gap-2 text-sm font-extrabold text-emerald-700 hover:text-blue-800"
               >
                 Ask About a Product
                 <ArrowIcon />
@@ -375,10 +375,10 @@ export default function ContactPage() {
       {/* Social Channels */}
       <section className="py-14 sm:py-20">
         <Container>
-          <div className="rounded-3xl border border-blue-100 bg-white p-7 shadow-lg shadow-blue-100/40 sm:p-10">
+          <div className="rounded-3xl border border-emerald-100 bg-white p-7 shadow-lg shadow-emerald-100/40 sm:p-10">
             <div className="flex flex-col justify-between gap-7 lg:flex-row lg:items-center">
               <div className="max-w-xl">
-                <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+                <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-700">
                   Stay Connected
                 </p>
 
@@ -407,7 +407,7 @@ export default function ContactPage() {
                   href={facebookUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-xl border border-blue-200 bg-blue-50 px-5 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-100"
+                  className="inline-flex items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-bold text-emerald-800 transition hover:bg-emerald-100"
                 >
                   Facebook Page
                 </a>
@@ -420,12 +420,12 @@ export default function ContactPage() {
       {/* Bottom CTA */}
       <section className="pb-16">
         <Container>
-          <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-sky-600 p-8 text-center text-white shadow-xl shadow-blue-200/50 sm:p-12">
+          <div className="rounded-3xl bg-gradient-to-r from-emerald-700 to-emerald-700 p-8 text-center text-white shadow-xl shadow-emerald-200/50 sm:p-12">
             <h2 className="text-2xl font-extrabold sm:text-3xl">
               Already Placed an Order?
             </h2>
 
-            <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-blue-50">
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-emerald-50">
               Sign in to view your order history
               and track your purchase securely.
             </p>
@@ -433,7 +433,7 @@ export default function ContactPage() {
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Link
                 href="/account"
-                className="rounded-xl bg-white px-6 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-50"
+                className="rounded-xl bg-white px-6 py-3 text-sm font-bold text-emerald-800 transition hover:bg-emerald-50"
               >
                 My Dashboard
               </Link>
