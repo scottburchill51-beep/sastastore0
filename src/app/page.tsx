@@ -73,8 +73,8 @@ export default function HomePage() {
         <Container>
           <div className="relative grid min-h-[530px] items-center gap-12 py-14 sm:py-20 lg:grid-cols-[1.04fr_.96fr] lg:py-24">
             <div className="animate-fade-up max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#267253]/40 bg-[#267253]/10 px-4 py-2 text-[10px] font-extrabold uppercase tracking-[.18em] text-[#64748b]">
-                <span className="status-dot h-2 w-2 rounded-full bg-[#e4eee7]" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#267253]/40 bg-[#267253]/10 px-4 py-2 text-[10px] font-extrabold uppercase tracking-[.18em] text-[#17372e]">
+                <span className="status-dot h-2 w-2 rounded-full bg-[#267253]" />
                 SastaStore digital marketplace
               </div>
               <h1 className="mt-6 text-[2.65rem] font-black leading-[1.05] tracking-[-.045em] sm:text-6xl lg:text-[4.35rem]">
