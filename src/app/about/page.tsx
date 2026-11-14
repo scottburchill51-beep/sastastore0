@@ -15,14 +15,14 @@ const teamMembers = [
   {
     name: "Shaloom Victor",
     role: "CEO",
-    image: "data:image/webp;base64,UklGRpwDAABXRUJQVlA4IJADAADQEQCdASpAAEAAPwFgp1OrJaOivegBYCAJbCcC2BmT53XPMMbyBNQr3ejfbv88rpu+9J2aA067WMYrXM4EteWCLI0jaX7jU6VYvf4imeN1IxTNcruqAdhQNNXa2NTTUuTul2Rr57oKl9JjcYlQ848Icr5d6AMUGWdSZd2Ji/ffSlaryEYWqpnm6zS41AJaCjrYExm3Q9wAANu3gbhSi0Y31rHwMwu5Qj+pJtNjgyINTvWMjlsp1JlgOIK6s34wprwmrdxfgfv4hYJREYIyZOWKIK0ODAy0T1AqcDSrkRzvaj4JIWfYJ5uKLdvIVexJLLNZmc9WIEo0aFErohJGF9scEKDVcAaaS99NSlJAfowYWGMTJo4/Q0J/Bsg9UY9sjWeWzoS3LbCgRhawl7u8f7azYB4ajSUGzrPHljWjC+t61RvEXpQoVeyBqgt4ILxmDP+sKneYWIFvrRU8pUVErV54+fIqmhRJyV//42Dr6Ce5cyqNAWotvC732L8CY8aYzowVQ35KEQtHOdK2HcHgSRVkJhyjR+8xJR3UKW1M+29uqFN0LnSMKGkO77b0slXpzNSjQBhy6hoFmraYfb6hrV1uFZIrnfplHY7HB+RpKT27wYq5e1sNxzchy+DFlK4Rl87/aB2aLdatN24zyk+MsuRagK4NHdhsmf4EXS6uNvYzzf6/O7yWToApUQAoXhvV461549EIkyqOfM/YZ+bLbopm8fMG5+SrauWdPY3Hkc5G3r04SxlpgbIb9dJKDppVya7/DXgVSughglIRwXpZw7Kq97NSvEtw//6UXxJ24AlqfgdqDgPkpxkwjWOY4npCY2NhsUeKoT92UfBxQW/iKKGa7Rxpi+HVrgtlZzJBjpDAybXzJvu8EM5YdaNnj++Isu9uwOEjewc+4qIOpCLqhu0ukRkI8e4nI3Ptg0ogWo7gJrHGMyoOJv2vII2ibf2Q8vSwokBsLEywcldm/e6Qrvz8rCaqYS7zRtbbe0J0tKgF+k3+Z/H8w69CQDnDzg4Wz/DpuxHPAoXH7eJxNGmJ7IMa57kE+tZTHU2COaI/WppFGbrbRjuNd0UdsiiP9pyzWj0zFdEqfU5ek2cKdt5B6/8i5nzavL0ttr+lg6d2pYFIl9VivHXbXxW1IcT+1/+oBz+VlrJxLZZEMMe7V+3qvwLl65AddnJ+MWpjMKjdFMJ8npAwE/S27hUDdC3dEkxCAAA=",
+    image: "/images/team/shaloom-victor.jpg",
     description:
       "Leading SastaStore with a vision to make useful digital tools, premium subscriptions and online services more accessible and affordable for customers in Pakistan.",
   },
   {
     name: "Scott Burchill",
     role: "Admin",
-    image: "data:image/webp;base64,UklGRpwDAABXRUJQVlA4IJADAADQEQCdASpAAEAAPwFgp1OrJaOivegBYCAJbCcC2BmT53XPMMbyBNQr3ejfbv88rpu+9J2aA067WMYrXM4EteWCLI0jaX7jU6VYvf4imeN1IxTNcruqAdhQNNXa2NTTUuTul2Rr57oKl9JjcYlQ848Icr5d6AMUGWdSZd2Ji/ffSlaryEYWqpnm6zS41AJaCjrYExm3Q9wAANu3gbhSi0Y31rHwMwu5Qj+pJtNjgyINTvWMjlsp1JlgOIK6s34wprwmrdxfgfv4hYJREYIyZOWKIK0ODAy0T1AqcDSrkRzvaj4JIWfYJ5uKLdvIVexJLLNZmc9WIEo0aFErohJGF9scEKDVcAaaS99NSlJAfowYWGMTJo4/Q0J/Bsg9UY9sjWeWzoS3LbCgRhawl7u8f7azYB4ajSUGzrPHljWjC+t61RvEXpQoVeyBqgt4ILxmDP+sKneYWIFvrRU8pUVErV54+fIqmhRJyV//42Dr6Ce5cyqNAWotvC732L8CY8aYzowVQ35KEQtHOdK2HcHgSRVkJhyjR+8xJR3UKW1M+29uqFN0LnSMKGkO77b0slXpzNSjQBhy6hoFmraYfb6hrV1uFZIrnfplHY7HB+RpKT27wYq5e1sNxzchy+DFlK4Rl87/aB2aLdatN24zyk+MsuRagK4NHdhsmf4EXS6uNvYzzf6/O7yWToApUQAoXhvV461549EIkyqOfM/YZ+bLbopm8fMG5+SrauWdPY3Hkc5G3r04SxlpgbIb9dJKDppVya7/DXgVSughglIRwXpZw7Kq97NSvEtw//6UXxJ24AlqfgdqDgPkpxkwjWOY4npCY2NhsUeKoT92UfBxQW/iKKGa7Rxpi+HVrgtlZzJBjpDAybXzJvu8EM5YdaNnj++Isu9uwOEjewc+4qIOpCLqhu0ukRkI8e4nI3Ptg0ogWo7gJrHGMyoOJv2vII2ibf2Q8vSwokBsLEywcldm/e6Qrvz8rCaqYS7zRtbbe0J0tKgF+k3+Z/H8w69CQDnDzg4Wz/DpuxHPAoXH7eJxNGmJ7IMa57kE+tZTHU2COaI/WppFGbrbRjuNd0UdsiiP9pyzWj0zFdEqfU5ek2cKdt5B6/8i5nzavL0ttr+lg6d2pYFIl9VivHXbXxW1IcT+1/+oBz+VlrJxLZZEMMe7V+3qvwLl65AddnJ+MWpjMKjdFMJ8npAwE/S27hUDdC3dEkxCAAA=",
+    image: "/images/team/scott-burchill.jpg",
     description:
       "Supporting day-to-day SastaStore operations, platform management and a smooth, organised experience for customers using the storefront.",
   },
@@ -133,21 +133,21 @@ export default function AboutPage() {
   );
 
   return (
-    <main className="min-h-screen overflow-hidden bg-gradient-to-b from-[#EFF8FF] via-white to-[#EFF6FF] text-slate-900">
+    <main className="min-h-screen overflow-hidden bg-gradient-to-b from-[#f6f8f6] via-white to-[#edf6f0] text-slate-900">
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-blue-100 py-16 sm:py-24">
-        <div className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-sky-200/40 blur-3xl" />
-        <div className="pointer-events-none absolute -right-24 bottom-0 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl" />
+      <section className="relative overflow-hidden border-b border-[#dce8df] py-16 sm:py-24">
+        <div className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-emerald-200/40 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 bottom-0 h-72 w-72 rounded-full bg-emerald-200/40 blur-3xl" />
 
         <Container>
           <div className="relative mx-auto max-w-4xl text-center">
-            <span className="inline-flex rounded-full border border-blue-200 bg-white px-5 py-2 text-xs font-extrabold uppercase tracking-widest text-blue-600 shadow-sm">
+            <span className="inline-flex rounded-full border border-[#dce8df] bg-white px-5 py-2 text-xs font-extrabold uppercase tracking-widest text-[#267253] shadow-sm">
               Get to Know SastaStore
             </span>
 
             <h1 className="mt-7 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
               Premium Digital Tools.
-              <span className="block text-blue-600">
+              <span className="block text-[#267253]">
                 More Accessible Prices.
               </span>
             </h1>
@@ -163,7 +163,7 @@ export default function AboutPage() {
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
                 href="/products"
-                className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#123b32] px-6 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-emerald-200 transition hover:bg-[#1c5746]"
               >
                 Explore Products
                 <ArrowIcon />
@@ -171,7 +171,7 @@ export default function AboutPage() {
 
               <Link
                 href="/contact"
-                className="inline-flex items-center rounded-xl border border-blue-200 bg-white px-6 py-3.5 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                className="inline-flex items-center rounded-xl border border-[#dce8df] bg-white px-6 py-3.5 text-sm font-extrabold text-[#267253] transition hover:bg-[#edf6f0]"
               >
                 Contact Our Team
               </Link>
@@ -185,13 +185,13 @@ export default function AboutPage() {
         <Container>
           <div className="grid items-center gap-10 lg:grid-cols-2">
             <div>
-              <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+              <p className="text-xs font-extrabold uppercase tracking-widest text-[#267253]">
                 Who We Are
               </p>
 
               <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
                 A Simpler Way to Discover
-                <span className="text-blue-600">
+                <span className="text-[#267253]">
                   {" "}Digital Products
                 </span>
               </h2>
@@ -217,18 +217,18 @@ export default function AboutPage() {
 
               <Link
                 href="/categories"
-                className="mt-6 inline-flex items-center gap-2 text-sm font-extrabold text-blue-600 transition hover:text-blue-800"
+                className="mt-6 inline-flex items-center gap-2 text-sm font-extrabold text-[#267253] transition hover:text-[#17372e]"
               >
                 Explore Categories
                 <ArrowIcon />
               </Link>
             </div>
 
-            <div className="relative rounded-3xl border border-blue-100 bg-white p-7 shadow-lg shadow-blue-100/40 sm:p-9">
-              <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-sky-100 blur-2xl" />
+            <div className="relative rounded-3xl border border-[#dce8df] bg-white p-7 shadow-lg shadow-[#123b32]/10 sm:p-9">
+              <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-emerald-100 blur-2xl" />
 
               <div className="relative">
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 text-3xl font-black text-white shadow-lg shadow-blue-100">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#123b32] to-[#267253] text-3xl font-black text-white shadow-lg shadow-emerald-100">
                   S
                 </div>
 
@@ -244,8 +244,8 @@ export default function AboutPage() {
                   and accessible customer assistance.
                 </p>
 
-                <div className="mt-7 rounded-2xl border border-blue-100 bg-blue-50 p-5">
-                  <p className="text-xs font-extrabold uppercase tracking-widest text-blue-700">
+                <div className="mt-7 rounded-2xl border border-[#dce8df] bg-[#edf6f0] p-5">
+                  <p className="text-xs font-extrabold uppercase tracking-widest text-[#267253]">
                     Our Focus
                   </p>
 
@@ -260,10 +260,10 @@ export default function AboutPage() {
       </section>
 
       {/* What We Offer */}
-      <section className="border-y border-blue-100 bg-white/70 py-16 sm:py-20">
+      <section className="border-y border-[#dce8df] bg-white/70 py-16 sm:py-20">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-[#267253]">
               What We Offer
             </p>
 
@@ -281,9 +281,9 @@ export default function AboutPage() {
             {offerings.map((item) => (
               <article
                 key={item.number}
-                className="rounded-3xl border border-blue-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-md"
+                className="rounded-3xl border border-[#dce8df] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-[#dce8df] hover:shadow-md"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-sm font-extrabold text-blue-700">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#edf6f0] text-sm font-extrabold text-[#267253]">
                   {item.number}
                 </div>
 
@@ -304,7 +304,7 @@ export default function AboutPage() {
       <section className="py-16 sm:py-20">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-[#267253]">
               Our Ordering Experience
             </p>
 
@@ -322,9 +322,9 @@ export default function AboutPage() {
             {steps.map((step) => (
               <article
                 key={step.number}
-                className="rounded-3xl border border-blue-100 bg-white p-6 shadow-sm"
+                className="rounded-3xl border border-[#dce8df] bg-white p-6 shadow-sm"
               >
-                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 text-sm font-extrabold text-white">
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#123b32] to-[#267253] text-sm font-extrabold text-white">
                   {step.number}
                 </span>
 
@@ -339,8 +339,8 @@ export default function AboutPage() {
             ))}
           </div>
 
-          <div className="mt-8 rounded-2xl border border-blue-100 bg-blue-50 p-5 text-center">
-            <p className="text-sm leading-7 text-blue-800">
+          <div className="mt-8 rounded-2xl border border-[#dce8df] bg-[#edf6f0] p-5 text-center">
+            <p className="text-sm leading-7 text-[#17372e]">
               Payment evidence is reviewed before
               approval. Subscription delivery and
               activation may require manual processing.
@@ -348,7 +348,7 @@ export default function AboutPage() {
 
             <Link
               href="/track"
-              className="mt-3 inline-flex items-center gap-2 text-sm font-extrabold text-blue-700 hover:underline"
+              className="mt-3 inline-flex items-center gap-2 text-sm font-extrabold text-[#267253] hover:underline"
             >
               Track Your Order
               <ArrowIcon />
@@ -358,10 +358,10 @@ export default function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="border-y border-blue-100 bg-white/70 py-16 sm:py-20">
+      <section className="border-y border-[#dce8df] bg-white/70 py-16 sm:py-20">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-[#267253]">
               Our Approach
             </p>
 
@@ -374,9 +374,9 @@ export default function AboutPage() {
             {values.map((value) => (
               <article
                 key={value.title}
-                className="rounded-3xl border border-blue-100 bg-white p-7 shadow-sm"
+                className="rounded-3xl border border-[#dce8df] bg-white p-7 shadow-sm"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-lg font-extrabold text-blue-700">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#edf6f0] text-lg font-extrabold text-[#267253]">
                   ✓
                 </div>
 
@@ -397,7 +397,7 @@ export default function AboutPage() {
       <section className="py-16 sm:py-20">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-[#267253]">
               Our Leadership
             </p>
 
@@ -415,12 +415,12 @@ export default function AboutPage() {
             {teamMembers.map((member) => (
               <article
                 key={member.name}
-                className="group relative overflow-hidden rounded-3xl border border-blue-100 bg-white p-7 shadow-lg shadow-blue-100/30 transition hover:-translate-y-1 hover:shadow-xl sm:p-8"
+                className="group relative overflow-hidden rounded-3xl border border-[#dce8df] bg-white p-7 shadow-lg shadow-emerald-100/30 transition hover:-translate-y-1 hover:shadow-xl sm:p-8"
               >
-                <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-sky-100/60 blur-3xl" />
+                <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-emerald-100/60 blur-3xl" />
 
                 <div className="relative flex items-center gap-5">
-                  <div className="relative h-36 w-36 shrink-0 overflow-hidden rounded-2xl border-4 border-white shadow-lg ring-1 ring-blue-100 sm:h-40 sm:w-40">
+                  <div className="relative h-36 w-36 shrink-0 overflow-hidden rounded-2xl border-4 border-white shadow-lg ring-1 ring-emerald-100 sm:h-40 sm:w-40">
                     <Image
                       src={member.image}
                       alt={member.name}
@@ -433,7 +433,7 @@ export default function AboutPage() {
                   </div>
 
                   <div>
-                    <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+                    <p className="text-xs font-extrabold uppercase tracking-widest text-[#267253]">
                       {member.role}
                     </p>
 
@@ -447,7 +447,7 @@ export default function AboutPage() {
                   {member.description}
                 </p>
 
-                <div className="relative mt-6 h-1 w-14 rounded-full bg-gradient-to-r from-blue-600 to-blue-400" />
+                <div className="relative mt-6 h-1 w-14 rounded-full bg-gradient-to-r from-[#123b32] to-emerald-400" />
               </article>
             ))}
           </div>
@@ -455,12 +455,12 @@ export default function AboutPage() {
       </section>
 
       {/* Support CTA */}
-      <section className="border-t border-blue-100 py-16">
+      <section className="border-t border-[#dce8df] py-16">
         <Container>
-          <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-sky-600 p-8 text-white shadow-xl shadow-blue-200/50 sm:p-12">
+          <div className="rounded-3xl bg-gradient-to-r from-[#123b32] to-[#267253] p-8 text-white shadow-xl shadow-[#123b32]/15 sm:p-12">
             <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
               <div className="max-w-xl">
-                <p className="text-xs font-extrabold uppercase tracking-widest text-blue-100">
+                <p className="text-xs font-extrabold uppercase tracking-widest text-[#e4eee7]">
                   Get in Touch
                 </p>
 
@@ -468,7 +468,7 @@ export default function AboutPage() {
                   Have Questions About SastaStore?
                 </h2>
 
-                <p className="mt-4 text-sm leading-8 text-blue-50">
+                <p className="mt-4 text-sm leading-8 text-[#e4eee7]">
                   Our support channels are available
                   for questions about products,
                   subscriptions, orders and
@@ -481,7 +481,7 @@ export default function AboutPage() {
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3.5 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                  className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3.5 text-sm font-extrabold text-[#267253] transition hover:bg-[#edf6f0]"
                 >
                   WhatsApp Support
                 </a>
