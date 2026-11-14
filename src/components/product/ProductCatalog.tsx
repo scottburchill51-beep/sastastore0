@@ -223,7 +223,7 @@ export function ProductCatalog() {
   return (
     <>
       {/* SEARCH AND FILTER CONTROLS */}
-      <div className="mt-10 rounded-2xl border border-[#244c40] bg-[#123b32] p-4 text-white shadow-lg shadow-[#123b32]/10 sm:p-5">
+      <div className="mt-10 rounded-2xl border border-[#d5b866]/35 bg-[#173d30] p-4 text-white shadow-[0_18px_45px_rgba(0,0,0,.18)] sm:p-5">
         <div className="grid gap-3 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           {/* SEARCH */}
           <div className="relative">
@@ -248,7 +248,7 @@ export function ProductCatalog() {
                 setSearch(event.target.value)
               }
               placeholder="Search subscriptions..."
-              className="h-12 w-full rounded-xl border border-[#d8e6dc] bg-[#f8fbf8] pl-12 pr-4 text-sm text-[#17372e] outline-none transition focus:border-[#267253] focus:ring-2 focus:ring-emerald-100"
+              className="h-12 w-full rounded-xl border border-[#d5b866]/35 bg-[#f8fbf8] pl-12 pr-4 text-sm text-[#17372e] outline-none transition focus:border-[#267253] focus:ring-2 focus:ring-emerald-100"
             />
           </div>
 
