@@ -1,7 +1,6 @@
 
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -277,13 +276,13 @@ export function Header() {
               className="group flex shrink-0 items-center gap-2.5"
             >
               <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/70 bg-white shadow-md">
-                <Image
-                  src="/images/sastastore-logo.jpg"
+                <img
+                  src="/images/sastastore-logo.jpg?v=2"
                   alt="SastaStore logo"
                   width={56}
                   height={56}
-                  priority
-                  unoptimized
+                  fetchPriority="high"
+                  decoding="async"
                   className="h-full w-full object-contain"
                 />
               </span>
