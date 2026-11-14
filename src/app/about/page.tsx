@@ -1,5 +1,4 @@
 
-import Image from "next/image";
 import Link from "next/link";
 
 import { Container } from "@/components/ui/Container";
@@ -15,14 +14,12 @@ const teamMembers = [
   {
     name: "Shaloom Victor",
     role: "CEO",
-    image: "/images/team/shaloom-victor.jpg",
     description:
       "Leading SastaStore with a vision to make useful digital tools, premium subscriptions and online services more accessible and affordable for customers in Pakistan.",
   },
   {
     name: "Scott Burchill",
     role: "Admin",
-    image: "/images/team/scott-burchill.jpg",
     description:
       "Supporting day-to-day SastaStore operations, platform management and a smooth, organised experience for customers using the storefront.",
   },
@@ -420,16 +417,11 @@ export default function AboutPage() {
                 <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-emerald-100/60 blur-3xl" />
 
                 <div className="relative flex items-center gap-5">
-                  <div className="relative h-36 w-36 shrink-0 overflow-hidden rounded-2xl border-4 border-white shadow-lg ring-1 ring-emerald-100 sm:h-40 sm:w-40">
-                    <Image
-                      src={member.image}
-                      alt={member.name}
-                      fill
-                      sizes="(max-width: 640px) 144px, 160px"
-                      quality={100}
-                      unoptimized
-                      className="object-cover object-center transition duration-500 group-hover:scale-105"
-                    />
+                  <div
+                    aria-label={member.name}
+                    className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl border border-[#dce8df] bg-gradient-to-br from-[#edf6f0] to-white text-3xl font-black tracking-tight text-[#267253] shadow-sm sm:h-28 sm:w-28"
+                  >
+                    {member.name.split(" ").map((part) => part[0]).join("")}
                   </div>
 
                   <div>
