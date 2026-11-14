@@ -168,14 +168,14 @@ export function Header() {
         <>
           <Link
             href="/login"
-            className="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
+            className="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-[#edf4ec] hover:text-[#24583d]"
           >
             Sign In
           </Link>
 
           <Link
             href="/register"
-            className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
+            className="rounded-xl bg-[#24583d] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#173d30]"
           >
             Get Started
           </Link>
@@ -187,7 +187,7 @@ export function Header() {
       <>
         <Link
           href={accountHref}
-          className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-2.5 text-sm font-bold text-blue-700 transition hover:bg-blue-100"
+          className="rounded-xl border border-[#dfe8df] bg-[#edf4ec] px-4 py-2.5 text-sm font-bold text-[#24583d] transition hover:bg-emerald-100"
         >
           {accountLabel}
         </Link>
@@ -274,9 +274,9 @@ export function Header() {
         }
       `}</style>
 
-      <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 text-slate-900 shadow-sm shadow-blue-100/40 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 text-slate-900 shadow-sm shadow-emerald-100/40 backdrop-blur-xl">
         {/* Announcement Bar */}
-        <div className="sastastore-marquee overflow-hidden border-b border-blue-100 bg-gradient-to-r from-[#EAF4FF] via-[#F4FAFF] to-[#E5FBF3]">
+        <div className="sastastore-marquee overflow-hidden border-b border-[#dfe8df] bg-gradient-to-r from-[#EAF4FF] via-[#F4FAFF] to-[#E5FBF3]">
           <div className="sastastore-marquee-track flex w-max">
             {[
               ...announcements,
@@ -286,7 +286,7 @@ export function Header() {
                 key={`${item}-${index}`}
                 className="flex shrink-0 items-center gap-3 px-7 py-2 sm:px-10"
               >
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#edf4ec]0" />
 
                 <span className="whitespace-nowrap text-xs font-semibold tracking-wide text-slate-700 sm:text-sm">
                   {item}
@@ -308,7 +308,7 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
               className="group flex shrink-0 items-center gap-2.5"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 text-xl font-black text-white shadow-md shadow-blue-200">
+              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#e8c875] to-[#d7a94e] text-xl font-black text-white shadow-md shadow-emerald-200">
                 S
               </span>
 
@@ -316,7 +316,7 @@ export function Header() {
                 <span className="text-slate-900">
                   Sasta
                 </span>
-                <span className="text-blue-600">
+                <span className="text-[#24583d]">
                   Store
                 </span>
               </span>
@@ -344,13 +344,13 @@ export function Header() {
                         isTracking
                           ? `inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-bold transition ${
                               active
-                                ? "border-blue-500 bg-blue-600 text-white"
-                                : "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
+                                ? "border-emerald-500 bg-[#24583d] text-white"
+                                : "border-emerald-200 bg-[#edf4ec] text-[#24583d] hover:bg-emerald-100"
                             }`
                           : `group relative py-2 text-sm font-semibold transition-colors duration-200 ${
                               active
-                                ? "text-blue-600"
-                                : "text-slate-600 hover:text-blue-600"
+                                ? "text-[#24583d]"
+                                : "text-slate-600 hover:text-[#24583d]"
                             }`
                       }
                     >
@@ -377,7 +377,7 @@ export function Header() {
 
                       {!isTracking && (
                         <span
-                          className={`absolute bottom-0 left-0 h-[2px] rounded-full bg-blue-600 transition-all duration-200 ${
+                          className={`absolute bottom-0 left-0 h-[2px] rounded-full bg-[#24583d] transition-all duration-200 ${
                             active
                               ? "w-full"
                               : "w-0 group-hover:w-full"
@@ -407,7 +407,7 @@ export function Header() {
               onClick={() =>
                 setMenuOpen((current) => !current)
               }
-              className="relative inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 lg:hidden"
+              className="relative inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-800 transition hover:border-emerald-200 hover:bg-[#edf4ec] lg:hidden"
             >
               <span
                 className={`absolute h-0.5 w-5 rounded-full bg-current transition-all duration-300 ${
@@ -464,12 +464,12 @@ export function Header() {
                         isTracking
                           ? `mt-2 flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-extrabold ${
                               active
-                                ? "border-blue-600 bg-blue-600 text-white"
-                                : "border-blue-200 bg-blue-50 text-blue-700"
+                                ? "border-emerald-600 bg-[#24583d] text-white"
+                                : "border-emerald-200 bg-[#edf4ec] text-[#24583d]"
                             }`
                           : `rounded-xl px-4 py-3 text-sm font-semibold transition ${
                               active
-                                ? "bg-blue-50 text-blue-700"
+                                ? "bg-[#edf4ec] text-[#24583d]"
                                 : "text-slate-700 hover:bg-slate-50"
                             }`
                       }
@@ -521,7 +521,7 @@ export function Header() {
                       onClick={() =>
                         setMenuOpen(false)
                       }
-                      className="rounded-xl bg-blue-600 py-3 text-center text-sm font-semibold text-white"
+                      className="rounded-xl bg-[#24583d] py-3 text-center text-sm font-semibold text-white"
                     >
                       Sign Up
                     </Link>
@@ -533,7 +533,7 @@ export function Header() {
                       onClick={() =>
                         setMenuOpen(false)
                       }
-                      className="flex w-full items-center justify-center rounded-xl bg-blue-50 py-3 text-sm font-bold text-blue-700"
+                      className="flex w-full items-center justify-center rounded-xl bg-[#edf4ec] py-3 text-sm font-bold text-[#24583d]"
                     >
                       {accountLabel}
                     </Link>
