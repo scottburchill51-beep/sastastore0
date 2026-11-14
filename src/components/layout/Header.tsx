@@ -1,6 +1,7 @@
 
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -319,8 +320,15 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
               className="group flex shrink-0 items-center gap-2.5"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#e8c875] to-[#d7a94e] text-xl font-black text-white shadow-md shadow-emerald-200">
-                S
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/70 bg-white shadow-md">
+                <Image
+                  src="/images/sastastore-logo.jpg"
+                  alt="SastaStore logo"
+                  width={56}
+                  height={56}
+                  priority
+                  className="h-full w-full object-contain"
+                />
               </span>
 
               <span className="text-xl font-extrabold tracking-tight">
