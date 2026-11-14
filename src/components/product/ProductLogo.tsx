@@ -17,8 +17,30 @@ const verifiedLogos: Record<string, string> = {
 
 function preferredSource(logo: string) {
   const original = (logo || "").trim();
+  const preferred = verifiedLogos[original] || original;
 
-  return verifiedLogos[original] || original;
+  if (
+    !preferred ||
+    /^(https?:|data:|blob:)/i.test(preferred) ||
+    preferred.startsWith("/")
+  ) {
+    return preferred;
+  }
+
+  // Older product records store only the uploaded filename.
+  // Resolve those files from the public Supabase product-images bucket.
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+  if (!supabaseUrl) {
+    return `/${preferred}`;
+  }
+
+  const objectPath = preferred
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+
+  return `${supabaseUrl.replace(/\\/+$/, "")}/storage/v1/object/public/product-images/${objectPath}`;
 }
 
 function alternateSource(source: string) {
@@ -136,7 +158,7 @@ export function ProductLogo({
 
   return (
     <div
-      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl border border-blue-100 bg-white ${
+      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#e2e9e2] bg-white ${
         isLarge ? "h-16 w-16" : "h-12 w-12"
       }`}
     >
@@ -160,7 +182,7 @@ export function ProductLogo({
       ) : (
         <span
           aria-label={`${name} logo unavailable`}
-          className={`flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-50 to-emerald-50 font-extrabold text-blue-600 ${
+          className={`flex h-full w-full items-center justify-center bg-gradient-to-br from-[#edf5ed] to-[#f8f4e8] font-extrabold text-[#24583d] ${
             isLarge ? "text-2xl" : "text-lg"
           }`}
         >
