@@ -77,7 +77,7 @@ export function FeaturedToolsCarousel() {
   return (
     <section
       aria-labelledby="featured-tools-heading"
-      className="border-y border-blue-100 bg-white py-14 sm:py-20"
+      className="border-y border-[#dce8df] bg-white py-14 sm:py-20"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
@@ -116,12 +116,12 @@ export function FeaturedToolsCarousel() {
               aria-hidden={copy === 1}
               inert={copy === 1}
             >
-              {products.map((product) => (
+              {products.map((product, index) => (
                 <div
                   key={`${copy}-${product.slug}`}
                   className="w-[230px] shrink-0 sm:w-[280px] lg:w-[300px]"
                 >
-                  <ProductCard product={product} />
+                  <ProductCard product={product} priority={copy === 0 && index < 4} />
                 </div>
               ))}
             </div>

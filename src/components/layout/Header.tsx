@@ -186,7 +186,7 @@ export function Header() {
 
           <Link
             href="/register"
-            className="rounded-xl bg-[#267253] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#123b32]"
+            className="rounded-xl border border-blue-700 bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
           >
             Get Started
           </Link>
@@ -233,8 +233,8 @@ export function Header() {
         header.sticky a.group > span:last-child { color: #17372e !important; }
         header.sticky a.group > span:last-child span { color: #267253 !important; }
         header.sticky nav a span { background: #267253 !important; }
-        header.sticky button { border-color: #dce8df !important; background-color: #123b32 !important; color: #fff !important; }
-        header.sticky button:hover { background-color: #1c5746 !important; }
+        header.sticky button { border-color: #2563eb !important; background-color: #2563eb !important; color: #fff !important; }
+        header.sticky button:hover { background-color: #1d4ed8 !important; }
         header.sticky #sastastore-mobile-menu { border-color: #dce8df !important; background: #fff !important; }
         @media (prefers-reduced-motion: reduce) { .sastastore-marquee-track { animation: none !important; } }
       `}</style>
@@ -243,7 +243,7 @@ export function Header() {
 
       <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 text-slate-900 shadow-sm shadow-emerald-100/40 backdrop-blur-xl">
         {/* Announcement Bar */}
-        <div className="sastastore-marquee overflow-hidden border-b border-[#dce8df] bg-gradient-to-r from-[#EAF4FF] via-[#F4FAFF] to-[#EFF6FF]">
+        <div className="sastastore-marquee overflow-hidden border-b border-[#dce8df] bg-gradient-to-r from-[#edf6f0] via-white to-[#edf6f0]">
           <div className="sastastore-marquee-track flex w-max">
             {[
               ...announcements,
@@ -253,7 +253,7 @@ export function Header() {
                 key={`${item}-${index}`}
                 className="flex shrink-0 items-center gap-3 px-7 py-2 sm:px-10"
               >
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#edf6f0]0" />
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#267253]" />
 
                 <span className="whitespace-nowrap text-xs font-semibold tracking-wide text-slate-700 sm:text-sm">
                   {item}
@@ -277,7 +277,7 @@ export function Header() {
             >
               <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/70 bg-white shadow-md">
                 <img
-                  src="/images/sastastore-logo.jpg?v=2"
+                  src="/images/sastastore-mark.svg"
                   alt="SastaStore logo"
                   width={56}
                   height={56}
@@ -363,7 +363,7 @@ export function Header() {
                 })}
               </nav>
 
-              <Link href="/track" aria-current={isActive("/track") ? "page" : undefined} className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl border-2 border-[#267253] bg-[#60a5fa] px-3 py-2.5 text-sm font-extrabold text-[#123b32] shadow-sm transition hover:bg-[#93c5fd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#60a5fa]">
+              <Link href="/track" aria-current={isActive("/track") ? "page" : undefined} className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl border border-blue-700 bg-blue-600 px-3 py-2.5 text-sm font-extrabold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
                 <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3" /><path d="M12 3v3M12 18v3M3 12h3M18 12h3" /></svg>
                 Track Order
               </Link>
