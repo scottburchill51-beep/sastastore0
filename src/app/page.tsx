@@ -39,15 +39,28 @@ export default function HomePage() {
     <main className="min-h-screen overflow-hidden bg-[#f6f8f6] text-[#17372e]">
       <div className="border-b border-[#dce8df] bg-[#edf6f0] text-[#17372e]">
         <Container>
-          <div className="flex min-h-9 items-center justify-center gap-x-6 gap-y-1 overflow-hidden text-[10px] font-bold uppercase tracking-[.12em] sm:justify-between sm:text-[11px]">
-            <div className="flex animate-[ticker_28s_linear_infinite] items-center gap-6 whitespace-nowrap">
-              <span className="inline-flex items-center gap-2"><Zap className="h-3.5 w-3.5 text-[#267253]" /> Digital tools at affordable prices</span>
-              <span className="text-[#267253]">✦</span>
-              <span>WhatsApp order assistance</span>
-              <span className="text-[#267253]">✦</span>
-              <span>Explore AI, design and productivity tools</span>
-              <span className="text-[#267253]">✦</span>
-              <span>Digital courses and learning resources</span>
+          <div className="overflow-hidden py-1">
+            <div className="flex w-max animate-[ticker_34s_linear_infinite] items-center whitespace-nowrap text-[10px] font-bold uppercase tracking-[.12em] sm:text-[11px]">
+              <div className="flex shrink-0 items-center gap-6 pr-6">
+                <span className="inline-flex items-center gap-2"><Zap className="h-3.5 w-3.5 text-[#267253]" /> Digital tools at affordable prices</span>
+                <span className="text-[#267253]">✦</span>
+                <span>WhatsApp order assistance</span>
+                <span className="text-[#267253]">✦</span>
+                <span>Explore AI, design and productivity tools</span>
+                <span className="text-[#267253]">✦</span>
+                <span>Digital courses and learning resources</span>
+                <span className="text-[#267253]">✦</span>
+              </div>
+              <div aria-hidden="true" className="flex shrink-0 items-center gap-6 pr-6">
+                <span>Digital tools at affordable prices</span>
+                <span className="text-[#267253]">✦</span>
+                <span>WhatsApp order assistance</span>
+                <span className="text-[#267253]">✦</span>
+                <span>Explore AI, design and productivity tools</span>
+                <span className="text-[#267253]">✦</span>
+                <span>Digital courses and learning resources</span>
+                <span className="text-[#267253]">✦</span>
+              </div>
             </div>
           </div>
         </Container>
