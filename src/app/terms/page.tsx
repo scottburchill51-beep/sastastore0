@@ -180,16 +180,16 @@ export default function TermsPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#EFF8FF] via-white to-[#ECFDF5] text-slate-900">
       {/* Hero */}
-      <section className="border-b border-blue-100 py-16 sm:py-20">
+      <section className="border-b border-emerald-100 py-16 sm:py-20">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex rounded-full border border-blue-200 bg-white px-5 py-2 text-xs font-extrabold uppercase tracking-widest text-blue-600">
+            <span className="inline-flex rounded-full border border-emerald-200 bg-white px-5 py-2 text-xs font-extrabold uppercase tracking-widest text-emerald-700">
               Website & Purchase Terms
             </span>
 
             <h1 className="mt-7 text-4xl font-extrabold tracking-tight sm:text-5xl">
               Terms &{" "}
-              <span className="text-blue-600">
+              <span className="text-emerald-700">
                 Conditions
               </span>
             </h1>
@@ -204,14 +204,14 @@ export default function TermsPage() {
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               <Link
                 href="/refund-policy"
-                className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
+                className="rounded-xl bg-emerald-700 px-6 py-3 text-sm font-bold text-white transition hover:bg-emerald-800"
               >
                 Refund Policy
               </Link>
 
               <Link
                 href="/privacy"
-                className="rounded-xl border border-blue-200 bg-white px-6 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-50"
+                className="rounded-xl border border-emerald-200 bg-white px-6 py-3 text-sm font-bold text-emerald-800 transition hover:bg-emerald-50"
               >
                 Privacy Policy
               </Link>
@@ -223,7 +223,7 @@ export default function TermsPage() {
       {/* Important Notice */}
       <section className="pt-12">
         <Container>
-          <div className="mx-auto max-w-5xl rounded-2xl border border-blue-200 bg-blue-50 p-6">
+          <div className="mx-auto max-w-5xl rounded-2xl border border-emerald-200 bg-emerald-50 p-6">
             <h2 className="text-lg font-extrabold text-blue-900">
               Before You Place an Order
             </h2>
@@ -246,8 +246,8 @@ export default function TermsPage() {
           <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[270px_minmax(0,1fr)]">
             {/* Contents */}
             <aside className="self-start lg:sticky lg:top-28">
-              <div className="rounded-3xl border border-blue-100 bg-white p-6 shadow-sm">
-                <h2 className="text-sm font-extrabold uppercase tracking-widest text-blue-600">
+              <div className="rounded-3xl border border-emerald-100 bg-white p-6 shadow-sm">
+                <h2 className="text-sm font-extrabold uppercase tracking-widest text-emerald-700">
                   On This Page
                 </h2>
 
@@ -259,9 +259,9 @@ export default function TermsPage() {
                     <a
                       key={section.title}
                       href={`#terms-${index + 1}`}
-                      className="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-blue-50 hover:text-blue-700"
+                      className="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-emerald-50 hover:text-emerald-800"
                     >
-                      <span className="mr-2 font-bold text-blue-500">
+                      <span className="mr-2 font-bold text-emerald-600">
                         {String(index + 1).padStart(2, "0")}
                       </span>
 
@@ -278,10 +278,10 @@ export default function TermsPage() {
                 <section
                   key={section.title}
                   id={`terms-${index + 1}`}
-                  className="scroll-mt-28 rounded-3xl border border-blue-100 bg-white p-6 shadow-sm sm:p-8"
+                  className="scroll-mt-28 rounded-3xl border border-emerald-100 bg-white p-6 shadow-sm sm:p-8"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-sm font-extrabold text-blue-700">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-sm font-extrabold text-emerald-800">
                       {String(index + 1).padStart(2, "0")}
                     </div>
 
@@ -312,7 +312,7 @@ export default function TermsPage() {
       </section>
 
       {/* Related Policies */}
-      <section className="border-y border-blue-100 bg-white/70 py-14">
+      <section className="border-y border-emerald-100 bg-white/70 py-14">
         <Container>
           <div className="mx-auto max-w-5xl">
             <h2 className="text-center text-2xl font-extrabold sm:text-3xl">
@@ -322,7 +322,7 @@ export default function TermsPage() {
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
               <Link
                 href="/privacy"
-                className="rounded-2xl border border-blue-100 bg-white p-6 shadow-sm transition hover:border-blue-300"
+                className="rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm transition hover:border-emerald-300"
               >
                 <h3 className="font-extrabold">
                   Privacy Policy
@@ -332,14 +332,14 @@ export default function TermsPage() {
                   How customer information is handled.
                 </p>
 
-                <p className="mt-5 text-sm font-bold text-blue-600">
+                <p className="mt-5 text-sm font-bold text-emerald-700">
                   Read Policy →
                 </p>
               </Link>
 
               <Link
                 href="/refund-policy"
-                className="rounded-2xl border border-blue-100 bg-white p-6 shadow-sm transition hover:border-blue-300"
+                className="rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm transition hover:border-emerald-300"
               >
                 <h3 className="font-extrabold">
                   Refund Policy
@@ -349,14 +349,14 @@ export default function TermsPage() {
                   Refunds, replacements and eligibility.
                 </p>
 
-                <p className="mt-5 text-sm font-bold text-blue-600">
+                <p className="mt-5 text-sm font-bold text-emerald-700">
                   Read Policy →
                 </p>
               </Link>
 
               <Link
                 href="/faq"
-                className="rounded-2xl border border-blue-100 bg-white p-6 shadow-sm transition hover:border-blue-300"
+                className="rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm transition hover:border-emerald-300"
               >
                 <h3 className="font-extrabold">
                   Help & FAQ
@@ -366,7 +366,7 @@ export default function TermsPage() {
                   Quick answers to common questions.
                 </p>
 
-                <p className="mt-5 text-sm font-bold text-blue-600">
+                <p className="mt-5 text-sm font-bold text-emerald-700">
                   View FAQ →
                 </p>
               </Link>
@@ -378,12 +378,12 @@ export default function TermsPage() {
       {/* Support */}
       <section className="py-16">
         <Container>
-          <div className="mx-auto max-w-5xl rounded-3xl bg-gradient-to-r from-blue-600 to-sky-600 p-8 text-white sm:p-10">
+          <div className="mx-auto max-w-5xl rounded-3xl bg-gradient-to-r from-emerald-700 to-emerald-700 p-8 text-white sm:p-10">
             <h2 className="text-2xl font-extrabold sm:text-3xl">
               Have Questions About These Terms?
             </h2>
 
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-blue-50">
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-emerald-50">
               Contact SastaStore before placing
               an order or whenever you need help
               understanding a product or policy.
@@ -394,7 +394,7 @@ export default function TermsPage() {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-xl bg-white px-6 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-50"
+                className="rounded-xl bg-white px-6 py-3 text-sm font-bold text-emerald-800 transition hover:bg-emerald-50"
               >
                 WhatsApp Support
               </a>
