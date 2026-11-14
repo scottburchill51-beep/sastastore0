@@ -296,13 +296,13 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
           <Link
             href="/"
             aria-label="SastaStore Home"
-            className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 text-2xl font-black text-white shadow-lg shadow-blue-100"
+            className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-700 to-emerald-600 text-2xl font-black text-white shadow-lg shadow-emerald-100"
           >
             S
           </Link>
 
           <h1 className="text-2xl font-extrabold">
-            Sasta<span className="text-blue-600">Store</span>
+            Sasta<span className="text-emerald-700">Store</span>
           </h1>
 
           <p className="mt-2 text-sm text-slate-500">
@@ -310,12 +310,12 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
           </p>
         </div>
 
-        <div className="rounded-3xl border border-blue-100 bg-white p-6 shadow-xl shadow-blue-100/50 sm:p-9">
+        <div className="rounded-3xl border border-emerald-100 bg-white p-6 shadow-xl shadow-emerald-100/50 sm:p-9">
 
           {verificationMode ? (
             <>
               <div className="text-center">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-2xl">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-2xl">
                   ✉
                 </div>
 
@@ -353,7 +353,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
                       )
                     }
                     placeholder="000000"
-                    className="mt-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-4 text-center text-3xl font-extrabold tracking-[0.5em] text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="mt-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-4 text-center text-3xl font-extrabold tracking-[0.5em] text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
                   />
                 </label>
 
@@ -373,7 +373,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
                 <button
                   type="submit"
                   disabled={loading || otp.length !== 6}
-                  className="mt-6 flex min-h-12 w-full items-center justify-center rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="mt-6 flex min-h-12 w-full items-center justify-center rounded-xl bg-emerald-700 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {loading ? "Verifying..." : "Verify Email & Continue"}
                 </button>
@@ -384,7 +384,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
                   type="button"
                   disabled={loading || cooldown > 0}
                   onClick={resendOTP}
-                  className="text-sm font-bold text-blue-600 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+                  className="text-sm font-bold text-emerald-700 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {cooldown > 0
                     ? `Resend code in ${cooldown}s`
@@ -400,7 +400,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
                       setOtp("");
                       setMessage("");
                     }}
-                    className="text-sm font-semibold text-slate-500 hover:text-blue-600"
+                    className="text-sm font-semibold text-slate-500 hover:text-emerald-700"
                   >
                     ← Back to registration
                   </button>
@@ -437,7 +437,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
                       placeholder="you@example.com"
-                      className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-sm text-slate-900 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
                     />
                   </label>
 
@@ -459,13 +459,13 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
                         placeholder="Enter your password"
-                        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-20 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-20 text-sm text-slate-900 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
                       />
 
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-4 text-xs font-bold text-blue-600"
+                        className="absolute inset-y-0 right-4 text-xs font-bold text-emerald-700"
                       >
                         {showPassword ? "Hide" : "Show"}
                       </button>
@@ -477,7 +477,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
                   <div className="mt-3 text-right">
                     <Link
                       href="/forgot-password"
-                      className="text-sm font-semibold text-blue-600 hover:underline"
+                      className="text-sm font-semibold text-emerald-700 hover:underline"
                     >
                       Forgot Password?
                     </Link>
@@ -500,7 +500,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="mt-7 flex min-h-12 w-full items-center justify-center rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-extrabold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="mt-7 flex min-h-12 w-full items-center justify-center rounded-xl bg-emerald-700 px-5 py-3.5 text-sm font-extrabold text-white shadow-sm transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {loading
                     ? "Please Wait..."
@@ -521,13 +521,13 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
               <a
                 href={googleHref}
                 aria-label="Continue with Google"
-                className="group relative flex min-h-14 w-full items-center justify-center gap-3 rounded-xl border-2 border-slate-300 bg-white px-5 py-3.5 text-base font-extrabold text-slate-900 shadow-sm transition-all hover:border-blue-500 hover:bg-blue-50 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-200"
+                className="group relative flex min-h-14 w-full items-center justify-center gap-3 rounded-xl border-2 border-slate-300 bg-white px-5 py-3.5 text-base font-extrabold text-slate-900 shadow-sm transition-all hover:border-emerald-600 hover:bg-emerald-50 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-200"
               >
                 <GoogleIcon />
                 <span>Continue with Google</span>
                 <span
                   aria-hidden="true"
-                  className="absolute right-4 text-lg text-slate-400 transition-transform group-hover:translate-x-1 group-hover:text-blue-600"
+                  className="absolute right-4 text-lg text-slate-400 transition-transform group-hover:translate-x-1 group-hover:text-emerald-700"
                 >
                   →
                 </span>
@@ -543,7 +543,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
                     Don't have an account?{" "}
                     <Link
                       href={registerHref}
-                      className="font-extrabold text-blue-600 hover:underline"
+                      className="font-extrabold text-emerald-700 hover:underline"
                     >
                       Sign Up
                     </Link>
@@ -553,7 +553,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
                     Already have an account?{" "}
                     <Link
                       href={loginHref}
-                      className="font-extrabold text-blue-600 hover:underline"
+                      className="font-extrabold text-emerald-700 hover:underline"
                     >
                       Sign In
                     </Link>
@@ -567,14 +567,14 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
         <div className="mt-7 flex flex-wrap items-center justify-center gap-5 text-center text-sm">
           <Link
             href="/"
-            className="font-semibold text-blue-600 hover:underline"
+            className="font-semibold text-emerald-700 hover:underline"
           >
             ← Back to SastaStore
           </Link>
 
           <Link
             href="/contact"
-            className="font-semibold text-blue-600 hover:underline"
+            className="font-semibold text-emerald-700 hover:underline"
           >
             Need Help?
           </Link>
