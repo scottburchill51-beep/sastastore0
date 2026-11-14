@@ -76,7 +76,7 @@ export function ProductCard({
         {/* Product Logo and Badges */}
         <div className="relative flex min-h-[64px] items-start justify-between gap-1.5 sm:min-h-[76px] sm:gap-3">
 
-          <div className="flex h-[58px] w-[58px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#dce8df] bg-gradient-to-br from-[#edf6f0] to-white p-1 shadow-sm sm:h-[76px] sm:w-[76px] sm:rounded-2xl sm:p-2">
+          <div className="flex h-[68px] w-[68px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#dce8df] bg-gradient-to-br from-[#edf6f0] to-white p-1.5 shadow-sm sm:h-[84px] sm:w-[84px] sm:p-2">
             <ProductLogo
               name={product.name}
               logo={product.logo}
