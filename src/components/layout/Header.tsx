@@ -180,14 +180,14 @@ export function Header() {
         <>
           <Link
             href="/login"
-            className="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-[#eff6ff] hover:text-[#1d4ed8]"
+            className="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-[#edf6f0] hover:text-[#267253]"
           >
             Sign In
           </Link>
 
           <Link
             href="/register"
-            className="rounded-xl bg-[#1d4ed8] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#1e40af]"
+            className="rounded-xl bg-[#267253] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#123b32]"
           >
             Get Started
           </Link>
@@ -199,7 +199,7 @@ export function Header() {
       <>
         <Link
           href={accountHref}
-          className="rounded-xl border border-[#dbe5f5] bg-[#eff6ff] px-4 py-2.5 text-sm font-bold text-[#1d4ed8] transition hover:bg-blue-100"
+          className="rounded-xl border border-[#dce8df] bg-[#edf6f0] px-4 py-2.5 text-sm font-bold text-[#267253] transition hover:bg-emerald-100"
         >
           {accountLabel}
         </Link>
@@ -221,30 +221,23 @@ export function Header() {
   return (
     <>
       <style jsx global>{`
-        @keyframes sastastore-marquee {
-          from {
-            transform: translateX(0);
-          }
-
-          to {
-            transform: translateX(-50%);
-          }
-        }
-
-        .sastastore-marquee-track {
-          animation: sastastore-marquee 28s linear infinite;
-        }
-
-        .sastastore-marquee:hover
-        .sastastore-marquee-track {
-          animation-play-state: paused;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .sastastore-marquee-track {
-            animation: none;
-          }
-        }
+        @keyframes sastastore-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .sastastore-marquee-track { animation: sastastore-marquee 28s linear infinite; }
+        .sastastore-marquee:hover .sastastore-marquee-track { animation-play-state: paused; }
+        header.sticky { background: rgba(246,248,246,.97) !important; border-color: #dce8df !important; color: #17372e !important; box-shadow: 0 8px 30px rgba(18,59,50,.08) !important; }
+        header.sticky .sastastore-marquee { background: linear-gradient(90deg,#edf6f0,#ffffff,#edf6f0) !important; border-color: #dce8df !important; }
+        header.sticky .sastastore-marquee span { color: #267253 !important; }
+        header.sticky .sastastore-marquee span:first-child { background: #b38a42 !important; }
+        header.sticky a { color: #17372e; }
+        header.sticky a:hover, header.sticky a[aria-current="page"] { color: #267253 !important; }
+        header.sticky a.group > span:first-child { background: #fff !important; color: #17372e !important; box-shadow: 0 4px 16px rgba(18,59,50,.08) !important; }
+        header.sticky a.group > span:last-child { color: #17372e !important; }
+        header.sticky a.group > span:last-child span { color: #267253 !important; }
+        header.sticky nav a span { background: #267253 !important; }
+        header.sticky button { border-color: #dce8df !important; background-color: #123b32 !important; color: #fff !important; }
+        header.sticky button:hover { background-color: #1c5746 !important; }
+        header.sticky #sastastore-mobile-menu { border-color: #dce8df !important; background: #fff !important; }
+        @media (prefers-reduced-motion: reduce) { .sastastore-marquee-track { animation: none !important; } }
       `}</style>
 
       <style jsx global>{`
@@ -255,7 +248,7 @@ export function Header() {
           box-shadow: 0 8px 30px rgba(30, 64, 175, 0.18) !important;
         }
         header.sticky .sastastore-marquee {
-          background: linear-gradient(90deg, #1e3a8a, #1d4ed8, #1e3a8a) !important;
+          background: linear-gradient(90deg, #1e3a8a, #267253, #1e3a8a) !important;
           border-color: rgba(219, 234, 254, 0.13) !important;
         }
         header.sticky .sastastore-marquee span { color: #dbeafe !important; }
@@ -273,10 +266,10 @@ export function Header() {
         header.sticky nav a span { background: #60a5fa !important; }
         header.sticky button {
           border-color: rgba(219,234,254,.2) !important;
-          background-color: #1d4ed8 !important;
+          background-color: #267253 !important;
           color: #fff !important;
         }
-        header.sticky button:hover { background-color: #1e40af !important; }
+        header.sticky button:hover { background-color: #123b32 !important; }
         header.sticky #sastastore-mobile-menu {
           border-color: rgba(219,234,254,.16) !important;
           background: #1e3a8a !important;
@@ -286,9 +279,9 @@ export function Header() {
         }
       `}</style>
 
-      <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 text-slate-900 shadow-sm shadow-blue-100/40 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 text-slate-900 shadow-sm shadow-emerald-100/40 backdrop-blur-xl">
         {/* Announcement Bar */}
-        <div className="sastastore-marquee overflow-hidden border-b border-[#dbe5f5] bg-gradient-to-r from-[#EAF4FF] via-[#F4FAFF] to-[#EFF6FF]">
+        <div className="sastastore-marquee overflow-hidden border-b border-[#dce8df] bg-gradient-to-r from-[#EAF4FF] via-[#F4FAFF] to-[#EFF6FF]">
           <div className="sastastore-marquee-track flex w-max">
             {[
               ...announcements,
@@ -298,13 +291,13 @@ export function Header() {
                 key={`${item}-${index}`}
                 className="flex shrink-0 items-center gap-3 px-7 py-2 sm:px-10"
               >
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#eff6ff]0" />
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#edf6f0]0" />
 
                 <span className="whitespace-nowrap text-xs font-semibold tracking-wide text-slate-700 sm:text-sm">
                   {item}
                 </span>
 
-                <span className="text-sm text-blue-500">
+                <span className="text-sm text-emerald-600">
                   ✦
                 </span>
               </div>
@@ -336,7 +329,7 @@ export function Header() {
                 <span className="text-slate-900">
                   Sasta
                 </span>
-                <span className="text-[#1d4ed8]">
+                <span className="text-[#267253]">
                   Store
                 </span>
               </span>
@@ -363,13 +356,13 @@ export function Header() {
                         isTracking
                           ? `inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-bold transition ${
                               active
-                                ? "border-blue-500 bg-[#1d4ed8] text-white"
-                                : "border-blue-200 bg-[#eff6ff] text-[#1d4ed8] hover:bg-blue-100"
+                                ? "border-emerald-600 bg-[#267253] text-white"
+                                : "border-blue-200 bg-[#edf6f0] text-[#267253] hover:bg-emerald-100"
                             }`
                           : `group relative py-2 text-sm font-semibold transition-colors duration-200 ${
                               active
-                                ? "text-[#1d4ed8]"
-                                : "text-slate-600 hover:text-[#1d4ed8]"
+                                ? "text-[#267253]"
+                                : "text-slate-600 hover:text-[#267253]"
                             }`
                       }
                     >
@@ -396,7 +389,7 @@ export function Header() {
 
                       {!isTracking && (
                         <span
-                          className={`absolute bottom-0 left-0 h-[2px] rounded-full bg-[#1d4ed8] transition-all duration-200 ${
+                          className={`absolute bottom-0 left-0 h-[2px] rounded-full bg-[#267253] transition-all duration-200 ${
                             active
                               ? "w-full"
                               : "w-0 group-hover:w-full"
@@ -408,7 +401,7 @@ export function Header() {
                 })}
               </nav>
 
-              <Link href="/track" aria-current={isActive("/track") ? "page" : undefined} className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl border-2 border-[#1d4ed8] bg-[#60a5fa] px-3 py-2.5 text-sm font-extrabold text-[#1e40af] shadow-sm transition hover:bg-[#93c5fd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#60a5fa]">
+              <Link href="/track" aria-current={isActive("/track") ? "page" : undefined} className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl border-2 border-[#267253] bg-[#60a5fa] px-3 py-2.5 text-sm font-extrabold text-[#123b32] shadow-sm transition hover:bg-[#93c5fd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#60a5fa]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3" /><path d="M12 3v3M12 18v3M3 12h3M18 12h3" /></svg>
                 Track Order
               </Link>
@@ -430,7 +423,7 @@ export function Header() {
               onClick={() =>
                 setMenuOpen((current) => !current)
               }
-              className="relative inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-800 transition hover:border-blue-200 hover:bg-[#eff6ff] lg:hidden"
+              className="relative inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-800 transition hover:border-blue-200 hover:bg-[#edf6f0] lg:hidden"
             >
               <span
                 className={`absolute h-0.5 w-5 rounded-full bg-current transition-all duration-300 ${
@@ -487,12 +480,12 @@ export function Header() {
                         isTracking
                           ? `mt-2 flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-extrabold ${
                               active
-                                ? "border-blue-600 bg-[#1d4ed8] text-white"
-                                : "border-blue-200 bg-[#eff6ff] text-[#1d4ed8]"
+                                ? "border-blue-600 bg-[#267253] text-white"
+                                : "border-blue-200 bg-[#edf6f0] text-[#267253]"
                             }`
                           : `rounded-xl px-4 py-3 text-sm font-semibold transition ${
                               active
-                                ? "bg-[#eff6ff] text-[#1d4ed8]"
+                                ? "bg-[#edf6f0] text-[#267253]"
                                 : "text-slate-700 hover:bg-slate-50"
                             }`
                       }
@@ -544,7 +537,7 @@ export function Header() {
                       onClick={() =>
                         setMenuOpen(false)
                       }
-                      className="rounded-xl bg-[#1d4ed8] py-3 text-center text-sm font-semibold text-white"
+                      className="rounded-xl bg-[#267253] py-3 text-center text-sm font-semibold text-white"
                     >
                       Sign Up
                     </Link>
@@ -556,7 +549,7 @@ export function Header() {
                       onClick={() =>
                         setMenuOpen(false)
                       }
-                      className="flex w-full items-center justify-center rounded-xl bg-[#eff6ff] py-3 text-sm font-bold text-[#1d4ed8]"
+                      className="flex w-full items-center justify-center rounded-xl bg-[#edf6f0] py-3 text-sm font-bold text-[#267253]"
                     >
                       {accountLabel}
                     </Link>
