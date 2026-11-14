@@ -6,10 +6,12 @@ import Link from "next/link";
 import { ArrowUpRight, Search, Sparkles } from "lucide-react";
 
 import { courses, courseCategories } from "@/data/courses";
+import { getCourseImage } from "@/data/course-images";
 
 export function CourseCatalog() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All Courses");
+  const [failedImages, setFailedImages] = useState<string[]>([]);
 
   const filteredCourses = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -42,10 +44,18 @@ export function CourseCatalog() {
           {filteredCourses.map((course, index) => {
             const message = encodeURIComponent(`Hi SastaStore, I would like to ask about access to: ${course.title}`);
             const accessUrl = `https://wa.me/923136093501?text=${message}`;
+            const imageSrc = failedImages.includes(course.slug) ? getCourseImage(course.category) : course.imageUrl;
             return (
               <article key={course.slug} className="group flex min-h-[390px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#111318] transition duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-[0_18px_55px_rgba(0,0,0,0.28)]">
                 <Link href={`/courses/${course.slug}`} className="relative block h-44 overflow-hidden" aria-label={`View ${course.title}`}>
-                  <Image src={course.imageUrl} alt={course.title} fill sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw" className="object-cover transition duration-500 group-hover:scale-105" />
+                  <Image
+                    src={imageSrc}
+                    alt={course.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                    className="object-cover transition duration-500 group-hover:scale-105"
+                    onError={() => setFailedImages((current) => current.includes(course.slug) ? current : [...current, course.slug])}
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#090b0f] via-black/10 to-black/10" />
                   <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/55 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur">{course.category}</span>
                   <span className="absolute right-4 top-4 rounded-full bg-emerald-400 px-3 py-1.5 text-[11px] font-extrabold text-[#07110a]">COURSE</span>
