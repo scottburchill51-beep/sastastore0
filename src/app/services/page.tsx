@@ -202,19 +202,19 @@ export default function ServicesPage() {
       />
 
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-blue-100 py-16 sm:py-24">
-        <div className="pointer-events-none absolute -left-20 top-0 h-72 w-72 rounded-full bg-sky-200/40 blur-3xl" />
+      <section className="relative overflow-hidden border-b border-emerald-100 py-16 sm:py-24">
+        <div className="pointer-events-none absolute -left-20 top-0 h-72 w-72 rounded-full bg-emerald-200/40 blur-3xl" />
         <div className="pointer-events-none absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-emerald-200/40 blur-3xl" />
 
         <Container>
           <div className="relative mx-auto max-w-4xl text-center">
-            <span className="inline-flex rounded-full border border-blue-200 bg-white px-5 py-2 text-xs font-extrabold uppercase tracking-widest text-blue-600 shadow-sm">
+            <span className="inline-flex rounded-full border border-emerald-200 bg-white px-5 py-2 text-xs font-extrabold uppercase tracking-widest text-emerald-700 shadow-sm">
               SastaStore Digital Services
             </span>
 
             <h1 className="mt-7 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
               Creative Ideas.
-              <span className="block text-blue-600">
+              <span className="block text-emerald-700">
                 Digital Solutions.
               </span>
             </h1>
@@ -229,7 +229,7 @@ export default function ServicesPage() {
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <a
                 href="#services"
-                className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+                className="inline-flex items-center gap-2 rounded-xl bg-emerald-700 px-6 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-emerald-200 transition hover:bg-emerald-800"
               >
                 Explore Services
                 <ArrowIcon />
@@ -239,7 +239,7 @@ export default function ServicesPage() {
                 href={generalWhatsAppUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center rounded-xl border border-blue-200 bg-white px-6 py-3.5 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                className="inline-flex items-center rounded-xl border border-emerald-200 bg-white px-6 py-3.5 text-sm font-extrabold text-emerald-800 transition hover:bg-emerald-50"
               >
                 Discuss a Project
               </a>
@@ -270,7 +270,7 @@ export default function ServicesPage() {
               </p>
             </div>
 
-            <span className="rounded-full border border-blue-100 bg-white px-5 py-2.5 text-sm font-bold text-blue-700 shadow-sm">
+            <span className="rounded-full border border-emerald-100 bg-white px-5 py-2.5 text-sm font-bold text-emerald-800 shadow-sm">
               {services.length} Service Categories
             </span>
           </div>
@@ -279,11 +279,11 @@ export default function ServicesPage() {
             {services.map((service) => (
               <article
                 key={service.title}
-                className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-blue-100 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-100/50"
+                className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-emerald-100 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-xl hover:shadow-emerald-100/50"
               >
-                <div className="pointer-events-none absolute -right-14 -top-14 h-40 w-40 rounded-full bg-sky-100/70 blur-3xl" />
+                <div className="pointer-events-none absolute -right-14 -top-14 h-40 w-40 rounded-full bg-emerald-100/70 blur-3xl" />
 
-                <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 text-base font-extrabold text-white shadow-md shadow-blue-100">
+                <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-700 to-emerald-600 text-base font-extrabold text-white shadow-md shadow-emerald-100">
                   {service.short}
                 </div>
 
@@ -321,7 +321,7 @@ export default function ServicesPage() {
                   )}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="relative mt-7 inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-blue-700"
+                  className="relative mt-7 inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-700 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-emerald-800"
                 >
                   Get Details & Quote
                   <ArrowIcon />
@@ -333,10 +333,10 @@ export default function ServicesPage() {
       </section>
 
       {/* How It Works */}
-      <section className="border-y border-blue-100 bg-white/70 py-16 sm:py-20">
+      <section className="border-y border-emerald-100 bg-white/70 py-16 sm:py-20">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-700">
               Simple Project Enquiries
             </p>
 
@@ -355,9 +355,9 @@ export default function ServicesPage() {
             {steps.map((step) => (
               <div
                 key={step.number}
-                className="rounded-3xl border border-blue-100 bg-white p-6 shadow-sm"
+                className="rounded-3xl border border-emerald-100 bg-white p-6 shadow-sm"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-sm font-extrabold text-blue-700">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-sm font-extrabold text-emerald-800">
                   {step.number}
                 </div>
 
@@ -390,20 +390,20 @@ export default function ServicesPage() {
               {faqItems.map((item) => (
                 <details
                   key={item.question}
-                  className="group overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm open:border-blue-300"
+                  className="group overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-sm open:border-emerald-300"
                 >
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5 text-sm font-bold text-slate-900 sm:text-base [&::-webkit-details-marker]:hidden">
                     {item.question}
 
                     <span
                       aria-hidden="true"
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-lg text-blue-600 transition group-open:rotate-45"
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-lg text-emerald-700 transition group-open:rotate-45"
                     >
                       +
                     </span>
                   </summary>
 
-                  <div className="border-t border-blue-50 px-5 py-5">
+                  <div className="border-t border-emerald-50 px-5 py-5">
                     <p className="text-sm leading-8 text-slate-600">
                       {item.answer}
                     </p>
@@ -416,12 +416,12 @@ export default function ServicesPage() {
       </section>
 
       {/* Custom Projects */}
-      <section className="border-t border-blue-100 bg-white/70 py-14 sm:py-16">
+      <section className="border-t border-emerald-100 bg-white/70 py-14 sm:py-16">
         <Container>
-          <div className="rounded-3xl border border-blue-100 bg-white p-8 shadow-lg shadow-blue-100/40 sm:p-10">
+          <div className="rounded-3xl border border-emerald-100 bg-white p-8 shadow-lg shadow-emerald-100/40 sm:p-10">
             <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-center">
               <div className="max-w-xl">
-                <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+                <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-700">
                   Custom Projects
                 </p>
 
@@ -443,7 +443,7 @@ export default function ServicesPage() {
                   href={generalWhatsAppUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-extrabold text-white transition hover:bg-blue-700"
+                  className="inline-flex items-center justify-center rounded-xl bg-emerald-700 px-6 py-3.5 text-sm font-extrabold text-white transition hover:bg-emerald-800"
                 >
                   WhatsApp Enquiry
                 </a>
@@ -452,7 +452,7 @@ export default function ServicesPage() {
                   href={telegramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-xl border border-sky-200 bg-sky-50 px-6 py-3.5 text-sm font-extrabold text-sky-700 transition hover:bg-sky-100"
+                  className="inline-flex items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 px-6 py-3.5 text-sm font-extrabold text-sky-700 transition hover:bg-emerald-100"
                 >
                   Telegram @Techboyy0
                 </a>
@@ -461,7 +461,7 @@ export default function ServicesPage() {
                   href={facebookUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-xl border border-blue-200 bg-white px-6 py-3.5 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                  className="inline-flex items-center justify-center rounded-xl border border-emerald-200 bg-white px-6 py-3.5 text-sm font-extrabold text-emerald-800 transition hover:bg-emerald-50"
                 >
                   Facebook Page
                 </a>
@@ -474,14 +474,14 @@ export default function ServicesPage() {
       {/* Bottom CTA */}
       <section className="py-16">
         <Container>
-          <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-sky-600 p-8 text-white shadow-xl shadow-blue-200/40 sm:p-12">
+          <div className="rounded-3xl bg-gradient-to-r from-emerald-700 to-emerald-700 p-8 text-white shadow-xl shadow-emerald-200/40 sm:p-12">
             <div className="flex flex-col items-start justify-between gap-7 lg:flex-row lg:items-center">
               <div className="max-w-xl">
                 <h2 className="text-2xl font-extrabold sm:text-3xl">
                   Also Looking for Digital Products?
                 </h2>
 
-                <p className="mt-4 text-sm leading-7 text-blue-50">
+                <p className="mt-4 text-sm leading-7 text-emerald-50">
                   Browse SastaStore subscriptions,
                   software and digital tools in
                   our online marketplace.
@@ -491,7 +491,7 @@ export default function ServicesPage() {
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/products"
-                  className="rounded-xl bg-white px-6 py-3.5 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                  className="rounded-xl bg-white px-6 py-3.5 text-sm font-extrabold text-emerald-800 transition hover:bg-emerald-50"
                 >
                   Browse Products
                 </Link>
