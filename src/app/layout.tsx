@@ -140,7 +140,7 @@ export default function RootLayout({
         <link
           rel="preload"
           as="image"
-          href="/images/sastastore-mark.svg"
+          href="/images/sastastore-logo.png"
           fetchPriority="high"
         />
       </head>
