@@ -226,7 +226,7 @@ export function Header() {
         header.sticky { background: rgba(246,248,246,.97) !important; border-color: #dce8df !important; color: #17372e !important; box-shadow: 0 8px 30px rgba(18,59,50,.08) !important; }
         header.sticky .sastastore-marquee { background: linear-gradient(90deg,#edf6f0,#ffffff,#edf6f0) !important; border-color: #dce8df !important; }
         header.sticky .sastastore-marquee span { color: #267253 !important; }
-        header.sticky .sastastore-marquee span:first-child { background: #b38a42 !important; }
+        header.sticky .sastastore-marquee span:first-child { background: #267253 !important; }
         header.sticky a { color: #17372e; }
         header.sticky a:hover, header.sticky a[aria-current="page"] { color: #267253 !important; }
         header.sticky a.group > span:first-child { background: #fff !important; color: #17372e !important; box-shadow: 0 4px 16px rgba(18,59,50,.08) !important; }
@@ -275,16 +275,8 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
               className="group flex shrink-0 items-center gap-2.5"
             >
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/70 bg-white shadow-md">
-                <img
-                  src="/images/sastastore-mark.svg"
-                  alt="SastaStore logo"
-                  width={56}
-                  height={56}
-                  fetchPriority="high"
-                  decoding="async"
-                  className="h-full w-full object-contain"
-                />
+              <span aria-label="SastaStore" className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#267253] text-2xl font-black tracking-tight text-white shadow-sm">
+                S
               </span>
 
               <span className="text-xl font-extrabold tracking-tight">
