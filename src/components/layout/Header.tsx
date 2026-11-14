@@ -228,7 +228,9 @@ export function Header() {
         header.sticky .sastastore-marquee span { color: #267253 !important; }
         header.sticky .sastastore-marquee span:first-child { background: #267253 !important; }
         header.sticky a { color: #17372e; }
+        header.sticky a[href="/track"], header.sticky a[href="/register"] { color: #fff !important; }
         header.sticky a:hover, header.sticky a[aria-current="page"] { color: #267253 !important; }
+        header.sticky a[href="/track"]:hover, header.sticky a[href="/register"]:hover { color: #fff !important; }
         header.sticky a.group > span:first-child { background: #267253 !important; color: #fff !important; box-shadow: 0 4px 16px rgba(18,59,50,.08) !important; }
         header.sticky a.group > span:last-child { color: #17372e !important; }
         header.sticky a.group > span:last-child span { color: #267253 !important; }
