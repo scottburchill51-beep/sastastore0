@@ -1,114 +1,144 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, BookOpen, Clock3, Headphones, ShieldCheck, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, BadgeCheck, BookOpen, CheckCircle2, ChevronRight, Headphones, MessageCircle, ShieldCheck, Sparkles, Zap } from "lucide-react";
 
 import { BrandLogoMarquee } from "@/components/product/BrandLogoMarquee";
+import { ProductLogo } from "@/components/product/ProductLogo";
 import { SmartProductSearch } from "@/components/product/SmartProductSearch";
 import { ProductCatalog } from "@/components/product/ProductCatalog";
 import { Container } from "@/components/ui/Container";
+import { products } from "@/data/products";
+import { createWhatsAppUrl } from "@/lib/whatsapp";
 
 export const metadata = {
   title: "SastaStore | Premium Digital Tools at Sasta Prices",
-  description: "Explore AI tools, creative software, productivity subscriptions and digital courses at SastaStore.",
+  description: "Shop AI tools, creative software, productivity subscriptions and digital services at SastaStore.",
 };
 
-const highlights = [
-  { icon: ShieldCheck, title: "Trusted support", text: "Friendly help before and after your order" },
-  { icon: Zap, title: "Quick processing", text: "Order updates through WhatsApp" },
-  { icon: BadgeCheck, title: "Clear plan details", text: "Confirm availability and terms before ordering" },
-  { icon: Headphones, title: "Here to help", text: "Get assistance choosing the right plan" },
+const featuredProducts = products.filter((product) => product.featured || product.popular).slice(0, 6);
+const categories = [
+  { title: "AI & Automation", subtitle: "ChatGPT, Claude, AI assistants", icon: "✦", href: "/categories?category=ai-tools", count: "AI tools" },
+  { title: "Design & Video", subtitle: "Canva, CapCut, Figma and more", icon: "◈", href: "/categories?category=design-creative", count: "Creative tools" },
+  { title: "Work & Productivity", subtitle: "Writing, planning and workflow", icon: "▤", href: "/categories?category=productivity-business", count: "Work tools" },
+  { title: "Learning", subtitle: "Courses and skill development", icon: "⌘", href: "/courses", count: "Learning" },
 ];
 
-const categories = [
-  { name: "AI Tools", detail: "AI assistants & automation", icon: "✦", href: "/categories" },
-  { name: "Design & Editing", detail: "Creative apps & video tools", icon: "◈", href: "/categories" },
-  { name: "Productivity", detail: "Work smarter every day", icon: "▤", href: "/categories" },
-  { name: "Marketing & SEO", detail: "Grow your digital presence", icon: "↗", href: "/categories" },
+const benefits = [
+  { icon: ShieldCheck, title: "Clear plan details", text: "Check duration, features and terms before ordering." },
+  { icon: MessageCircle, title: "WhatsApp ordering", text: "Talk to our team to confirm your order." },
+  { icon: Headphones, title: "Customer assistance", text: "Get help choosing the right digital product." },
 ];
+
+function formatPrice(price: number) {
+  return new Intl.NumberFormat("en-PK").format(price);
+}
 
 export default function HomePage() {
+  const whatsappUrl = createWhatsAppUrl("Hello SastaStore, I want help choosing a digital product.");
   return (
-    <main className="min-h-screen flex-1 overflow-hidden bg-[#f6f8f6] text-[#152a25]">
-      <section className="relative overflow-hidden bg-[#0d3029] text-white">
-        <div className="pointer-events-none absolute -left-40 -top-40 h-[32rem] w-[32rem] rounded-full bg-emerald-500/20 blur-3xl" />
-        <div className="pointer-events-none absolute -right-32 bottom-[-10rem] h-[34rem] w-[34rem] rounded-full bg-teal-400/15 blur-3xl" />
-        <div className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(255,255,255,.22)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.22)_1px,transparent_1px)] [background-size:46px_46px]" />
+    <main className="min-h-screen overflow-hidden bg-[#f5f6f4] text-[#17211d]">
+      <div className="border-b border-[#263b32] bg-[#10251e] text-[#f7f2e8]">
         <Container>
-          <div className="relative grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-[1.1fr_.9fr] lg:py-28">
-            <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200/20 bg-white/[0.07] px-4 py-2 text-[11px] font-extrabold uppercase tracking-[.2em] text-[#d7f4e6]">
-                <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(110,231,183,.9)]" />
-                Your digital marketplace
-              </span>
-              <h1 className="mt-7 max-w-3xl text-4xl font-black leading-[1.08] tracking-tight sm:text-6xl lg:text-[4.2rem]">
-                Premium Digital Tools.
-                <span className="mt-2 block text-[#f5ce78]">Sasta Prices.</span>
+          <div className="flex min-h-9 items-center justify-center gap-x-6 gap-y-1 overflow-hidden text-[10px] font-bold uppercase tracking-[.12em] sm:justify-between sm:text-[11px]">
+            <div className="flex animate-[ticker_28s_linear_infinite] items-center gap-6 whitespace-nowrap">
+              <span className="inline-flex items-center gap-2"><Zap className="h-3.5 w-3.5 text-[#e7bd67]" /> Digital tools at affordable prices</span>
+              <span className="text-[#e7bd67]">✦</span>
+              <span>WhatsApp order assistance</span>
+              <span className="text-[#e7bd67]">✦</span>
+              <span>Explore AI, design and productivity tools</span>
+              <span className="text-[#e7bd67]">✦</span>
+              <span>Digital courses and learning resources</span>
+            </div>
+          </div>
+        </Container>
+      </div>
+
+      <section className="relative overflow-hidden bg-[#12382d] text-white">
+        <div className="absolute inset-0 opacity-[.12] [background-image:radial-gradient(#d7e7d8_0.7px,transparent_0.7px)] [background-size:18px_18px]" />
+        <div className="absolute -right-32 -top-44 h-[34rem] w-[34rem] rounded-full border border-white/[.08]" />
+        <div className="absolute -right-16 -top-28 h-[25rem] w-[25rem] rounded-full border border-white/[.08]" />
+        <Container>
+          <div className="relative grid min-h-[530px] items-center gap-12 py-14 sm:py-20 lg:grid-cols-[1.04fr_.96fr] lg:py-24">
+            <div className="animate-fade-up max-w-2xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#e8c875]/40 bg-[#e8c875]/10 px-4 py-2 text-[10px] font-extrabold uppercase tracking-[.18em] text-[#f4d992]">
+                <span className="status-dot h-2 w-2 rounded-full bg-[#f4d992]" />
+                SastaStore digital marketplace
+              </div>
+              <h1 className="mt-6 text-[2.65rem] font-black leading-[1.05] tracking-[-.045em] sm:text-6xl lg:text-[4.35rem]">
+                Premium tools.
+                <span className="mt-1 block text-[#e8c875]">Smarter prices.</span>
               </h1>
-              <p className="mt-6 max-w-2xl text-sm leading-8 text-[#c5ddd3] sm:text-base">
-                Discover AI tools, creative software, productivity apps and digital subscriptions in one place. Compare available plans and get friendly support from SastaStore.
+              <p className="mt-6 max-w-xl text-sm leading-7 text-[#d4e2d8] sm:text-base sm:leading-8">
+                Find the digital tools you need for creating, working and growing. Explore available plans, compare options and order with help from our team.
               </p>
-              <div className="mt-8 max-w-2xl">
+              <div className="mt-7 max-w-xl rounded-2xl bg-white p-2 shadow-[0_18px_50px_rgba(0,0,0,.2)]">
                 <SmartProductSearch />
               </div>
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <a href="#explore-products" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#f5ce78] px-7 py-3.5 text-sm font-extrabold text-[#17372e] shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-[#ffdc91]">
-                  Explore Products <ArrowRight className="h-4 w-4" />
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a href="#popular-products" className="button-shine inline-flex min-h-12 items-center gap-2 rounded-xl bg-[#e8c875] px-6 py-3 text-sm font-extrabold text-[#1c3025] transition hover:-translate-y-0.5 hover:bg-[#f3d994]">
+                  Browse Products <ArrowRight className="h-4 w-4" />
                 </a>
-                <Link href="/deals" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/[0.06] px-7 py-3.5 text-sm font-bold text-white transition hover:bg-white/10">
-                  View Special Deals
-                </Link>
+                <a href={whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-white/25 bg-white/[.07] px-6 py-3 text-sm font-bold text-white transition hover:border-[#e8c875] hover:bg-white/[.13]">
+                  <MessageCircle className="h-4 w-4" /> Chat with us
+                </a>
               </div>
-              <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-xs font-semibold text-[#c5ddd3]">
-                <span className="inline-flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-emerald-300" /> Clear plan information</span>
-                <span className="inline-flex items-center gap-2"><Headphones className="h-4 w-4 text-emerald-300" /> WhatsApp support</span>
-                <span className="inline-flex items-center gap-2"><BadgeCheck className="h-4 w-4 text-emerald-300" /> Order assistance</span>
+              <div className="mt-8 flex flex-wrap gap-x-5 gap-y-3 text-xs font-semibold text-[#d4e2d8]">
+                <span className="inline-flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#e8c875]" /> Product details before ordering</span>
+                <span className="inline-flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#e8c875]" /> Local PKR prices</span>
               </div>
             </div>
 
-            <div className="relative mx-auto w-full max-w-[470px]">
-              <div className="absolute -inset-5 rounded-[2rem] bg-emerald-300/10 blur-2xl" />
-              <div className="relative overflow-hidden rounded-[1.8rem] border border-white/15 bg-[#17453a] p-5 shadow-2xl shadow-black/30 sm:p-7">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <div className="relative mx-auto w-full max-w-[510px] animate-fade-up [animation-delay:160ms]">
+              <div className="absolute -inset-5 rounded-[2rem] bg-[#e8c875]/10 blur-2xl" />
+              <div className="relative overflow-hidden rounded-[1.65rem] border border-white/15 bg-[#f7f8f5] p-4 text-[#1b2b23] shadow-[0_30px_80px_rgba(0,0,0,.32)] sm:p-5">
+                <div className="flex items-center justify-between border-b border-[#e4e8e1] pb-4">
                   <div>
-                    <p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#f5ce78]">SastaStore collection</p>
-                    <h2 className="mt-1 text-lg font-extrabold">Tools for your next big idea</h2>
+                    <p className="text-[10px] font-extrabold uppercase tracking-[.18em] text-[#718276]">Popular right now</p>
+                    <h2 className="mt-1 text-lg font-black tracking-tight">Explore customer favourites</h2>
                   </div>
-                  <span className="rounded-xl bg-[#f5ce78] p-3 text-[#17372e]"><Sparkles className="h-5 w-5" /></span>
+                  <span className="rounded-xl bg-[#e9f0e9] p-3 text-[#286046]"><Sparkles className="h-5 w-5" /></span>
                 </div>
-                <div className="mt-5 grid grid-cols-2 gap-3">
-                  {[
-                    ["✦", "AI & Automation", "Smart digital workflows"],
-                    ["◈", "Design & Video", "Create with confidence"],
-                    ["▤", "Productivity", "Organise your work"],
-                    ["↗", "Marketing & SEO", "Reach your audience"],
-                  ].map(([symbol, title, sub]) => (
-                    <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.055] p-4">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-xl text-[#f5ce78]">{symbol}</span>
-                      <p className="mt-4 text-sm font-extrabold text-white">{title}</p>
-                      <p className="mt-1 text-[11px] leading-5 text-[#b9d3c8]">{sub}</p>
-                    </div>
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  {featuredProducts.slice(0, 4).map((product, index) => (
+                    <Link key={product.slug} href={`/products/${encodeURIComponent(product.slug)}`} className="group relative rounded-xl border border-[#e1e7df] bg-white p-3 transition duration-300 hover:-translate-y-1 hover:border-[#b5c8ad] hover:shadow-lg">
+                      <div className="flex items-start justify-between gap-2">
+                        <ProductLogo name={product.name} logo={product.logo} priority={index < 2} />
+                        <span className="rounded-full bg-[#eff4ed] px-2 py-1 text-[9px] font-extrabold uppercase tracking-wide text-[#477052]">{product.badge || "Featured"}</span>
+                      </div>
+                      <h3 className="mt-3 line-clamp-1 text-sm font-extrabold">{product.name}</h3>
+                      <p className="mt-1 text-[11px] text-[#7b887e]">{product.plans.length > 1 ? `${product.plans.length} plans available` : product.plans[0]?.duration || "Digital access"}</p>
+                      <div className="mt-3 flex items-center justify-between border-t border-[#edf0eb] pt-3">
+                        <span className="text-[10px] text-[#829086]">From</span>
+                        <span className="text-sm font-black text-[#24583d]">Rs. {formatPrice(Math.min(...product.plans.map((plan) => plan.price)))}</span>
+                      </div>
+                      <span className="absolute bottom-3 right-3 opacity-0 transition group-hover:translate-x-1 group-hover:opacity-100"><ChevronRight className="h-4 w-4 text-[#24583d]" /></span>
+                    </Link>
                   ))}
                 </div>
-                <div className="mt-4 flex items-center justify-between rounded-xl bg-[#0d3029]/70 px-4 py-3">
-                  <span className="text-xs font-semibold text-[#c5ddd3]">Explore the full collection</span>
-                  <ArrowRight className="h-4 w-4 text-[#f5ce78]" />
-                </div>
+                <Link href="/products" className="mt-4 flex items-center justify-between rounded-xl bg-[#173d30] px-4 py-3 text-xs font-extrabold text-white transition hover:bg-[#24583d]">
+                  View the complete catalogue <ArrowRight className="h-4 w-4 text-[#e8c875]" />
+                </Link>
               </div>
-              <div className="absolute -bottom-5 -left-5 hidden items-center gap-3 rounded-2xl border border-emerald-100/20 bg-white p-4 text-[#17372e] shadow-xl sm:flex">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700"><BadgeCheck className="h-5 w-5" /></span>
-                <span><span className="block text-xs font-extrabold">Customer-first support</span><span className="mt-1 block text-[10px] text-slate-500">Here to help with your order</span></span>
+              <div className="absolute -bottom-5 -left-5 hidden items-center gap-3 rounded-xl border border-[#dfe8df] bg-white px-4 py-3 text-[#1d3328] shadow-xl sm:flex">
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#eaf2e8] text-[#24583d]"><BadgeCheck className="h-5 w-5" /></span>
+                <span><span className="block text-xs font-extrabold">Need help deciding?</span><span className="mt-1 block text-[10px] text-[#738176]">Talk to our support team</span></span>
               </div>
             </div>
           </div>
         </Container>
       </section>
 
-      <section className="border-b border-[#e4ebe6] bg-white py-5">
+      <section className="relative z-10 -mt-1 border-b border-[#e1e8df] bg-white py-5 shadow-[0_8px_24px_rgba(31,58,41,.04)]">
         <Container>
-          <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
-            {highlights.map(({ icon: Icon, title, text }) => (
-              <div key={title} className="flex items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#edf6f0] text-[#1d6b50]"><Icon className="h-5 w-5" /></span>
-                <span><span className="block text-xs font-extrabold text-[#17372e] sm:text-sm">{title}</span><span className="mt-1 block text-[10px] leading-4 text-slate-500 sm:text-xs">{text}</span></span>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-7">
+            {[
+              ["Catalogue", `${products.length}+`, "Digital products"],
+              ["Pricing", "PKR", "Local currency"],
+              ["Ordering", "WhatsApp", "Human assistance"],
+              ["Selection", "Multi-plan", "Options on selected tools"],
+            ].map(([label, value, caption]) => (
+              <div key={label} className="flex items-center gap-3 border-r border-[#edf0eb] last:border-0 sm:pl-2">
+                <span className="hidden h-10 w-10 items-center justify-center rounded-xl bg-[#edf4ec] text-[#2c6444] sm:flex"><BadgeCheck className="h-5 w-5" /></span>
+                <div><p className="text-[10px] font-bold uppercase tracking-[.13em] text-[#8b978d]">{label}</p><p className="mt-0.5 text-lg font-black text-[#203d2b] sm:text-xl">{value}</p><p className="text-[10px] text-[#7d887f]">{caption}</p></div>
               </div>
             ))}
           </div>
@@ -117,77 +147,62 @@ export default function HomePage() {
 
       <BrandLogoMarquee />
 
-      <section className="py-14 sm:py-16">
+      <section className="bg-[#f5f6f4] py-14 sm:py-16">
         <Container>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-[11px] font-extrabold uppercase tracking-[.2em] text-[#267253]">Browse by interest</p>
-              <h2 className="mt-2 text-2xl font-black tracking-tight text-[#17372e] sm:text-3xl">Explore Popular Categories</h2>
-              <p className="mt-2 text-sm text-slate-500">Find the tools that fit the way you work.</p>
-            </div>
-            <Link href="/categories" className="inline-flex items-center gap-2 text-sm font-extrabold text-[#267253] hover:text-[#174b39]">All categories <ArrowRight className="h-4 w-4" /></Link>
+          <div className="flex items-end justify-between gap-4">
+            <div><p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#54775d]">Find what you need</p><h2 className="mt-2 text-2xl font-black tracking-tight text-[#1b2d22] sm:text-3xl">Shop by category</h2><p className="mt-2 text-sm text-[#778279]">Browse tools by the way you work.</p></div>
+            <Link href="/categories" className="hidden items-center gap-2 text-sm font-extrabold text-[#285b3c] transition hover:gap-3 sm:inline-flex">All categories <ArrowRight className="h-4 w-4" /></Link>
           </div>
           <div className="mt-7 grid grid-cols-2 gap-3 lg:grid-cols-4">
-            {categories.map((item) => (
-              <Link key={item.name} href={item.href} className="group rounded-2xl border border-[#e2ebe5] bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-[#9bc9ad] hover:shadow-lg">
-                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#edf6f0] text-2xl font-bold text-[#267253] transition group-hover:bg-[#dcefe2]">{item.icon}</span>
-                <h3 className="mt-4 text-sm font-extrabold text-[#17372e]">{item.name}</h3>
-                <p className="mt-1 text-xs text-slate-500">{item.detail}</p>
+            {categories.map((category, index) => (
+              <Link key={category.title} href={category.href} className={`category-tile group relative overflow-hidden rounded-2xl border border-[#dfe7dc] bg-white p-5 transition duration-300 hover:-translate-y-1 hover:border-[#9eb69e] hover:shadow-[0_16px_35px_rgba(33,68,43,.09)] ${index === 0 ? "animate-fade-up" : ""}`}>
+                <div className="flex items-center justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#edf4ec] text-2xl font-black text-[#285b3c] transition group-hover:rotate-[-5deg] group-hover:bg-[#e3eee1]">{category.icon}</span><span className="text-[9px] font-bold uppercase tracking-wider text-[#8b978d]">{category.count}</span></div>
+                <h3 className="mt-5 text-sm font-extrabold text-[#203d2b]">{category.title}</h3>
+                <p className="mt-1 text-xs leading-5 text-[#7b877d]">{category.subtitle}</p>
+                <span className="mt-4 inline-flex items-center gap-1 text-[11px] font-extrabold text-[#2c6444]">Explore <ChevronRight className="h-3.5 w-3.5 transition group-hover:translate-x-1" /></span>
               </Link>
             ))}
           </div>
         </Container>
       </section>
 
-      <section id="explore-products" className="scroll-mt-24 border-y border-[#e4ebe6] bg-white py-14 sm:py-20">
+      <section id="popular-products" className="scroll-mt-24 border-y border-[#e3e9e1] bg-white py-14 sm:py-16">
         <Container>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-[11px] font-extrabold uppercase tracking-[.2em] text-[#267253]">Featured collection</p>
-              <h2 className="mt-2 text-2xl font-black tracking-tight text-[#17372e] sm:text-3xl">Discover Your Next Favourite Tool</h2>
-              <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-500">Browse products, compare available plans and check current details before ordering.</p>
-            </div>
-            <Link href="/products" className="inline-flex items-center gap-2 text-sm font-extrabold text-[#267253] hover:text-[#174b39]">View all products <ArrowRight className="h-4 w-4" /></Link>
+            <div><p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#54775d]">Hand-picked for you</p><h2 className="mt-2 text-2xl font-black tracking-tight text-[#1b2d22] sm:text-3xl">Popular digital products</h2><p className="mt-2 text-sm text-[#778279]">Explore available plans and product information.</p></div>
+            <Link href="/products" className="inline-flex items-center gap-2 text-sm font-extrabold text-[#285b3c] transition hover:gap-3">View all products <ArrowRight className="h-4 w-4" /></Link>
           </div>
           <ProductCatalog />
         </Container>
       </section>
 
-      <section className="py-14 sm:py-16">
+      <section className="bg-[#f5f6f4] py-14 sm:py-16">
         <Container>
-          <div className="relative overflow-hidden rounded-[1.8rem] bg-[#123b32] p-7 text-white sm:p-10 lg:p-12">
-            <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-emerald-300/10 blur-3xl" />
+          <div className="relative overflow-hidden rounded-[1.5rem] bg-[#173d30] px-6 py-9 text-white sm:px-10 sm:py-12">
+            <div className="absolute -right-10 -top-20 h-64 w-64 rounded-full border border-white/10" />
+            <div className="absolute -right-1 -top-11 h-44 w-44 rounded-full border border-[#e8c875]/20" />
             <div className="relative flex flex-col items-start justify-between gap-7 lg:flex-row lg:items-center">
-              <div className="max-w-2xl">
-                <p className="text-[11px] font-extrabold uppercase tracking-[.2em] text-[#f5ce78]">SastaStore Learning Library</p>
-                <h2 className="mt-3 text-2xl font-black sm:text-3xl">Build skills. Explore something new.</h2>
-                <p className="mt-3 text-sm leading-7 text-[#c5ddd3]">Explore our course listings across AI, design, marketing, freelancing and more. Check course details and request access from our team.</p>
-              </div>
-              <Link href="/courses" className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#f5ce78] px-6 py-3.5 text-sm font-extrabold text-[#17372e] transition hover:bg-[#ffdc91]">Explore Free Courses <BookOpen className="h-4 w-4" /></Link>
+              <div className="max-w-2xl"><p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#e8c875]">SastaStore learning</p><h2 className="mt-3 text-2xl font-black sm:text-3xl">Your next skill starts here.</h2><p className="mt-3 text-sm leading-7 text-[#d4e2d8]">Explore course listings in AI, design, marketing, freelancing and more. Review the details and ask our team about access.</p></div>
+              <Link href="/courses" className="button-shine inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#e8c875] px-6 py-3.5 text-sm font-extrabold text-[#1c3025] transition hover:-translate-y-0.5 hover:bg-[#f3d994]">Explore Courses <BookOpen className="h-4 w-4" /></Link>
             </div>
           </div>
         </Container>
       </section>
 
-      <section className="border-y border-[#e4ebe6] bg-[#edf4ef] py-14 sm:py-16">
+      <section className="border-y border-[#e3e9e1] bg-white py-14 sm:py-16">
         <Container>
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-[11px] font-extrabold uppercase tracking-[.2em] text-[#267253]">Simple and clear</p>
-            <h2 className="mt-3 text-2xl font-black text-[#17372e] sm:text-3xl">How SastaStore Works</h2>
-            <p className="mt-3 text-sm leading-7 text-slate-600">A straightforward way to explore digital products and get help with your order.</p>
+          <div className="mx-auto max-w-2xl text-center"><p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#54775d]">Why SastaStore</p><h2 className="mt-2 text-2xl font-black text-[#1b2d22] sm:text-3xl">A simple way to shop digital</h2><p className="mt-3 text-sm leading-7 text-[#778279]">Know what you are selecting, confirm the details and get help when you need it.</p></div>
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            {benefits.map(({ icon: Icon, title, text }) => <div key={title} className="rounded-2xl border border-[#e2e9df] bg-[#fafbf9] p-6 transition duration-300 hover:-translate-y-1 hover:border-[#b8cbb6] hover:shadow-lg"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#e9f1e7] text-[#285b3c]"><Icon className="h-5 w-5" /></span><h3 className="mt-4 text-sm font-extrabold text-[#203d2b]">{title}</h3><p className="mt-2 text-sm leading-6 text-[#778279]">{text}</p></div>)}
           </div>
-          <div className="mt-9 grid gap-4 sm:grid-cols-3">
-            {[
-              ["01", "Choose a product", "Browse the catalogue and compare the plans available."],
-              ["02", "Confirm your order", "Contact our team to confirm price, availability and terms."],
-              ["03", "Get order support", "Receive updates and assistance with your digital order."],
-            ].map(([number, title, description]) => (
-              <div key={number} className="rounded-2xl border border-[#dce8df] bg-white p-6 shadow-sm">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#123b32] text-sm font-black text-[#f5ce78]">{number}</span>
-                <h3 className="mt-4 text-base font-extrabold text-[#17372e]">{title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-500">{description}</p>
-              </div>
-            ))}
+        </Container>
+      </section>
+
+      <section className="bg-[#f5f6f4] py-12 sm:py-14">
+        <Container>
+          <div className="flex flex-col items-center justify-between gap-5 rounded-2xl border border-[#dfe7dc] bg-white p-6 text-center shadow-sm sm:flex-row sm:text-left sm:p-8">
+            <div><h2 className="text-xl font-black text-[#203d2b]">Need help finding the right tool?</h2><p className="mt-2 text-sm text-[#778279]">Tell us what you need and our team can help you compare available options.</p></div>
+            <a href={whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#173d30] px-6 py-3.5 text-sm font-extrabold text-white transition hover:bg-[#285b3c]"><MessageCircle className="h-4 w-4" /> Ask on WhatsApp</a>
           </div>
         </Container>
       </section>
