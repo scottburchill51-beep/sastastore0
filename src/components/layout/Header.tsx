@@ -229,7 +229,7 @@ export function Header() {
         header.sticky .sastastore-marquee span:first-child { background: #267253 !important; }
         header.sticky a { color: #17372e; }
         header.sticky a:hover, header.sticky a[aria-current="page"] { color: #267253 !important; }
-        header.sticky a.group > span:first-child { background: #fff !important; color: #17372e !important; box-shadow: 0 4px 16px rgba(18,59,50,.08) !important; }
+        header.sticky a.group > span:first-child { background: #267253 !important; color: #fff !important; box-shadow: 0 4px 16px rgba(18,59,50,.08) !important; }
         header.sticky a.group > span:last-child { color: #17372e !important; }
         header.sticky a.group > span:last-child span { color: #267253 !important; }
         header.sticky nav a span { background: #267253 !important; }
@@ -355,7 +355,7 @@ export function Header() {
                 })}
               </nav>
 
-              <Link href="/track" aria-current={isActive("/track") ? "page" : undefined} className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl border border-blue-700 bg-blue-600 px-3 py-2.5 text-sm font-extrabold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+              <Link href="/track" aria-current={isActive("/track") ? "page" : undefined} className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl border border-[#267253] bg-[#267253] px-3 py-2.5 text-sm font-extrabold text-white shadow-sm transition hover:bg-[#1f5e43] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#267253]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3" /><path d="M12 3v3M12 18v3M3 12h3M18 12h3" /></svg>
                 Track Order
               </Link>
@@ -434,8 +434,8 @@ export function Header() {
                         isTracking
                           ? `mt-2 flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-extrabold ${
                               active
-                                ? "border-blue-600 bg-[#267253] text-white"
-                                : "border-blue-200 bg-[#edf6f0] text-[#267253]"
+                                ? "border-[#267253] bg-[#267253] text-white"
+                                : "border-[#267253] bg-[#267253] text-white"
                             }`
                           : `rounded-xl px-4 py-3 text-sm font-semibold transition ${
                               active
