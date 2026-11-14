@@ -14,7 +14,7 @@ export const metadata = {
   description: "Shop AI tools, creative software, productivity subscriptions and digital services at SastaStore.",
 };
 
-const featuredProducts = products.filter((product) => product.featured || product.popular).slice(0, 6);
+const featuredProducts = products.filter((product) => product.featured || product.popular).slice(0, 6);\nconst spotlightProduct = featuredProducts[0];
 const categories = [
   { title: "AI & Automation", subtitle: "ChatGPT, Claude, AI assistants", icon: "✦", href: "/categories?category=ai-tools", count: "AI tools" },
   { title: "Design & Video", subtitle: "Canva, CapCut, Figma and more", icon: "◈", href: "/categories?category=design-creative", count: "Creative tools" },
@@ -147,6 +147,34 @@ export default function HomePage() {
 
       <BrandLogoMarquee />
 
+      {spotlightProduct && (
+        <section className="bg-white py-12 sm:py-16">
+          <Container>
+            <div className="overflow-hidden rounded-[1.5rem] border border-[#dfe7dc] bg-[#f5f7f3] shadow-sm">
+              <div className="grid items-center gap-7 p-6 sm:p-9 lg:grid-cols-[.85fr_1.15fr] lg:p-11">
+                <div className="flex min-h-[230px] items-center justify-center rounded-2xl bg-[#e8efe6] p-8">
+                  <div className="rounded-2xl bg-white p-6 shadow-[0_12px_35px_rgba(22,54,34,.09)] transition duration-500 hover:scale-105">
+                    <ProductLogo name={spotlightProduct.name} logo={spotlightProduct.logo} size="large" priority />
+                  </div>
+                </div>
+                <div>
+                  <p className="inline-flex items-center gap-2 rounded-full bg-[#e8c875]/25 px-3 py-1.5 text-[10px] font-black uppercase tracking-[.16em] text-[#765d24]"><Sparkles className="h-3.5 w-3.5" /> Featured pick</p>
+                  <h2 className="mt-4 text-2xl font-black tracking-tight text-[#1b2d22] sm:text-3xl">{spotlightProduct.name}</h2>
+                  <p className="mt-3 max-w-xl text-sm leading-7 text-[#748076]">{spotlightProduct.description}</p>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {spotlightProduct.features.slice(0, 3).map((feature) => <span key={feature} className="inline-flex items-center gap-1.5 rounded-lg border border-[#dce6d9] bg-white px-3 py-2 text-[11px] font-semibold text-[#506b57]"><CheckCircle2 className="h-3.5 w-3.5 text-[#39704b]" />{feature}</span>)}
+                  </div>
+                  <div className="mt-6 flex flex-col gap-4 border-t border-[#dfe7dc] pt-5 sm:flex-row sm:items-center sm:justify-between">
+                    <div><p className="text-[10px] font-bold uppercase tracking-wider text-[#8a968b]">Starting from</p><p className="mt-1 text-2xl font-black text-[#24583d]">Rs. {formatPrice(Math.min(...spotlightProduct.plans.map((plan) => plan.price)))}</p></div>
+                    <Link href={`/products/${encodeURIComponent(spotlightProduct.slug)}`} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#173d30] px-6 py-3.5 text-sm font-extrabold text-white transition hover:-translate-y-0.5 hover:bg-[#285b3c]">View product details <ArrowRight className="h-4 w-4 text-[#e8c875]" /></Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Container>
+        </section>
+      )}
+
       <section className="bg-[#f5f6f4] py-14 sm:py-16">
         <Container>
           <div className="flex items-end justify-between gap-4">
@@ -194,6 +222,32 @@ export default function HomePage() {
           <div className="mx-auto max-w-2xl text-center"><p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#54775d]">Why SastaStore</p><h2 className="mt-2 text-2xl font-black text-[#1b2d22] sm:text-3xl">A simple way to shop digital</h2><p className="mt-3 text-sm leading-7 text-[#778279]">Know what you are selecting, confirm the details and get help when you need it.</p></div>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {benefits.map(({ icon: Icon, title, text }) => <div key={title} className="rounded-2xl border border-[#e2e9df] bg-[#fafbf9] p-6 transition duration-300 hover:-translate-y-1 hover:border-[#b8cbb6] hover:shadow-lg"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#e9f1e7] text-[#285b3c]"><Icon className="h-5 w-5" /></span><h3 className="mt-4 text-sm font-extrabold text-[#203d2b]">{title}</h3><p className="mt-2 text-sm leading-6 text-[#778279]">{text}</p></div>)}
+          </div>
+        </Container>
+      </section>
+
+      <section className="border-y border-[#e3e9e1] bg-white py-14 sm:py-16">
+        <Container>
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#54775d]">Quick answers</p>
+            <h2 className="mt-2 text-2xl font-black text-[#1b2d22] sm:text-3xl">Frequently asked questions</h2>
+            <p className="mt-3 text-sm leading-7 text-[#778279]">A few helpful details before you place an order.</p>
+          </div>
+          <div className="mx-auto mt-8 max-w-3xl divide-y divide-[#e5ebe3] rounded-2xl border border-[#dfe7dc] bg-[#fafbf9] px-5 sm:px-7">
+            {[
+              ["How do I place an order?", "Open the product page, review the available plans and use the WhatsApp order option to confirm your selection with our team."],
+              ["Are all product plans always available?", "Availability can change. Please contact our team to confirm the current plan, price and terms before making payment."],
+              ["How will I receive my product?", "Delivery or activation instructions depend on the product. Our team will explain the process when confirming your order."],
+              ["Can I ask for help before ordering?", "Yes. Contact SastaStore on WhatsApp with the tool name and what you need help with."],
+            ].map(([question, answer]) => (
+              <details key={question} className="group py-5">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-sm font-extrabold text-[#263d2d] marker:hidden">
+                  {question}
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#e9f1e7] text-[#285b3c] transition group-open:rotate-45">+</span>
+                </summary>
+                <p className="mt-3 max-w-2xl pr-8 text-sm leading-7 text-[#778279]">{answer}</p>
+              </details>
+            ))}
           </div>
         </Container>
       </section>
