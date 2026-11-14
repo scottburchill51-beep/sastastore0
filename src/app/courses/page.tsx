@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { BookOpen, ShieldCheck, MessageCircle } from "lucide-react";
 
 import { CourseCatalog } from "@/components/course/CourseCatalog";
+import { courses } from "@/data/courses";
 import { Container } from "@/components/ui/Container";
 
 export const metadata: Metadata = {
@@ -56,7 +57,7 @@ export default function CoursesPage() {
             </p>
             <a
               href="#course-library"
-              className="mt-8 inline-flex items-center justify-center rounded-xl bg-[#123b32] px-6 py-3.5 text-sm font-extrabold text-[#17372e] shadow-lg shadow-emerald-950/30 transition hover:bg-[#1c5746]"
+              className="mt-8 inline-flex items-center justify-center rounded-xl bg-[#123b32] px-6 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-emerald-950/30 transition hover:bg-[#1c5746] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
             >
               Explore Courses
             </a>
@@ -93,7 +94,7 @@ export default function CoursesPage() {
         <Container>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-400">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
                 Browse the collection
               </p>
               <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
@@ -104,8 +105,8 @@ export default function CoursesPage() {
                 method and any applicable charges are confirmed by our team.
               </p>
             </div>
-            <span className="w-fit rounded-full border border-[#e0e9e2] bg-white px-3 py-1.5 text-xs font-semibold text-slate-500">
-              15 listings
+            <span className="w-fit rounded-full border border-[#e0e9e2] bg-white px-3 py-1.5 text-xs font-semibold text-slate-600">
+              {courses.length} listings
             </span>
           </div>
           <CourseCatalog />
@@ -131,7 +132,7 @@ export default function CoursesPage() {
               href="https://wa.me/923136093501?text=Hi%20SastaStore%2C%20I%20need%20help%20with%20the%20courses%20library."
               target="_blank"
               rel="noreferrer"
-              className="shrink-0 rounded-xl bg-[#123b32] px-6 py-3.5 text-sm font-extrabold text-[#17372e] transition hover:bg-[#1c5746]"
+              className="shrink-0 rounded-xl bg-[#123b32] px-6 py-3.5 text-sm font-extrabold text-white transition hover:bg-[#1c5746] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
             >
               Contact on WhatsApp
             </a>
