@@ -4,6 +4,7 @@ export type Course = {
   category: string;
   description: string;
   accent: string;
+  driveUrl?: string;
 };
 
 export const courseSourceUrl = "https://paktools.store/courses";
@@ -13,7 +14,6 @@ export const courses: Course[] = [
   { slug: "faceless-youtube-automation", title: "Faceless YouTube Automation Cash Cow Channels — Complete Masterclass (2026 Updated Edition)", category: "YouTube Automation", description: "Learn about faceless channel concepts, content planning and YouTube production workflows.", accent: "from-red-500/20 via-orange-500/10 to-transparent" },
   { slug: "tiktok-shop-dropshipping-affiliate", title: "TikTok Shop UK & USA Dropshipping & Affiliate — Complete Masterclass (2026 Updated Edition)", category: "E-commerce", description: "An introduction to TikTok Shop, product promotion and affiliate business workflows.", accent: "from-fuchsia-500/20 via-pink-500/10 to-transparent" },
   { slug: "fiverr-gig-ranking-seo", title: "Fiverr Gig Ranking, SEO & Top-Rated Seller Blueprint — Complete Masterclass (2026 Updated Edition)", category: "Freelancing", description: "Explore freelance profile positioning, gig presentation and marketplace search basics.", accent: "from-green-500/20 via-lime-500/10 to-transparent" },
-  { slug: "meta-ads-pixel-roas-scaling", title: "Meta Ads (Facebook & Instagram) Pixel & ROAS Scaling — Complete Masterclass (2026 Updated Edition)", category: "Digital Marketing", description: "Learn core concepts behind Meta advertising, campaign measurement and performance analysis.", accent: "from-blue-500/20 via-indigo-500/10 to-transparent" },
   { slug: "semrush-ahrefs-keyword-research", title: "SEMrush & Ahrefs Low-Competition Keyword Research — Complete Masterclass (2026 Updated Edition)", category: "SEO & Blogging", description: "Explore keyword research, search intent and ways to plan content around relevant topics.", accent: "from-orange-500/20 via-amber-500/10 to-transparent" },
   { slug: "capcut-viral-reels-shorts-editing", title: "CapCut PC & Mobile Pro Viral Reels & Shorts Editing — Complete Masterclass (2026 Updated Edition)", category: "Video Editing", description: "Discover short-form video editing concepts for Reels, Shorts and social content.", accent: "from-violet-500/20 via-purple-500/10 to-transparent" },
   { slug: "canva-brand-kit-social-media", title: "Canva Pro Brand Kit, Social Media & Presentation Mastery — Complete Masterclass (2026 Updated Edition)", category: "Graphic Design", description: "Explore brand kits, social media layouts and presentation design using Canva.", accent: "from-cyan-500/20 via-sky-500/10 to-transparent" },
@@ -24,6 +24,7 @@ export const courses: Course[] = [
   { slug: "shopify-local-dropshipping-pakistan", title: "Shopify Local Dropshipping Pakistan (COD Mastery) — Complete Masterclass (2026 Updated Edition)", category: "E-commerce", description: "Explore the basics of setting up an online store and planning a local e-commerce workflow.", accent: "from-lime-500/20 via-emerald-500/10 to-transparent" },
   { slug: "upwork-winning-proposals-client-closing", title: "Upwork Winning Proposals & High-Ticket Client Closing — Complete Masterclass (2026 Updated Edition)", category: "Freelancing", description: "Explore proposal writing, client communication and presenting freelance services professionally.", accent: "from-teal-500/20 via-cyan-500/10 to-transparent" },
   { slug: "tiktok-ads-manager-ugc-creatives", title: "TikTok Ads Manager & Viral UGC Ad Creatives — Complete Masterclass (2026 Updated Edition)", category: "Digital Marketing", description: "Explore TikTok campaign basics, creative planning and user-generated-content ad formats.", accent: "from-pink-500/20 via-fuchsia-500/10 to-transparent" },
+  { slug: "digital-marketing-course-english", title: "Digital Marketing Course (English)", category: "Digital Marketing", description: "Open the shared Google Drive folder for the English-language digital marketing course material.", accent: "from-blue-500/20 via-cyan-500/10 to-transparent", driveUrl: "https://drive.google.com/drive/folders/1ZGEuUA7LW-SmaUnewRRffKymTSgGoB4d" },
 ];
 
 export const courseCategories = [
