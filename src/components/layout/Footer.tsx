@@ -66,7 +66,7 @@ export function Footer() {
         <div className="grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.45fr_1fr_1fr_1fr] lg:gap-12 lg:py-16">
           <div>
             <Link href="/" className="inline-flex items-center gap-3" aria-label="SastaStore homepage">
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#267253] text-xl font-black text-white">S</span>
+              <img src="/images/Futuristic%20Gradient%20S%20Logo.png" alt="SastaStore logo" width="44" height="44" loading="eager" decoding="async" className="h-11 w-11 shrink-0 object-contain" />
               <span className="text-2xl font-black tracking-tight text-[#24352b]">Sasta<span className="text-[#267253]">Store</span></span>
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-7 text-[#405747]">Premium digital tools at Sasta prices. Explore software, AI tools and subscriptions for your everyday work.</p>
