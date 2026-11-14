@@ -37,7 +37,7 @@ export default function HomePage() {
   const whatsappUrl = createWhatsAppUrl("Hello SastaStore, I want help choosing a digital product.");
   return (
     <main className="min-h-screen overflow-hidden bg-[#f6f8f6] text-[#17372e]">
-      <div className="border-b border-[#dce8df] bg-[#edf6f0] text-[#edf6f0]">
+      <div className="border-b border-[#dce8df] bg-[#edf6f0] text-[#17372e]">
         <Container>
           <div className="flex min-h-9 items-center justify-center gap-x-6 gap-y-1 overflow-hidden text-[10px] font-bold uppercase tracking-[.12em] sm:justify-between sm:text-[11px]">
             <div className="flex animate-[ticker_28s_linear_infinite] items-center gap-6 whitespace-nowrap">
@@ -75,7 +75,7 @@ export default function HomePage() {
                 <SmartProductSearch />
               </div>
               <div className="mt-6 flex flex-wrap gap-3">
-                <a href="#popular-products" className="button-shine inline-flex min-h-12 items-center gap-2 rounded-xl bg-[#267253] px-6 py-3 text-sm font-extrabold text-[#17372e] transition hover:-translate-y-0.5 hover:bg-[#267253]">
+                <a href="#popular-products" className="button-shine inline-flex min-h-12 items-center gap-2 rounded-xl bg-[#267253] px-6 py-3 text-sm font-extrabold text-white transition hover:-translate-y-0.5 hover:bg-[#267253]">
                   Browse Products <ArrowRight className="h-4 w-4" />
                 </a>
                 <a href={whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-[#dce8df] bg-white px-6 py-3 text-sm font-bold text-[#17372e] transition hover:border-[#267253] hover:bg-[#f6f8f6]">
@@ -199,7 +199,7 @@ export default function HomePage() {
         <Container>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div><p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#267253]">Live store catalogue</p><h2 className="mt-2 text-2xl font-black tracking-tight text-[#17372e] sm:text-3xl">Explore digital products</h2><p className="mt-2 text-sm text-[#64748b]">Browse the latest products, compare plans and filter by category or price.</p></div>
-            <Link href="/products" className="inline-flex items-center gap-2 rounded-xl border border-[#267253]/50 bg-[#267253] px-4 py-2.5 text-sm font-extrabold text-[#123b32] transition hover:bg-[#267253]">View all products <ArrowRight className="h-4 w-4" /></Link>
+            <Link href="/products" className="inline-flex items-center gap-2 rounded-xl border border-[#267253]/50 bg-[#267253] px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-[#267253]">View all products <ArrowRight className="h-4 w-4" /></Link>
           </div>
           <ProductCatalog />
         </Container>
@@ -212,7 +212,7 @@ export default function HomePage() {
             <div className="absolute -right-1 -top-11 h-44 w-44 rounded-full border border-[#267253]/20" />
             <div className="relative flex flex-col items-start justify-between gap-7 lg:flex-row lg:items-center">
               <div className="max-w-2xl"><p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#267253]">SastaStore learning</p><h2 className="mt-3 text-2xl font-black sm:text-3xl">Your next skill starts here.</h2><p className="mt-3 text-sm leading-7 text-[#64748b]">Explore course listings in AI, design, marketing, freelancing and more. Review the details and ask our team about access.</p></div>
-              <Link href="/courses" className="button-shine inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#267253] px-6 py-3.5 text-sm font-extrabold text-[#17372e] transition hover:-translate-y-0.5 hover:bg-[#267253]">Explore Courses <BookOpen className="h-4 w-4" /></Link>
+              <Link href="/courses" className="button-shine inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#267253] px-6 py-3.5 text-sm font-extrabold text-white transition hover:-translate-y-0.5 hover:bg-[#267253]">Explore Courses <BookOpen className="h-4 w-4" /></Link>
             </div>
           </div>
         </Container>
