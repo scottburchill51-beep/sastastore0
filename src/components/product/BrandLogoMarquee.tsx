@@ -72,7 +72,7 @@ export function BrandLogoMarquee() {
       key={`${duplicate ? "copy" : "brand"}-${product.slug}`}
       href={`/products/${encodeURIComponent(product.slug)}`}
       tabIndex={duplicate ? -1 : undefined}
-      className="group flex w-[145px] shrink-0 flex-col items-center justify-center gap-3 rounded-2xl border border-[#437467] bg-[#205047] px-4 py-5 text-center shadow-sm transition-colors hover:border-[#F5C76A] hover:bg-[#2A6054] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C76A] sm:w-[185px] sm:px-5 sm:py-6"
+      className="group flex w-[145px] shrink-0 flex-col items-center justify-center gap-3 rounded-2xl border border-[#437467] bg-[#1f5e43] px-4 py-5 text-center shadow-sm transition-colors hover:border-[#267253] hover:bg-[#2A6054] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#267253] sm:w-[185px] sm:px-5 sm:py-6"
     >
       <div className="flex h-[76px] w-[76px] items-center justify-center overflow-hidden rounded-2xl bg-white p-2 shadow-sm sm:h-[90px] sm:w-[90px]">
         <ProductLogo
@@ -90,10 +90,10 @@ export function BrandLogoMarquee() {
   return (
     <section
       aria-labelledby="sastastore-brands-heading"
-      className="overflow-hidden border-y border-[#38675E] bg-[#123B35] py-12 text-white sm:py-16"
+      className="overflow-hidden border-y border-[#38675E] bg-[#17372e] py-12 text-white sm:py-16"
     >
       <div className="mx-auto max-w-7xl px-4 text-center sm:px-6">
-        <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#F5C76A]">
+        <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#267253]">
           Our Digital Ecosystem
         </p>
 
@@ -119,9 +119,9 @@ export function BrandLogoMarquee() {
       ) : products.length > 0 ? (
         <div className="relative mt-10 overflow-hidden py-2">
           {/* Soft fading edges */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-[#123B35] to-transparent sm:w-24" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-[#17372e] to-transparent sm:w-24" />
 
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-[#123B35] to-transparent sm:w-24" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-[#17372e] to-transparent sm:w-24" />
 
           <div
             className="sastastore-brand-track flex w-max"
@@ -154,7 +154,7 @@ export function BrandLogoMarquee() {
       <div className="mt-9 text-center">
         <Link
           href="/products"
-          className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#F5C76A] px-6 py-3 text-sm font-extrabold text-[#F5C76A] transition hover:bg-[#F5C76A] hover:text-[#123B35]"
+          className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#267253] px-6 py-3 text-sm font-extrabold text-[#267253] transition hover:bg-[#267253] hover:text-[#17372e]"
         >
           Explore All Products
         </Link>
