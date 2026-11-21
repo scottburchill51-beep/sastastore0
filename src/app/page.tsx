@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, BookOpen, CheckCircle2, ChevronRight, Headphones, MessageCircle, ShieldCheck, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, BadgeCheck, BookOpen, CheckCircle2, ChevronRight, Headphones, MessageCircle, Send, ShieldCheck, Sparkles, Zap } from "lucide-react";
 
 import { BrandLogoMarquee } from "@/components/product/BrandLogoMarquee";
 import { ProductLogo } from "@/components/product/ProductLogo";
@@ -69,9 +69,6 @@ export default function HomePage() {
       </div>
 
       <section className="relative overflow-hidden bg-[#edf6f0] text-[#17372e]">
-        <div className="absolute inset-0 opacity-[.12] [background-image:radial-gradient(#dce8df_0.7px,transparent_0.7px)] [background-size:18px_18px]" />
-        <div className="absolute -right-32 -top-44 h-[34rem] w-[34rem] rounded-full border border-[#dce8df]" />
-        <div className="absolute -right-16 -top-28 h-[25rem] w-[25rem] rounded-full border border-[#dce8df]" />
         <Container>
           <div className="relative grid min-h-[530px] items-center gap-12 py-14 sm:py-20 lg:grid-cols-[1.04fr_.96fr] lg:py-24">
             <div className="animate-fade-up max-w-2xl">
@@ -112,18 +109,29 @@ export default function HomePage() {
 
       <section className="relative z-10 -mt-1 border-b border-[#dce8df] bg-white py-5 shadow-[0_8px_24px_rgba(18,59,50,.05)]">
         <Container>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-7">
-            {[
-              ["Catalogue", `${products.length}+`, "Digital products"],
-              ["Pricing", "PKR", "Local currency"],
-              ["Ordering", "WhatsApp", "Human assistance"],
-              ["Selection", "Multi-plan", "Options on selected tools"],
-            ].map(([label, value, caption]) => (
-              <div key={label} className="flex items-center gap-3 border-r border-[#dce8df] last:border-0 sm:pl-2">
-                <span className="hidden h-10 w-10 items-center justify-center rounded-xl bg-[#edf4ec] text-[#267253] sm:flex"><BadgeCheck className="h-5 w-5" /></span>
-                <div><p className="text-[10px] font-bold uppercase tracking-[.13em] text-[#64748b]">{label}</p><p className="mt-0.5 text-lg font-black text-[#17372e] sm:text-xl">{value}</p><p className="text-[10px] text-[#64748b]">{caption}</p></div>
+          <div className="grid grid-cols-2 gap-5 sm:grid-cols-4 sm:gap-7">
+            <div className="flex items-start gap-3 border-r border-[#dce8df] pr-3 sm:pl-2">
+              <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#edf4ec] text-[#267253] sm:flex"><BadgeCheck className="h-5 w-5" /></span>
+              <div><p className="text-xl font-black text-[#17372e] sm:text-2xl">48 Products</p><p className="mt-1 text-xs text-[#64748b]">36 currently in stock</p></div>
+            </div>
+            <div className="flex items-start gap-3 border-r border-[#dce8df] pr-3 sm:pl-2">
+              <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#edf4ec] text-[#267253] sm:flex"><Zap className="h-5 w-5" /></span>
+              <div><p className="text-xl font-black text-[#17372e] sm:text-2xl">442,300</p><p className="mt-1 text-xs text-[#64748b]">Items sold to date</p></div>
+            </div>
+            <div className="flex items-start gap-3 border-r border-[#dce8df] pr-3 sm:pl-2">
+              <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#edf4ec] text-[#267253] sm:flex"><CheckCircle2 className="h-5 w-5" /></span>
+              <div><p className="text-xl font-black text-[#17372e] sm:text-2xl">Instant</p><p className="mt-1 text-xs text-[#64748b]">Delivered the moment you pay</p></div>
+            </div>
+            <div className="flex items-start gap-3 sm:pl-2">
+              <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#edf4ec] text-[#267253] sm:flex"><Headphones className="h-5 w-5" /></span>
+              <div>
+                <p className="text-xl font-black text-[#17372e] sm:text-2xl">Live support</p>
+                <div className="mt-1 flex flex-wrap items-center gap-3 text-xs">
+                  <a href={whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold text-[#267253] hover:underline"><MessageCircle className="h-3.5 w-3.5" /> Chat</a>
+                  <a href="https://t.me/Techboyy0" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold text-[#267253] hover:underline"><Send className="h-3.5 w-3.5" /> Telegram</a>
+                </div>
               </div>
-            ))}
+            </div>
           </div>
         </Container>
       </section>
