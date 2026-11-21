@@ -126,7 +126,8 @@ export default function HomePage() {
                   <span>AI · Design · Productivity</span>
                 </div>
               </div>
-            </div>            </div>
+            </div>
+            </div>
           </div>
         </Container>
       </section>
