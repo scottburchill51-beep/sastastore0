@@ -102,41 +102,31 @@ export default function HomePage() {
             </div>
 
             <div className="relative mx-auto w-full max-w-[510px] animate-fade-up [animation-delay:160ms]">
-              <div className="absolute -inset-5 rounded-[2rem] bg-[#267253]/10 blur-2xl" />
-              <div className="relative overflow-hidden rounded-[1.65rem] border border-[#dce8df] bg-[#ffffff] p-4 text-[#17372e] shadow-[0_20px_55px_rgba(18,59,50,.10)] sm:p-5">
-                <div className="flex items-center justify-between border-b border-[#dce8df] pb-4">
-                  <div>
-                    <p className="text-[10px] font-extrabold uppercase tracking-[.18em] text-[#64748b]">Popular right now</p>
-                    <h2 className="mt-1 text-lg font-black tracking-tight">Explore customer favourites</h2>
-                  </div>
-                  <span className="rounded-xl bg-[#edf6f0] p-3 text-[#267253]"><Sparkles className="h-5 w-5" /></span>
+              <div className="floating-tools-stage relative mx-auto h-[340px] w-full max-w-[510px] sm:h-[430px]">
+                <div className="floating-tools-orbit floating-tools-orbit-one" />
+                <div className="floating-tools-orbit floating-tools-orbit-two" />
+                <div className="floating-tools-center">
+                  <span className="floating-tools-center-kicker">Your digital toolkit</span>
+                  <span className="floating-tools-center-title">Create. Work. Grow.</span>
+                  <span className="floating-tools-center-copy">Explore tools for every workflow</span>
                 </div>
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  {featuredProducts.slice(0, 4).map((product, index) => (
-                    <Link key={product.slug} href={`/products/${encodeURIComponent(product.slug)}`} className="group relative rounded-xl border border-[#dce8df] bg-white p-3 transition duration-300 hover:-translate-y-1 hover:border-[#267253] hover:shadow-lg">
-                      <div className="flex items-start justify-between gap-2">
-                        <ProductLogo name={product.name} logo={product.logo} priority={index < 2} />
-                        <span className="rounded-full bg-[#edf6f0] px-2 py-1 text-[9px] font-extrabold uppercase tracking-wide text-[#267253]">{product.badge || "Featured"}</span>
-                      </div>
-                      <h3 className="mt-3 line-clamp-1 text-sm font-extrabold">{product.name}</h3>
-                      <p className="mt-1 text-[11px] text-[#64748b]">{product.plans.length > 1 ? `${product.plans.length} plans available` : product.plans[0]?.duration || "Digital access"}</p>
-                      <div className="mt-3 flex items-center justify-between border-t border-[#dce8df] pt-3">
-                        <span className="text-[10px] text-[#64748b]">From</span>
-                        <span className="text-sm font-black text-[#267253]">Rs. {formatPrice(Math.min(...product.plans.map((plan) => plan.price)))}</span>
-                      </div>
-                      <span className="absolute bottom-3 right-3 opacity-0 transition group-hover:translate-x-1 group-hover:opacity-100"><ChevronRight className="h-4 w-4 text-[#267253]" /></span>
-                    </Link>
-                  ))}
+                {featuredProducts.slice(0, 6).map((product, index) => (
+                  <Link
+                    key={product.slug}
+                    href={`/products/${encodeURIComponent(product.slug)}`}
+                    className={`floating-tool-card floating-tool-card-${index + 1}`}
+                    aria-label={`Explore ${product.name}`}
+                  >
+                    <ProductLogo name={product.name} logo={product.logo} size="large" priority={index < 3} />
+                    <span className="floating-tool-label">{product.name}</span>
+                  </Link>
+                ))}
+                <div className="floating-tools-caption">
+                  <span className="floating-tools-caption-dot" />
+                  <span>AI · Design · Productivity</span>
                 </div>
-                <Link href="/products" className="mt-4 flex items-center justify-between rounded-xl bg-[#edf6f0] px-4 py-3 text-xs font-extrabold text-[#17372e] transition hover:bg-[#267253]">
-                  View the complete catalogue <ArrowRight className="h-4 w-4 text-[#267253]" />
-                </Link>
               </div>
-              <div className="absolute -bottom-5 -left-5 hidden items-center gap-3 rounded-xl border border-[#dce8df] bg-white px-4 py-3 text-[#17372e] shadow-xl sm:flex">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#edf6f0] text-[#267253]"><BadgeCheck className="h-5 w-5" /></span>
-                <span><span className="block text-xs font-extrabold">Need help deciding?</span><span className="mt-1 block text-[10px] text-[#64748b]">Talk to our support team</span></span>
-              </div>
-            </div>
+            </div>            </div>
           </div>
         </Container>
       </section>
