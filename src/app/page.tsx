@@ -3,6 +3,7 @@ import { ArrowRight, BadgeCheck, BookOpen, CheckCircle2, ChevronRight, Headphone
 
 import { BrandLogoMarquee } from "@/components/product/BrandLogoMarquee";
 import { ProductLogo } from "@/components/product/ProductLogo";
+import { FloatingToolsHero } from "@/components/product/FloatingToolsHero";
 import { SmartProductSearch } from "@/components/product/SmartProductSearch";
 import { ProductCatalog } from "@/components/product/ProductCatalog";
 import { Container } from "@/components/ui/Container";
@@ -15,6 +16,7 @@ export const metadata = {
 };
 
 const featuredProducts = products.filter((product) => product.featured || product.popular).slice(0, 6);
+const floatingProducts = products.slice(0, 10);
 const spotlightProduct = featuredProducts[0];
 const categories = [
   { title: "AI & Automation", subtitle: "ChatGPT, Claude, AI assistants", icon: "✦", href: "/categories?category=ai-tools", count: "AI tools" },
@@ -102,30 +104,7 @@ export default function HomePage() {
             </div>
 
             <div className="relative mx-auto w-full max-w-[510px] animate-fade-up [animation-delay:160ms]">
-              <div className="floating-tools-stage relative mx-auto h-[340px] w-full max-w-[510px] sm:h-[430px]">
-                <div className="floating-tools-orbit floating-tools-orbit-one" />
-                <div className="floating-tools-orbit floating-tools-orbit-two" />
-                <div className="floating-tools-center">
-                  <span className="floating-tools-center-kicker">Your digital toolkit</span>
-                  <span className="floating-tools-center-title">Create. Work. Grow.</span>
-                  <span className="floating-tools-center-copy">Explore tools for every workflow</span>
-                </div>
-                {featuredProducts.slice(0, 6).map((product, index) => (
-                  <Link
-                    key={product.slug}
-                    href={`/products/${encodeURIComponent(product.slug)}`}
-                    className={`floating-tool-card floating-tool-card-${index + 1}`}
-                    aria-label={`Explore ${product.name}`}
-                  >
-                    <ProductLogo name={product.name} logo={product.logo} size="large" priority={index < 3} />
-                    <span className="floating-tool-label">{product.name}</span>
-                  </Link>
-                ))}
-                <div className="floating-tools-caption">
-                  <span className="floating-tools-caption-dot" />
-                  <span>AI · Design · Productivity</span>
-                </div>
-              </div>
+              <FloatingToolsHero products={floatingProducts} />
             </div>
           </div>
         </Container>
