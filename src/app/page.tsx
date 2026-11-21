@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, BookOpen, CheckCircle2, ChevronRight, Headphones, MessageCircle, ShieldCheck, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, BadgeCheck, BookOpen, CheckCircle2, ChevronRight, Headphones, MessageCircle, Send, ShieldCheck, Sparkles, Zap } from "lucide-react";
 
 import { BrandLogoMarquee } from "@/components/product/BrandLogoMarquee";
 import { ProductLogo } from "@/components/product/ProductLogo";
+import { FloatingToolsHero } from "@/components/product/FloatingToolsHero";
 import { SmartProductSearch } from "@/components/product/SmartProductSearch";
 import { ProductCatalog } from "@/components/product/ProductCatalog";
 import { Container } from "@/components/ui/Container";
@@ -15,6 +16,7 @@ export const metadata = {
 };
 
 const featuredProducts = products.filter((product) => product.featured || product.popular).slice(0, 6);
+const floatingProducts = products.slice(0, 10);
 const spotlightProduct = featuredProducts[0];
 const categories = [
   { title: "AI & Automation", subtitle: "ChatGPT, Claude, AI assistants", icon: "✦", href: "/categories?category=ai-tools", count: "AI tools" },
@@ -67,9 +69,6 @@ export default function HomePage() {
       </div>
 
       <section className="relative overflow-hidden bg-[#edf6f0] text-[#17372e]">
-        <div className="absolute inset-0 opacity-[.12] [background-image:radial-gradient(#dce8df_0.7px,transparent_0.7px)] [background-size:18px_18px]" />
-        <div className="absolute -right-32 -top-44 h-[34rem] w-[34rem] rounded-full border border-[#dce8df]" />
-        <div className="absolute -right-16 -top-28 h-[25rem] w-[25rem] rounded-full border border-[#dce8df]" />
         <Container>
           <div className="relative grid min-h-[530px] items-center gap-12 py-14 sm:py-20 lg:grid-cols-[1.04fr_.96fr] lg:py-24">
             <div className="animate-fade-up max-w-2xl">
@@ -102,40 +101,7 @@ export default function HomePage() {
             </div>
 
             <div className="relative mx-auto w-full max-w-[510px] animate-fade-up [animation-delay:160ms]">
-              <div className="absolute -inset-5 rounded-[2rem] bg-[#267253]/10 blur-2xl" />
-              <div className="relative overflow-hidden rounded-[1.65rem] border border-[#dce8df] bg-[#ffffff] p-4 text-[#17372e] shadow-[0_20px_55px_rgba(18,59,50,.10)] sm:p-5">
-                <div className="flex items-center justify-between border-b border-[#dce8df] pb-4">
-                  <div>
-                    <p className="text-[10px] font-extrabold uppercase tracking-[.18em] text-[#64748b]">Popular right now</p>
-                    <h2 className="mt-1 text-lg font-black tracking-tight">Explore customer favourites</h2>
-                  </div>
-                  <span className="rounded-xl bg-[#edf6f0] p-3 text-[#267253]"><Sparkles className="h-5 w-5" /></span>
-                </div>
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  {featuredProducts.slice(0, 4).map((product, index) => (
-                    <Link key={product.slug} href={`/products/${encodeURIComponent(product.slug)}`} className="group relative rounded-xl border border-[#dce8df] bg-white p-3 transition duration-300 hover:-translate-y-1 hover:border-[#267253] hover:shadow-lg">
-                      <div className="flex items-start justify-between gap-2">
-                        <ProductLogo name={product.name} logo={product.logo} priority={index < 2} />
-                        <span className="rounded-full bg-[#edf6f0] px-2 py-1 text-[9px] font-extrabold uppercase tracking-wide text-[#267253]">{product.badge || "Featured"}</span>
-                      </div>
-                      <h3 className="mt-3 line-clamp-1 text-sm font-extrabold">{product.name}</h3>
-                      <p className="mt-1 text-[11px] text-[#64748b]">{product.plans.length > 1 ? `${product.plans.length} plans available` : product.plans[0]?.duration || "Digital access"}</p>
-                      <div className="mt-3 flex items-center justify-between border-t border-[#dce8df] pt-3">
-                        <span className="text-[10px] text-[#64748b]">From</span>
-                        <span className="text-sm font-black text-[#267253]">Rs. {formatPrice(Math.min(...product.plans.map((plan) => plan.price)))}</span>
-                      </div>
-                      <span className="absolute bottom-3 right-3 opacity-0 transition group-hover:translate-x-1 group-hover:opacity-100"><ChevronRight className="h-4 w-4 text-[#267253]" /></span>
-                    </Link>
-                  ))}
-                </div>
-                <Link href="/products" className="mt-4 flex items-center justify-between rounded-xl bg-[#edf6f0] px-4 py-3 text-xs font-extrabold text-[#17372e] transition hover:bg-[#267253]">
-                  View the complete catalogue <ArrowRight className="h-4 w-4 text-[#267253]" />
-                </Link>
-              </div>
-              <div className="absolute -bottom-5 -left-5 hidden items-center gap-3 rounded-xl border border-[#dce8df] bg-white px-4 py-3 text-[#17372e] shadow-xl sm:flex">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#edf6f0] text-[#267253]"><BadgeCheck className="h-5 w-5" /></span>
-                <span><span className="block text-xs font-extrabold">Need help deciding?</span><span className="mt-1 block text-[10px] text-[#64748b]">Talk to our support team</span></span>
-              </div>
+              <FloatingToolsHero products={floatingProducts} />
             </div>
           </div>
         </Container>
@@ -143,18 +109,29 @@ export default function HomePage() {
 
       <section className="relative z-10 -mt-1 border-b border-[#dce8df] bg-white py-5 shadow-[0_8px_24px_rgba(18,59,50,.05)]">
         <Container>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-7">
-            {[
-              ["Catalogue", `${products.length}+`, "Digital products"],
-              ["Pricing", "PKR", "Local currency"],
-              ["Ordering", "WhatsApp", "Human assistance"],
-              ["Selection", "Multi-plan", "Options on selected tools"],
-            ].map(([label, value, caption]) => (
-              <div key={label} className="flex items-center gap-3 border-r border-[#dce8df] last:border-0 sm:pl-2">
-                <span className="hidden h-10 w-10 items-center justify-center rounded-xl bg-[#edf4ec] text-[#267253] sm:flex"><BadgeCheck className="h-5 w-5" /></span>
-                <div><p className="text-[10px] font-bold uppercase tracking-[.13em] text-[#64748b]">{label}</p><p className="mt-0.5 text-lg font-black text-[#17372e] sm:text-xl">{value}</p><p className="text-[10px] text-[#64748b]">{caption}</p></div>
+          <div className="grid grid-cols-2 gap-5 sm:grid-cols-4 sm:gap-7">
+            <div className="flex items-start gap-3 border-r border-[#dce8df] pr-3 sm:pl-2">
+              <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#edf4ec] text-[#267253] sm:flex"><BadgeCheck className="h-5 w-5" /></span>
+              <div><p className="text-xl font-black text-[#17372e] sm:text-2xl">48 Products</p><p className="mt-1 text-xs text-[#64748b]">36 currently in stock</p></div>
+            </div>
+            <div className="flex items-start gap-3 border-r border-[#dce8df] pr-3 sm:pl-2">
+              <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#edf4ec] text-[#267253] sm:flex"><Zap className="h-5 w-5" /></span>
+              <div><p className="text-xl font-black text-[#17372e] sm:text-2xl">442,300</p><p className="mt-1 text-xs text-[#64748b]">Items sold to date</p></div>
+            </div>
+            <div className="flex items-start gap-3 border-r border-[#dce8df] pr-3 sm:pl-2">
+              <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#edf4ec] text-[#267253] sm:flex"><CheckCircle2 className="h-5 w-5" /></span>
+              <div><p className="text-xl font-black text-[#17372e] sm:text-2xl">Instant</p><p className="mt-1 text-xs text-[#64748b]">Delivered the moment you pay</p></div>
+            </div>
+            <div className="flex items-start gap-3 sm:pl-2">
+              <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#edf4ec] text-[#267253] sm:flex"><Headphones className="h-5 w-5" /></span>
+              <div>
+                <p className="text-xl font-black text-[#17372e] sm:text-2xl">Live support</p>
+                <div className="mt-1 flex flex-wrap items-center gap-3 text-xs">
+                  <a href={whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold text-[#267253] hover:underline"><MessageCircle className="h-3.5 w-3.5" /> Chat</a>
+                  <a href="https://t.me/Techboyy0" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold text-[#267253] hover:underline"><Send className="h-3.5 w-3.5" /> Telegram</a>
+                </div>
               </div>
-            ))}
+            </div>
           </div>
         </Container>
       </section>
