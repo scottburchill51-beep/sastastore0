@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type PointerEvent } from "react";
 import Link from "next/link";
 import { ProductLogo } from "@/components/product/ProductLogo";
 import type { Product } from "@/types/product";
@@ -12,7 +12,7 @@ type FloatingToolsHeroProps = {
 export function FloatingToolsHero({ products }: FloatingToolsHeroProps) {
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
 
-  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+  function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
     if (event.pointerType !== "mouse") return;
     const bounds = event.currentTarget.getBoundingClientRect();
     setPointer({
