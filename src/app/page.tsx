@@ -11,8 +11,12 @@ import { products } from "@/data/products";
 import { createWhatsAppUrl } from "@/lib/whatsapp";
 
 export const metadata = {
-  title: "SastaStore | Premium Digital Tools at Sasta Prices",
-  description: "Shop AI tools, creative software, productivity subscriptions and digital services at SastaStore.",
+  title: "AI Tools & Digital Subscriptions in Pakistan | SastaStore",
+  description:
+    "Explore AI tools, design software, productivity apps and digital subscriptions in Pakistan. Compare available plans and contact SastaStore for order support.",
+  alternates: {
+    canonical: "/",
+  },
 };
 
 const featuredProducts = products.filter((product) => product.featured || product.popular).slice(0, 6);
