@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type PointerEvent } from "react";
+import { useState, type PointerEvent, type CSSProperties } from "react";
 import Link from "next/link";
 import { ProductLogo } from "@/components/product/ProductLogo";
 import type { Product } from "@/types/product";
@@ -21,14 +21,15 @@ export function FloatingToolsHero({ products }: FloatingToolsHeroProps) {
     });
   }
 
+  const pointerStyle = { "--pointer-x": pointer.x, "--pointer-y": pointer.y } as CSSProperties;
+
   return (
     <div
-      className="floating-tools-stage relative mx-auto h-[390px] w-full max-w-[510px] sm:h-[450px]"
+      className="floating-tools-stage relative mx-auto h-[320px] w-full max-w-[460px] sm:h-[440px]"
+      style={pointerStyle}
       onPointerMove={handlePointerMove}
       onPointerLeave={() => setPointer({ x: 0, y: 0 })}
     >
-      <div className="floating-tools-orbit floating-tools-orbit-one" />
-      <div className="floating-tools-orbit floating-tools-orbit-two" />
       <div
         className="floating-tools-center"
         style={{ transform: `translate(calc(-50% + ${pointer.x * -3}px), calc(-50% + ${pointer.y * -3}px))` }}
@@ -37,6 +38,7 @@ export function FloatingToolsHero({ products }: FloatingToolsHeroProps) {
         <span className="floating-tools-center-title">Create. Work. Grow.</span>
         <span className="floating-tools-center-copy">Explore tools for every workflow</span>
       </div>
+      <div className="floating-tools-rotating-ring" aria-label="Featured tools orbit">
       {products.slice(0, 10).map((product, index) => {
         const depth = 5 + (index % 4) * 2;
         return (
@@ -44,9 +46,7 @@ export function FloatingToolsHero({ products }: FloatingToolsHeroProps) {
             key={product.slug}
             href={`/products/${encodeURIComponent(product.slug)}`}
             className={`floating-tool-card floating-tool-card-${index + 1}`}
-            style={{
-              transform: `translate3d(${pointer.x * depth}px, ${pointer.y * depth}px, 0)`,
-            }}
+            style={{ "--pointer-depth": depth } as CSSProperties}
             aria-label={`Explore ${product.name}`}
           >
             <span className="floating-tool-card-content">
@@ -56,6 +56,7 @@ export function FloatingToolsHero({ products }: FloatingToolsHeroProps) {
           </Link>
         );
       })}
+      </div>
       <div className="floating-tools-caption">
         <span className="floating-tools-caption-dot" />
         <span>AI · Design · Productivity · More</span>
