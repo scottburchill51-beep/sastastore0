@@ -5,10 +5,11 @@ import { siteConfig } from "@/config/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: [
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: [
         "/admin/",
         "/account/",
         "/checkout/",
@@ -17,9 +18,21 @@ export default function robots(): MetadataRoute.Robots {
         "/register",
         "/forgot-password",
         "/reset-password",
-        "/track/",
-      ],
-    },
+          "/track/",
+        ],
+      },
+      {
+        userAgent: [
+          "OAI-SearchBot",
+          "ChatGPT-User",
+          "GPTBot",
+          "ClaudeBot",
+          "anthropic-ai",
+          "PerplexityBot",
+        ],
+        allow: "/",
+      },
+    ],
 
     sitemap: new URL(
       "/sitemap.xml",
