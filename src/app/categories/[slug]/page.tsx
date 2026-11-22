@@ -38,6 +38,16 @@ export async function generateMetadata({
   return {
     title: category.seo.title,
     description: category.seo.description,
+    alternates: {
+      canonical: `/categories/${category.slug}`,
+    },
+    openGraph: {
+      type: "website",
+      title: category.seo.title,
+      description: category.seo.description,
+      url: `/categories/${category.slug}`,
+      siteName: "SastaStore",
+    },
   };
 }
 
