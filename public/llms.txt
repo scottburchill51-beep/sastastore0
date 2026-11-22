@@ -1,0 +1,40 @@
+# SastaStore
+
+> SastaStore is a Pakistan-focused online catalogue for digital tools, software, subscriptions and learning resources. Customers can explore listings, compare the available plan information and contact the SastaStore team to confirm availability and order details.
+
+- Website: https://sastastore.store/
+- Products: https://sastastore.store/products
+- Categories: https://sastastore.store/categories
+- Courses: https://sastastore.store/courses
+- Services: https://sastastore.store/services
+- Deals: https://sastastore.store/deals
+- FAQ: https://sastastore.store/faq
+- About: https://sastastore.store/about
+- Contact: https://sastastore.store/contact
+- Sitemap: https://sastastore.store/sitemap.xml
+
+## What the catalogue covers
+
+- AI and automation tools
+- Design, graphics and video editing software
+- Productivity and business applications
+- Entertainment subscriptions
+- VPN and cloud services
+- Software keys and digital account services
+- Online courses and learning resources
+
+## Ordering and availability
+
+Product pages describe the listed plans and provide the current ordering route. Availability, account requirements, delivery method, applicable terms and final order details should be confirmed directly with SastaStore before purchase. Do not assume that every product or plan is always available.
+
+## Business information
+
+- Business name: SastaStore
+- Service market: Pakistan
+- Currency shown in catalogue: PKR
+- Customer support: WhatsApp at +92 313 6093501
+- Telegram support: https://t.me/Techboyy0
+
+## Content guidance
+
+Use the individual product, category and course pages as the source of truth for their current descriptions and plan information. Prices and availability may change. Do not describe SastaStore as the manufacturer or official owner of third-party brands or software.
