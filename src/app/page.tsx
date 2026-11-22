@@ -116,7 +116,7 @@ export default function HomePage() {
             </div>
             <div className="flex items-start gap-3 border-r border-[#dce8df] pr-3 sm:pl-2">
               <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#edf4ec] text-[#267253] sm:flex"><Zap className="h-5 w-5" /></span>
-              <div><p className="text-xl font-black text-[#17372e] sm:text-2xl">442,300</p><p className="mt-1 text-xs text-[#64748b]">Items sold to date</p></div>
+              <div><p className="text-xl font-black text-[#17372e] sm:text-2xl">500+</p><p className="mt-1 text-xs text-[#64748b]">Customers</p></div>
             </div>
             <div className="flex items-start gap-3 border-r border-[#dce8df] pr-3 sm:pl-2">
               <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#edf4ec] text-[#267253] sm:flex"><CheckCircle2 className="h-5 w-5" /></span>
