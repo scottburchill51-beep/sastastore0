@@ -4,12 +4,14 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
 import { categories } from "@/data/categories";
 import { products } from "@/data/products";
+import { courses } from "@/data/courses";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
     "",
     "/products",
     "/categories",
+    "/courses",
     "/services",
     "/deals",
     "/faq",
@@ -37,6 +39,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     }));
 
+  const courseRoutes: MetadataRoute.Sitemap =
+    courses.map((course) => ({
+      url: new URL(
+        `/courses/${encodeURIComponent(course.slug)}`,
+        siteConfig.url
+      ).toString(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    }));
+
   const categoryRoutes: MetadataRoute.Sitemap =
     categories.map((category) => ({
       url: new URL(
@@ -49,7 +61,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Prevent duplicate URLs.
   const uniqueRoutes = new Map(
-    [...staticRoutes, ...productRoutes, ...categoryRoutes].map(
+    [...staticRoutes, ...productRoutes, ...courseRoutes, ...categoryRoutes].map(
       (route) => [route.url, route]
     )
   );
