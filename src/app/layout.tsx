@@ -22,6 +22,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
 
+  alternates: {
+    canonical: "/",
+  },
+
   title: "SastaStore | Premium Digital Tools at Sasta Prices",
 
   description:
@@ -74,6 +78,14 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     locale: "en_PK",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "SastaStore - Premium Digital Tools at Sasta Prices",
+      },
+    ],
   },
 
   twitter: {
@@ -81,6 +93,7 @@ export const metadata: Metadata = {
     title: "SastaStore | Premium Digital Tools at Sasta Prices",
     description:
       "Affordable AI tools, subscriptions and digital services in Pakistan.",
+    images: ["/opengraph-image"],
   },
 };
 
