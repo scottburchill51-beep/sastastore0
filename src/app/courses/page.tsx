@@ -12,6 +12,20 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/courses",
   },
+  openGraph: {
+    type: "website",
+    title: "Courses Library | SastaStore",
+    description:
+      "Explore learning topics covering AI, marketing, freelancing, design, web development and productivity.",
+    url: "/courses",
+    siteName: "SastaStore",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Courses Library | SastaStore",
+    description:
+      "Explore learning topics covering AI, marketing, freelancing, design and productivity.",
+  },
 };
 
 const benefits = [
