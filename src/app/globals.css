@@ -368,7 +368,7 @@ body:has(main.bg-\[\#f6f7fb\]) {
 .floating-tool-card-5 { left: 19%; top: 78%; animation-duration: 6.5s; }
 .floating-tool-card-6 { left: 7%; top: 48%; animation-duration: 5.1s; }
 .floating-tool-card-7 { left: 48%; top: 8%; animation-duration: 6.8s; }
-.floating-tool-card-8 { left: 48%; top: calc(8% + var(--floating-card-size) + 48px); animation-duration: 5.6s; }
+.floating-tool-card-8 { left: 48%; top: 86%; animation-duration: 5.6s; }
 .floating-tools-center {
   position: absolute;
   left: 50%;
