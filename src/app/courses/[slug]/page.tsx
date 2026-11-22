@@ -17,7 +17,35 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const course = courses.find((item) => item.slug === slug);
-  return { title: course ? `${course.title} | SastaStore` : "Course not found | SastaStore" };
+  if (!course) {
+    return {
+      title: "Course not found | SastaStore",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const url = `${siteConfig.url}/courses/${course.slug}`;
+  const description = course.description;
+
+  return {
+    title: `${course.title} | SastaStore`,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      url,
+      siteName: siteConfig.name,
+      title: course.title,
+      description,
+      images: [{ url: course.imageUrl, alt: course.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: course.title,
+      description,
+      images: [course.imageUrl],
+    },
+  };
 }
 
 export default async function CourseDetailsPage({ params }: Props) {
