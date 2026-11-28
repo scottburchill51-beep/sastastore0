@@ -97,7 +97,7 @@ export const products: Product[] = [
     "slug": "canva-pro",
     "category": "design-creative",
     "shortDescription": "Canva Pro invite plans for 1 month, 6 months or 1 year.",
-    "description": "Canva Pro access provided through an invite.",
+    "description": "Canva Pro access provided through an invite. Choose 1-month, 6-month or 1-year access.",
     "logo": "/products/canva-pro/logo.webp",
     "coverImage": "/products/canva-pro/cover.webp",
     "plans": [
@@ -119,7 +119,7 @@ export const products: Product[] = [
         "duration": "1 Year",
         "price": 700
       }
-    ],
+    ]
     "features": [
       "Access provided through invite",
       "Choose a 1-month, 6-month or 1-year plan",
