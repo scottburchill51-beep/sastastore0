@@ -8,7 +8,6 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { ProductLogo } from "@/components/product/ProductLogo";
 import { Container } from "@/components/ui/Container";
 import { siteConfig } from "@/config/site";
-import { products as previewProducts } from "@/data/products";
 import { backend, getSession } from "@/lib/store-backend";
 import type { Product } from "@/types/product";
 
@@ -63,10 +62,6 @@ function getDiscount(
 
 const getCurrentProducts = cache(
   async (): Promise<Product[]> => {
-    // Preview deployments use the branch catalogue so changes can be reviewed
-    // without mutating or depending on the production Supabase catalogue.
-    if (process.env.VERCEL_ENV === "preview") return previewProducts;
-
     const response = await backend(
       "/rest/v1/store_products?select=payload&order=created_at.desc",
       { method: "GET" },
