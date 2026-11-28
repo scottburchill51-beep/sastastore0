@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { backend } from "@/lib/store-backend";
 import type { Product } from "@/types/product";
+import { products as previewProducts } from "@/data/products";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -11,6 +12,13 @@ type ProductRow = {
 };
 
 export async function GET() {
+  if (process.env.VERCEL_ENV === "preview") {
+    return NextResponse.json(
+      { products: previewProducts, count: previewProducts.length },
+      { headers: { "Cache-Control": "no-store" } },
+    );
+  }
+
   try {
     // Fetch the actual published product records.
     // No static fallback: failures must be visible.
