@@ -6,6 +6,8 @@ export type ProductPlan = {
   duration?: string;
   price: number;
   originalPrice?: number;
+  warranty?: string;
+  details?: string[];
 };
 
 export type Product = {
