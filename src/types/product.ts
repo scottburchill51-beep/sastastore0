@@ -16,6 +16,9 @@ export type Product = {
 
   shortDescription: string;
   description: string;
+  aboutThisProduct?: string;
+  whatsIncluded?: string[];
+  howItWorks?: string[];
 
   logo: string;
  logoReady?: boolean;
