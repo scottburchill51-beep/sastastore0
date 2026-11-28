@@ -9,6 +9,7 @@ import { ProductLogo } from "@/components/product/ProductLogo";
 import { Container } from "@/components/ui/Container";
 import { siteConfig } from "@/config/site";
 import { backend, getSession } from "@/lib/store-backend";
+import { products as preparedProducts } from "@/data/products";
 import type { Product } from "@/types/product";
 
 type ProductPageProps = {
@@ -84,7 +85,7 @@ const getCurrentProducts = cache(
       throw new Error("Invalid product catalog response");
     }
 
-    return (rows as ProductRow[])
+    const databaseProducts = (rows as ProductRow[])
       .map((row) => row?.payload)
       .filter(
         (product): product is Product =>
@@ -94,6 +95,11 @@ const getCurrentProducts = cache(
           typeof product.name === "string" &&
           Array.isArray(product.plans),
       );
+
+    // Keep detail pages aligned with the catalogue API before first DB import.
+    return databaseProducts.length > 0
+      ? databaseProducts
+      : preparedProducts;
   },
 );
 
