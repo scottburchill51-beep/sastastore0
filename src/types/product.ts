@@ -6,6 +6,8 @@ export type ProductPlan = {
   duration?: string;
   price: number;
   originalPrice?: number;
+  warranty?: string;
+  details?: string[];
 };
 
 export type Product = {
@@ -16,6 +18,9 @@ export type Product = {
 
   shortDescription: string;
   description: string;
+  aboutThisProduct?: string;
+  whatsIncluded?: string[];
+  howItWorks?: string[];
 
   logo: string;
  logoReady?: boolean;

@@ -1,6 +1,6 @@
-
 import { NextResponse } from "next/server";
 import { backend } from "@/lib/store-backend";
+import { products as preparedProducts } from "@/data/products";
 import type { Product } from "@/types/product";
 
 export const dynamic = "force-dynamic";
@@ -12,13 +12,9 @@ type ProductRow = {
 
 export async function GET() {
   try {
-    // Fetch the actual published product records.
-    // No static fallback: failures must be visible.
     const response = await backend(
       "/rest/v1/store_products?select=payload&order=created_at.desc",
-      {
-        method: "GET",
-      },
+      { method: "GET" },
     );
 
     if (!response.ok) {
@@ -27,17 +23,11 @@ export async function GET() {
         response.status,
         await response.text(),
       );
-
       return NextResponse.json(
-        {
-          error:
-            "Products are temporarily unavailable.",
-        },
+        { error: "Products are temporarily unavailable." },
         {
           status: 503,
-          headers: {
-            "Cache-Control": "no-store",
-          },
+          headers: { "Cache-Control": "no-store" },
         },
       );
     }
@@ -48,7 +38,7 @@ export async function GET() {
       throw new Error("Unexpected product response");
     }
 
-    const products = rows
+    const databaseProducts = rows
       .map((row) => row.payload)
       .filter(
         (product): product is Product =>
@@ -59,33 +49,28 @@ export async function GET() {
           Array.isArray(product.plans),
       );
 
+    // Preview displays the prepared catalogue before the first admin import.
+    // Once database records exist, the database remains the source of truth.
+    const products =
+      databaseProducts.length > 0 ? databaseProducts : preparedProducts;
+
     return NextResponse.json(
       {
         products,
         count: products.length,
+        source: databaseProducts.length > 0 ? "database" : "prepared-preview",
       },
       {
-        headers: {
-          "Cache-Control": "no-store",
-        },
+        headers: { "Cache-Control": "no-store" },
       },
     );
   } catch (error) {
-    console.error(
-      "SastaStore products API error:",
-      error,
-    );
-
+    console.error("SastaStore products API error:", error);
     return NextResponse.json(
-      {
-        error:
-          "Unable to load products. Please try again.",
-      },
+      { error: "Unable to load products. Please try again." },
       {
         status: 500,
-        headers: {
-          "Cache-Control": "no-store",
-        },
+        headers: { "Cache-Control": "no-store" },
       },
     );
   }

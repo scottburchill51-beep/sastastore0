@@ -8,6 +8,9 @@ export const products: Product[] = [
     shortDescription: "Premium ElevenLabs credit packages.",
     description:
       "Choose between 100k and 130k ElevenLabs credit packages according to your requirements.",
+    aboutThisProduct: "ElevenLabs voice AI access with credit packages and a 3-month Creator option.",
+    whatsIncluded: ["100k and 130k existing credit options","Creator: 131,000 credits per month","Advanced voice synthesis and custom voice cloning","Creator plan: 3 months and 48-hour warranty"],
+    howItWorks: ["Receive the ready-account login details","Sign in and start using the available voice AI features"],
     logo: "/products/elevenlabs/logo.webp",
     coverImage: "/products/elevenlabs/cover.webp",
     plans: [
@@ -21,6 +24,14 @@ export const products: Product[] = [
         name: "130k Credits",
         price: 2549,
       },
+      {
+        id: "creator-3-months",
+        name: "Creator - 3 Months",
+        duration: "3 Months",
+        price: 2700,
+        warranty: "48 hours",
+        details: ["131,000 monthly credits", "Advanced voice synthesis", "Custom voice cloning", "Ready account delivery"],
+      }
     ],
     features: [
       "Multiple credit options",
@@ -56,12 +67,15 @@ export const products: Product[] = [
         name: "Weekly",
         duration: "1 Week",
         price: 190,
+        warranty: "7 days",
       },
       {
         id: "monthly",
         name: "Monthly",
         duration: "1 Month",
         price: 750,
+        warranty: "25 days",
+        details: ["Individual plan", "650 credits"],
       },
       {
         id: "6-months",
@@ -96,15 +110,30 @@ export const products: Product[] = [
     shortDescription: "Canva Pro yearly access through invite.",
     description:
       "Get Canva Pro access through invite with a yearly plan.",
+    aboutThisProduct: "Canva Pro access provided through an invite.",
+    whatsIncluded: ["1 month, 6 months, or 1 year access","Invite-based activation"],
+    howItWorks: ["Receive the Canva invite","Accept the invite and access Canva Pro"],
     logo: "/products/canva-pro/logo.webp",
     coverImage: "/products/canva-pro/cover.webp",
     plans: [
       {
-        id: "yearly-invite",
-        name: "Yearly Invite",
-        duration: "1 Year",
+        id: "1-month-invite",
+        name: "1 Month Invite",
+        duration: "1 Month",
+        price: 150,
+      },
+      {
+        id: "6-months-invite",
+        name: "6 Months Invite",
+        duration: "6 Months",
         price: 350,
       },
+      {
+        id: "yearly-invite",
+        name: "1 Year Invite",
+        duration: "1 Year",
+        price: 700,
+      }
     ],
     features: [
       "Yearly access",
@@ -132,15 +161,18 @@ export const products: Product[] = [
     shortDescription: "Canva Business monthly premium access.",
     description:
       "Get Canva Business premium access with a monthly plan.",
+    aboutThisProduct: "Canva Business 6-month slot delivered through an invite.",
+    whatsIncluded: ["6-month Canva Business slot","Unlimited stock as described by the seller","No warranty","Coupon or invite-link delivery"],
+    howItWorks: ["Receive the invite or coupon link","Follow the supplied activation instructions"],
     logo: "/products/canva-business/logo.webp",
     coverImage: "/products/canva-business/cover.webp",
     plans: [
       {
-        id: "monthly",
-        name: "Monthly",
-        duration: "1 Month",
-        price: 650,
-      },
+        id: "6-month-slot",
+        name: "6 Month Slot",
+        duration: "6 Months",
+        price: 500,
+      }
     ],
     features: [
       "Business plan",
@@ -232,20 +264,28 @@ export const products: Product[] = [
   shortDescription: "ChatGPT Plus private and shared access options.",
   description:
     "Choose between private monthly ChatGPT Plus access or an affordable shared option.",
-  logo: "/products/chatgpt-plus/logo.png",
+  aboutThisProduct: "Choose shared one-device access or a private ChatGPT Plus account.",
+    whatsIncluded: ["Shared: sign in with your email and request the access code","Private: email, password and 2FA key provided","20-day warranty on both plans"],
+    howItWorks: ["For shared access, sign in with your email and request the code","For private access, use the supplied credentials and 2FA details"],
+    logo: "/products/chatgpt-plus/logo.png",
   coverImage: "/products/chatgpt-plus/cover.webp",
     plans: [
       {
-        id: "private-monthly",
-        name: "Private Monthly",
-        duration: "1 Month",
-        price: 4000,
+        id: "shared-1-device",
+        name: "Shared - 1 Device",
+        duration: "Monthly",
+        price: 999,
+        warranty: "20 days",
+        details: ["Sign in with your email", "Request the seller-provided access code"],
       },
       {
-        id: "shared",
-        name: "Shared",
-        price: 1000,
-      },
+        id: "private",
+        name: "Private Account",
+        duration: "Monthly",
+        price: 3200,
+        warranty: "20 days",
+        details: ["Email and password provided", "2FA key provided"],
+      }
     ],
     features: [
       "Private and shared options",
@@ -281,7 +321,26 @@ export const products: Product[] = [
         name: "Claude Pro",
         price: 5500,
       },
+      {
+        id: "claude-api-100-credit",
+        name: "Claude API - $100 Credit",
+        duration: "30 Days",
+        price: 1500,
+        warranty: "48 hours",
+        details: ["Redeem balance using the supplied instructions", "Create an API key for compatible clients"],
+      },
+      {
+        id: "claude-api-500-credit",
+        name: "Claude API - $500 Credit",
+        duration: "30 Days",
+        price: 2000,
+        warranty: "48 hours",
+        details: ["Redeem balance using the supplied instructions", "Create an API key for compatible clients"],
+      },
     ],
+    aboutThisProduct: "Claude Pro access and Claude API credit options for supported API tools and integrations.",
+    whatsIncluded: ["Claude Pro premium access","API credit options: $100 or $500","30-day validity for API credit plans","API plans include a 48-hour warranty","Compatible with supported API clients such as 9Router, Claude Code, Cursor and custom API integrations"],
+    howItWorks: ["For Claude Pro, receive the account access details","For API credit plans, redeem the supplied balance using the provided instructions","Create and use your own API key in a supported client"],
     features: [
       "Premium Claude access",
       "Digital delivery",
@@ -305,15 +364,36 @@ export const products: Product[] = [
     shortDescription: "Grok paid account with monthly access.",
     description:
       "Get Grok paid account access with a monthly plan.",
+    aboutThisProduct: "Grok and Cursor premium access options, including short-term and extended subscription offers.",
+    whatsIncluded: ["3-day Grok + Cursor offer with 2-day warranty","12-month combined offer covering X, Grok, Cursor, Grok Build and Grok Bot","2-month offer with 2-month warranty and manual delivery within 24 hours"],
+    howItWorks: ["For coupon offers, open the supplied redemption link","Check the offer and renewal terms before confirming activation","For manual delivery, allow up to 24 hours"],
     logo: "/products/grok/logo.webp",
     coverImage: "/products/grok/cover.webp",
     plans: [
       {
-        id: "monthly",
-        name: "Monthly",
-        duration: "1 Month",
-        price: 6000,
+        id: "grok-cursor-3-days",
+        name: "Grok + Cursor Premium - 3 Days",
+        duration: "3 Days",
+        price: 1600,
+        warranty: "2 days",
+        details: ["Use your own account", "Cursor cloud agents, automations, code hosting and AI code reviews"],
       },
+      {
+        id: "grok-premium-12-month-fw",
+        name: "Grok Premium - 12 Months FW",
+        duration: "12 Months",
+        price: 49000,
+        warranty: "12 months",
+        details: ["Official coupon for eligible accounts", "Combined X, Grok, Cursor, Grok Build and Grok Bot benefits", "Review activation and renewal terms"],
+      },
+      {
+        id: "grok-premium-2-month-fw",
+        name: "Grok Premium - 2 Months FW",
+        duration: "2 Months",
+        price: 15000,
+        warranty: "2 months",
+        details: ["Manual delivery within 24 hours"],
+      }
     ],
     features: [
       "Monthly access",
@@ -338,6 +418,9 @@ export const products: Product[] = [
     shortDescription: "Gemini Pro extended 18-month access.",
     description:
       "Get Gemini Pro access with an extended 18-month plan.",
+    aboutThisProduct: "Gemini premium access options with 6-month and 12-month plans, alongside the existing 18-month plan.",
+    whatsIncluded: ["6-month option: redemption link, no card required, 400 GB storage as described","12-month option: 400 GB storage, family sharing up to 5, and 250 Flow credits monthly","12-month activation requires a payment method and India-region activation"],
+    howItWorks: ["For 6 months, open the redemption link, sign in and accept the offer","For 12 months, follow the supplied region and payment setup instructions"],
     logo: "/products/gemini-pro/logo.webp",
     coverImage: "/products/gemini-pro/cover.webp",
     plans: [
@@ -347,6 +430,20 @@ export const products: Product[] = [
         duration: "18 Months",
         price: 650,
       },
+      {
+        id: "gemini-plus-6-months",
+        name: "Gemini Plus - 6 Months",
+        duration: "6 Months",
+        price: 700,
+        details: ["Direct Google redemption link", "No payment card required", "400 GB storage as described in the offer"],
+      },
+      {
+        id: "gemini-plus-12-months",
+        name: "Gemini Plus - 12 Months",
+        duration: "12 Months",
+        price: 900,
+        details: ["400 GB storage", "Family sharing for up to 5", "250 Flow credits monthly", "Activation requires payment method and India-region setup"],
+      }
     ],
     features: [
       "18-month access",
@@ -372,6 +469,9 @@ export const products: Product[] = [
     shortDescription: "Muse AI package with 1 billion tokens.",
     description:
       "Get Muse AI access with a 1 billion token package.",
+    aboutThisProduct: "Ready-made Muse AI account with a token package for AI content generation.",
+    whatsIncluded: ["1 Billion or 5 Billion token option","Email and password provided","Mailbox access included","No card required","Instant access"],
+    howItWorks: ["Receive login credentials","Sign in using a supported US or Canada IP address","Access mailbox if needed"],
     logo: "/products/muse-ai/logo.webp",
     coverImage: "/products/muse-ai/cover.webp",
     plans: [
@@ -380,6 +480,12 @@ export const products: Product[] = [
         name: "1 Billion Tokens",
         price: 1100,
       },
+      {
+        id: "5-billion-tokens",
+        name: "5 Billion Tokens",
+        price: 750,
+        details: ["Ready-made account", "Email and password provided", "Mailbox access included", "No card required", "US or Canada IP required"],
+      }
     ],
     features: [
       "1 billion tokens",
@@ -398,35 +504,46 @@ export const products: Product[] = [
   },
 
   {
-    name: "Lovable Lite",
+    name: "Lovable Pro",
     slug: "lovable-lite",
     category: "productivity-business",
-    shortDescription: "Lovable Lite with 12-month access.",
+    shortDescription: "Lovable Pro with monthly 50-credit and 100-credit options.",
     description:
-      "Get Lovable Lite with a full 12-month subscription.",
+      "Choose a 50-credit or 100-credit monthly Lovable Pro plan for building apps and websites.",
+    aboutThisProduct: "Lovable Pro monthly credit plans for building apps and websites.",
+    whatsIncluded: ["50 or 100 monthly credits depending on the selected plan", "5 bonus daily credits", "Custom domains", "100-credit plan removes the Lovable badge"],
+    howItWorks: ["Receive the account details", "Change the supplied email and password within 30 minutes"],
     logo: "/products/lovable-lite/logo.webp",
     coverImage: "/products/lovable-lite/cover.webp",
     plans: [
       {
-        id: "12-months",
-        name: "12 Months",
-        duration: "12 Months",
-        price: 3000,
+        id: "50-credits",
+        name: "50 Credits",
+        duration: "1 Month",
+        price: 1200,
+        details: ["50 monthly credits", "5 bonus daily credits", "Custom domains", "Build apps and websites", "Change the supplied email and password within 30 minutes"],
+      },
+      {
+        id: "100-credits",
+        name: "100 Credits",
+        duration: "1 Month",
+        price: 1700,
+        details: ["100 monthly credits", "5 bonus daily credits", "Custom domains", "No Lovable badge", "Change the supplied email and password within 30 minutes"],
       },
     ],
     features: [
-      "12-month access",
+      "Monthly credit options",
+      "Custom domains",
       "Digital delivery",
-      "WhatsApp support",
     ],
     availability: "available",
-    deliveryInfo: "Delivery details will be confirmed on WhatsApp.",
+    deliveryInfo: "Change the supplied email and password within 30 minutes of delivery.",
     whatsappMessage:
-      "Hello, I want to order Lovable Lite from SastaStore. Please confirm availability and plan details.",
+      "Hello, I want to order Lovable Pro from SastaStore. Please confirm availability and plan details.",
     seo: {
-      title: "Lovable Lite 12 Months | SastaStore",
+      title: "Lovable Pro Credits | SastaStore",
       description:
-        "Buy Lovable Lite 12-month access from SastaStore.",
+        "Buy Lovable Pro monthly credit plans from SastaStore.",
     },
   },
 
@@ -616,6 +733,7 @@ export const products: Product[] = [
         name: "12 Months",
         duration: "12 Months",
         price: 650,
+        details: ["Ad-free learning", "Unlimited hearts", "Premium stories and offline learning", "Keep the account signed in while redeeming the offer"],
       },
     ],
     features: [
@@ -682,6 +800,7 @@ export const products: Product[] = [
         name: "1 Year",
         duration: "1 Year",
         price: 1500,
+        details: ["12-month organization premium access", "Private access", "No warranty"],
       },
     ],
     features: [
@@ -715,6 +834,8 @@ export const products: Product[] = [
         name: "1 Year",
         duration: "1 Year",
         price: 500,
+        warranty: "48 hours",
+        details: ["Word, Excel, PowerPoint, OneNote and Forms", "Up to 5 Windows PCs"],
       },
     ],
     features: [
@@ -749,6 +870,8 @@ export const products: Product[] = [
         name: "1 Month",
         duration: "1 Month",
         price: 350,
+        warranty: "20 days",
+        details: ["Ad-free YouTube and YouTube Music", "Up to 1 device"],
       },
     ],
     features: [
@@ -775,20 +898,28 @@ export const products: Product[] = [
     shortDescription: "Netflix 4K streaming options.",
     description:
       "Choose between a monthly single-screen option or a full 5-screen Netflix account with 4K quality.",
+    aboutThisProduct: "Netflix streaming access with shared and private account options.",
+    whatsIncluded: ["Shared: seller provides an email; request a viewing code when needed","Private: ready-made account with access for up to 5 screens","25-day warranty on both plans"],
+    howItWorks: ["For shared access, request the sign-in code when prompted","For private access, use the supplied account details"],
     logo: "/products/netflix/logo.webp",
     coverImage: "/products/netflix/cover.webp",
     plans: [
       {
-        id: "single-screen-monthly",
-        name: "Single Screen Monthly",
+        id: "shared",
+        name: "Shared Account",
         duration: "1 Month",
         price: 350,
+        warranty: "25 days",
+        details: ["Seller-provided email", "Request a sign-in code when prompted"],
       },
       {
-        id: "full-account-5-screens",
-        name: "Full Account - 5 Screens",
+        id: "private-5-screens",
+        name: "Private Account - 5 Screens",
+        duration: "1 Month",
         price: 1200,
-      },
+        warranty: "25 days",
+        details: ["Ready-made private account", "Access for up to 5 screens"],
+      }
     ],
     features: [
       "4K quality",
@@ -857,6 +988,8 @@ export const products: Product[] = [
         name: "3 Months",
         duration: "3 Months",
         price: 900,
+        warranty: "10 days",
+        details: ["Ready-made account", "Ad-free listening", "Offline playback and high sound quality"],
       },
     ],
     features: [
@@ -923,6 +1056,8 @@ export const products: Product[] = [
         name: "3 Months",
         duration: "3 Months",
         price: 1500,
+        warranty: "20 days",
+        details: ["Global server access", "Compatible with major devices"],
       },
     ],
     features: [
@@ -956,12 +1091,16 @@ export const products: Product[] = [
         name: "2 Months - Coupon",
         duration: "2 Months",
         price: 900,
+        warranty: "48 hours",
+        details: ["Coupon activation", "Up to 10 devices", "Global servers"],
       },
       {
         id: "2-month-private",
         name: "2 Months - Private Account",
         duration: "2 Months",
         price: 1200,
+        warranty: "48 hours",
+        details: ["Ready account", "Up to 10 devices", "Global servers"],
       },
     ],
     features: [
@@ -980,40 +1119,7 @@ export const products: Product[] = [
     },
   },
 
-  {
-    name: "iCloud 2TB Slot",
-    slug: "icloud-2tb-slot",
-    category: "vpn-cloud",
-    shortDescription: "iCloud 2TB storage slot with monthly access.",
-    description:
-      "Get an iCloud 2TB storage slot with a monthly plan.",
-    logo: "/products/icloud-2tb-slot/logo.webp",
-    coverImage: "/products/icloud-2tb-slot/cover.webp",
-    plans: [
-      {
-        id: "monthly",
-        name: "Monthly",
-        duration: "1 Month",
-        price: 2600,
-      },
-    ],
-    features: [
-      "2TB storage slot",
-      "Monthly access",
-      "Digital delivery",
-    ],
-    availability: "available",
-    deliveryInfo: "Delivery details will be confirmed on WhatsApp.",
-    whatsappMessage:
-      "Hello, I want to order iCloud 2TB Slot from SastaStore. Please confirm availability and plan details.",
-    seo: {
-      title: "iCloud 2TB Slot Pakistan | SastaStore",
-      description:
-        "Buy monthly iCloud 2TB storage slot access from SastaStore.",
-    },
-  },
-
-  {
+{
     name: "TikTok UK / USA Account",
     slug: "tiktok-uk-usa-account",
     category: "accounts-services",
@@ -1027,6 +1133,7 @@ export const products: Product[] = [
         id: "fresh-account",
         name: "Fresh Account",
         price: 1000,
+        details: ["UK or USA account created on demand", "Customer supplies their own email", "Estimated delivery: 10-15 minutes"],
       },
     ],
     features: [
@@ -1078,20 +1185,24 @@ export const products: Product[] = [
   },
 
   {
-    name: "Outlook / Hotmail PVA",
+    name: "Outlook Mail Account",
     slug: "outlook-hotmail-pva",
     category: "accounts-services",
-    shortDescription: "Outlook or Hotmail PVA account.",
+    shortDescription: "Ready-made Outlook mail account with mail-reader access.",
     description:
-      "Outlook / Hotmail PVA digital account available through SastaStore.",
+      "Ready-made Outlook mail account with email credentials and mail-reader access. No warranty is included.",
+    aboutThisProduct: "Ready-made Outlook mail account with mail-reader access.",
+    whatsIncluded: ["Email credentials","Refresh token and client ID","Mail reader access","No warranty"],
+    howItWorks: ["Use the supplied details with the seller-provided mail reader instructions"],
     logo: "/products/outlook-hotmail-pva/logo.webp",
     coverImage: "/products/outlook-hotmail-pva/cover.webp",
     plans: [
       {
-        id: "pva",
-        name: "PVA Account",
-        price: 99,
-      },
+        id: "pva-account",
+        name: "Outlook Mail Account",
+        price: 100,
+        details: ["Email credentials", "Refresh token and client ID", "Mail reader access", "No warranty"],
+      }
     ],
     features: [
       "Outlook / Hotmail",
@@ -1180,14 +1291,18 @@ export const products: Product[] = [
     shortDescription: "TikTok UK SIM for live streaming use.",
     description:
       "TikTok UK SIM intended for live-streaming use.",
+    aboutThisProduct: "Non-active UK SIM intended for streaming use, shipped to the supplied address.",
+    whatsIncluded: ["Streaming-only non-active SIM","Delivery charges included in the price","Estimated delivery: 3-5 days"],
+    howItWorks: ["Provide the delivery address when ordering","Receive the SIM by delivery"],
     logo: "/products/tiktok-uk-sim/logo.webp",
     coverImage: "/products/tiktok-uk-sim/cover.webp",
     plans: [
       {
-        id: "live-streaming",
-        name: "Live Streaming Only",
-        price: 3000,
-      },
+        id: "live-streaming-only",
+        name: "UK SIM - Streaming Only",
+        duration: "Delivery in 3-5 Days",
+        price: 4000,
+      }
     ],
     features: [
       "UK SIM",

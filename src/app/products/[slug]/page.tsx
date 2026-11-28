@@ -380,7 +380,7 @@ export default async function ProductPage({
                   )}
 
                   <p className="mt-5 whitespace-pre-line text-sm leading-8 text-slate-600 sm:text-base">
-                    {product.description}
+                    {product.aboutThisProduct || product.description}
                   </p>
                 </div>
 
@@ -408,35 +408,57 @@ export default async function ProductPage({
                 </div>
               </article>
 
-              {/* Features */}
-              {product.features?.length > 0 && (
+              {/* Product-specific details */}
+              {product.whatsIncluded?.length ? (
                 <section className="mt-7 rounded-3xl border border-blue-100 bg-white p-7 shadow-sm sm:p-9">
                   <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-600">
                     Product Features
                   </p>
-
                   <h2 className="mt-3 text-2xl font-extrabold">
-                    What You Get
+                    What’s Included
                   </h2>
-
                   <ul className="mt-7 space-y-3">
-                    {product.features.map((feature) => (
-                      <li
-                        key={feature}
-                        className="flex items-start gap-3 rounded-xl bg-slate-50 px-4 py-3"
-                      >
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
-                          ✓
-                        </span>
-
-                        <span className="text-sm leading-7 text-slate-600">
-                          {feature}
-                        </span>
+                    {product.whatsIncluded.map((item) => (
+                      <li key={item} className="flex items-start gap-3 rounded-xl bg-slate-50 px-4 py-3">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">✓</span>
+                        <span className="text-sm leading-7 text-slate-600">{item}</span>
                       </li>
                     ))}
                   </ul>
                 </section>
-              )}
+              ) : product.features?.length > 0 ? (
+                <section className="mt-7 rounded-3xl border border-blue-100 bg-white p-7 shadow-sm sm:p-9">
+                  <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-600">
+                    Product Features
+                  </p>
+                  <h2 className="mt-3 text-2xl font-extrabold">What You Get</h2>
+                  <ul className="mt-7 space-y-3">
+                    {product.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-3 rounded-xl bg-slate-50 px-4 py-3">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">✓</span>
+                        <span className="text-sm leading-7 text-slate-600">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ) : null}
+
+              {product.howItWorks?.length ? (
+                <section className="mt-7 rounded-3xl border border-blue-100 bg-white p-7 shadow-sm sm:p-9">
+                  <p className="text-xs font-extrabold uppercase tracking-widest text-blue-600">
+                    Activation Guide
+                  </p>
+                  <h2 className="mt-3 text-2xl font-extrabold">How It Works</h2>
+                  <ol className="mt-7 space-y-3">
+                    {product.howItWorks.map((step, index) => (
+                      <li key={step} className="flex items-start gap-4 rounded-xl bg-slate-50 px-4 py-3">
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-extrabold text-blue-700">{index + 1}</span>
+                        <span className="text-sm leading-7 text-slate-600">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+              ) : null}
 
               <Link
                 href="/products"
@@ -500,6 +522,20 @@ export default async function ProductPage({
                                   {plan.duration}
                                 </p>
                               )}
+
+                              {plan.warranty && (
+                                <p className="mt-2 text-xs font-semibold text-emerald-700">
+                                  Warranty: {plan.warranty}
+                                </p>
+                              )}
+
+                              {plan.details?.length ? (
+                                <ul className="mt-3 space-y-1 text-xs leading-5 text-slate-600">
+                                  {plan.details.map((detail) => (
+                                    <li key={detail}>• {detail}</li>
+                                  ))}
+                                </ul>
+                              ) : null}
 
                               {discount && (
                                 <span className="mt-3 inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-extrabold text-emerald-700">

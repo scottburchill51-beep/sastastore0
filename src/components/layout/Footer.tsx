@@ -76,6 +76,7 @@ export function Footer() {
               <a href={facebookUrl} target="_blank" rel="noreferrer" aria-label="Facebook" title="Facebook" className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#b8cfbf] bg-white text-[#1f5e43] shadow-sm transition hover:-translate-y-0.5 hover:border-[#267253] hover:bg-[#267253] hover:text-white"><Globe className="h-5 w-5" /></a>
             </div>
             <p className="mt-5 text-xs text-[#405747]">WhatsApp: <a className="font-bold text-[#267253] hover:text-[#1f5e43]" href={whatsappUrl} target="_blank" rel="noreferrer">{siteConfig.whatsapp.display}</a></p>
+            <p className="mt-2 text-xs text-[#405747]">Email: <a className="font-bold text-[#267253] hover:text-[#1f5e43]" href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a></p>
           </div>
           <FooterColumn title="Explore" links={shopLinks} />
           <FooterColumn title="Customer Care" links={helpLinks} />

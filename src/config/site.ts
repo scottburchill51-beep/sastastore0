@@ -4,10 +4,11 @@ export const siteConfig = {
   description:
     "Digital tools, AI tools, apps and premium subscriptions at affordable prices in Pakistan.",
   url: "https://sastastore.store",
+  email: "scottburchill51@gmail.com",
 
   whatsapp: {
-    number: "923136093501",
-    display: "+92 313 6093501",
+    number: "923364208037",
+    display: "+92 336 4208037",
   },
 
   navigation: [
