@@ -509,7 +509,10 @@ export const products: Product[] = [
     category: "productivity-business",
     shortDescription: "Lovable Pro with monthly 50-credit and 100-credit options.",
     description:
-      "Choose a 50-credit or 100-credit monthly Lovable Pro plan for building apps and websites."
+      "Choose a 50-credit or 100-credit monthly Lovable Pro plan for building apps and websites.",
+    aboutThisProduct: "Lovable Pro monthly credit plans for building apps and websites.",
+    whatsIncluded: ["50 or 100 monthly credits depending on the selected plan", "5 bonus daily credits", "Custom domains", "100-credit plan removes the Lovable badge"],
+    howItWorks: ["Receive the account details", "Change the supplied email and password within 30 minutes"],
     logo: "/products/lovable-lite/logo.webp",
     coverImage: "/products/lovable-lite/cover.webp",
     plans: [
@@ -529,14 +532,14 @@ export const products: Product[] = [
       },
     ],
     features: [
-      "12-month access",
+      "Monthly credit options",
+      "Custom domains",
       "Digital delivery",
-      "WhatsApp support",
     ],
     availability: "available",
-    deliveryInfo: "Delivery details will be confirmed on WhatsApp.",
+    deliveryInfo: "Change the supplied email and password within 30 minutes of delivery.",
     whatsappMessage:
-      "Hello, I want to order Lovable Lite from SastaStore. Please confirm availability and plan details.",
+      "Hello, I want to order Lovable Pro from SastaStore. Please confirm availability and plan details.",
     seo: {
       title: "Lovable Pro Credits | SastaStore",
       description:
