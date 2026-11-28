@@ -523,6 +523,20 @@ export default async function ProductPage({
                                 </p>
                               )}
 
+                              {plan.warranty && (
+                                <p className="mt-2 text-xs font-semibold text-emerald-700">
+                                  Warranty: {plan.warranty}
+                                </p>
+                              )}
+
+                              {plan.details?.length ? (
+                                <ul className="mt-3 space-y-1 text-xs leading-5 text-slate-600">
+                                  {plan.details.map((detail) => (
+                                    <li key={detail}>• {detail}</li>
+                                  ))}
+                                </ul>
+                              ) : null}
+
                               {discount && (
                                 <span className="mt-3 inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-extrabold text-emerald-700">
                                   {discount.percent}% OFF
