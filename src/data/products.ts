@@ -1189,7 +1189,7 @@ export const products: Product[] = [
     category: "accounts-services",
     shortDescription: "Ready-made Outlook mail account with mail-reader access.",
     description:
-      "Ready-made Outlook mail account with email credentials and mail-reader access. No warranty is included.";
+      "Ready-made Outlook mail account with email credentials and mail-reader access. No warranty is included.",
     aboutThisProduct: "Ready-made Outlook mail account with mail-reader access.",
     whatsIncluded: ["Email credentials","Refresh token and client ID","Mail reader access","No warranty"],
     howItWorks: ["Use the supplied details with the seller-provided mail reader instructions"],
