@@ -29,6 +29,8 @@ export const products: Product[] = [
         name: "Creator - 3 Months",
         duration: "3 Months",
         price: 2700,
+        warranty: "48 hours",
+        details: ["131,000 monthly credits", "Advanced voice synthesis", "Custom voice cloning", "Ready account delivery"],
       }
     ],
     features: [
@@ -65,12 +67,15 @@ export const products: Product[] = [
         name: "Weekly",
         duration: "1 Week",
         price: 190,
+        warranty: "7 days",
       },
       {
         id: "monthly",
         name: "Monthly",
         duration: "1 Month",
         price: 750,
+        warranty: "25 days",
+        details: ["Individual plan", "650 credits"],
       },
       {
         id: "6-months",
@@ -270,12 +275,16 @@ export const products: Product[] = [
         name: "Shared - 1 Device",
         duration: "Monthly",
         price: 999,
+        warranty: "20 days",
+        details: ["Sign in with your email", "Request the seller-provided access code"],
       },
       {
         id: "private",
         name: "Private Account",
         duration: "Monthly",
         price: 3200,
+        warranty: "20 days",
+        details: ["Email and password provided", "2FA key provided"],
       }
     ],
     features: [
@@ -317,12 +326,16 @@ export const products: Product[] = [
         name: "Claude API - $100 Credit",
         duration: "30 Days",
         price: 1500,
+        warranty: "48 hours",
+        details: ["Redeem balance using the supplied instructions", "Create an API key for compatible clients"],
       },
       {
         id: "claude-api-500-credit",
         name: "Claude API - $500 Credit",
         duration: "30 Days",
         price: 2000,
+        warranty: "48 hours",
+        details: ["Redeem balance using the supplied instructions", "Create an API key for compatible clients"],
       },
     ],
     aboutThisProduct: "Claude Pro access and Claude API credit options for supported API tools and integrations.",
@@ -362,18 +375,24 @@ export const products: Product[] = [
         name: "Grok + Cursor Premium - 3 Days",
         duration: "3 Days",
         price: 1600,
+        warranty: "2 days",
+        details: ["Use your own account", "Cursor cloud agents, automations, code hosting and AI code reviews"],
       },
       {
         id: "grok-premium-12-month-fw",
         name: "Grok Premium - 12 Months FW",
         duration: "12 Months",
         price: 49000,
+        warranty: "12 months",
+        details: ["Official coupon for eligible accounts", "Combined X, Grok, Cursor, Grok Build and Grok Bot benefits", "Review activation and renewal terms"],
       },
       {
         id: "grok-premium-2-month-fw",
         name: "Grok Premium - 2 Months FW",
         duration: "2 Months",
         price: 15000,
+        warranty: "2 months",
+        details: ["Manual delivery within 24 hours"],
       }
     ],
     features: [
@@ -870,12 +889,16 @@ export const products: Product[] = [
         name: "Shared Account",
         duration: "1 Month",
         price: 350,
+        warranty: "25 days",
+        details: ["Seller-provided email", "Request a sign-in code when prompted"],
       },
       {
         id: "private-5-screens",
         name: "Private Account - 5 Screens",
         duration: "1 Month",
         price: 1200,
+        warranty: "25 days",
+        details: ["Ready-made private account", "Access for up to 5 screens"],
       }
     ],
     features: [
@@ -1082,6 +1105,7 @@ export const products: Product[] = [
         id: "fresh-account",
         name: "Fresh Account",
         price: 1000,
+        details: ["UK or USA account created on demand", "Customer supplies their own email", "Estimated delivery: 10-15 minutes"],
       },
     ],
     features: [
@@ -1149,6 +1173,7 @@ export const products: Product[] = [
         id: "pva-account",
         name: "Outlook Mail Account",
         price: 100,
+        details: ["Email credentials", "Refresh token and client ID", "Mail reader access", "No warranty"],
       }
     ],
     features: [
