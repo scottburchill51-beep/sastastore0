@@ -8,6 +8,9 @@ export const products: Product[] = [
     shortDescription: "Premium ElevenLabs credit packages.",
     description:
       "Choose between 100k and 130k ElevenLabs credit packages according to your requirements.",
+    aboutThisProduct: "ElevenLabs voice AI access with credit packages and a 3-month Creator option.",
+    whatsIncluded: ["100k and 130k existing credit options","Creator: 131,000 credits per month","Advanced voice synthesis and custom voice cloning","Creator plan: 3 months and 48-hour warranty"],
+    howItWorks: ["Receive the ready-account login details","Sign in and start using the available voice AI features"],
     logo: "/products/elevenlabs/logo.webp",
     coverImage: "/products/elevenlabs/cover.webp",
     plans: [
@@ -21,6 +24,12 @@ export const products: Product[] = [
         name: "130k Credits",
         price: 2549,
       },
+      {
+        id: "creator-3-months",
+        name: "Creator - 3 Months",
+        duration: "3 Months",
+        price: 2700,
+      }
     ],
     features: [
       "Multiple credit options",
@@ -96,15 +105,30 @@ export const products: Product[] = [
     shortDescription: "Canva Pro yearly access through invite.",
     description:
       "Get Canva Pro access through invite with a yearly plan.",
+    aboutThisProduct: "Canva Pro access provided through an invite.",
+    whatsIncluded: ["1 month, 6 months, or 1 year access","Invite-based activation"],
+    howItWorks: ["Receive the Canva invite","Accept the invite and access Canva Pro"],
     logo: "/products/canva-pro/logo.webp",
     coverImage: "/products/canva-pro/cover.webp",
     plans: [
       {
-        id: "yearly-invite",
-        name: "Yearly Invite",
-        duration: "1 Year",
+        id: "1-month-invite",
+        name: "1 Month Invite",
+        duration: "1 Month",
+        price: 150,
+      },
+      {
+        id: "6-months-invite",
+        name: "6 Months Invite",
+        duration: "6 Months",
         price: 350,
       },
+      {
+        id: "yearly-invite",
+        name: "1 Year Invite",
+        duration: "1 Year",
+        price: 700,
+      }
     ],
     features: [
       "Yearly access",
@@ -132,15 +156,18 @@ export const products: Product[] = [
     shortDescription: "Canva Business monthly premium access.",
     description:
       "Get Canva Business premium access with a monthly plan.",
+    aboutThisProduct: "Canva Business 6-month slot delivered through an invite.",
+    whatsIncluded: ["6-month Canva Business slot","Unlimited stock as described by the seller","No warranty","Coupon or invite-link delivery"],
+    howItWorks: ["Receive the invite or coupon link","Follow the supplied activation instructions"],
     logo: "/products/canva-business/logo.webp",
     coverImage: "/products/canva-business/cover.webp",
     plans: [
       {
-        id: "monthly",
-        name: "Monthly",
-        duration: "1 Month",
-        price: 650,
-      },
+        id: "6-month-slot",
+        name: "6 Month Slot",
+        duration: "6 Months",
+        price: 500,
+      }
     ],
     features: [
       "Business plan",
@@ -232,20 +259,24 @@ export const products: Product[] = [
   shortDescription: "ChatGPT Plus private and shared access options.",
   description:
     "Choose between private monthly ChatGPT Plus access or an affordable shared option.",
-  logo: "/products/chatgpt-plus/logo.png",
+  aboutThisProduct: "Choose shared one-device access or a private ChatGPT Plus account.",
+    whatsIncluded: ["Shared: sign in with your email and request the access code","Private: email, password and 2FA key provided","20-day warranty on both plans"],
+    howItWorks: ["For shared access, sign in with your email and request the code","For private access, use the supplied credentials and 2FA details"],
+    logo: "/products/chatgpt-plus/logo.png",
   coverImage: "/products/chatgpt-plus/cover.webp",
     plans: [
       {
-        id: "private-monthly",
-        name: "Private Monthly",
-        duration: "1 Month",
-        price: 4000,
+        id: "shared-1-device",
+        name: "Shared - 1 Device",
+        duration: "Monthly",
+        price: 999,
       },
       {
-        id: "shared",
-        name: "Shared",
-        price: 1000,
-      },
+        id: "private",
+        name: "Private Account",
+        duration: "Monthly",
+        price: 3200,
+      }
     ],
     features: [
       "Private and shared options",
@@ -305,15 +336,30 @@ export const products: Product[] = [
     shortDescription: "Grok paid account with monthly access.",
     description:
       "Get Grok paid account access with a monthly plan.",
+    aboutThisProduct: "Grok and Cursor premium access options, including short-term and extended subscription offers.",
+    whatsIncluded: ["3-day Grok + Cursor offer with 2-day warranty","12-month combined offer covering X, Grok, Cursor, Grok Build and Grok Bot","2-month offer with 2-month warranty and manual delivery within 24 hours"],
+    howItWorks: ["For coupon offers, open the supplied redemption link","Check the offer and renewal terms before confirming activation","For manual delivery, allow up to 24 hours"],
     logo: "/products/grok/logo.webp",
     coverImage: "/products/grok/cover.webp",
     plans: [
       {
-        id: "monthly",
-        name: "Monthly",
-        duration: "1 Month",
-        price: 6000,
+        id: "grok-cursor-3-days",
+        name: "Grok + Cursor Premium - 3 Days",
+        duration: "3 Days",
+        price: 1600,
       },
+      {
+        id: "grok-premium-12-month-fw",
+        name: "Grok Premium - 12 Months FW",
+        duration: "12 Months",
+        price: 49000,
+      },
+      {
+        id: "grok-premium-2-month-fw",
+        name: "Grok Premium - 2 Months FW",
+        duration: "2 Months",
+        price: 15000,
+      }
     ],
     features: [
       "Monthly access",
@@ -338,6 +384,9 @@ export const products: Product[] = [
     shortDescription: "Gemini Pro extended 18-month access.",
     description:
       "Get Gemini Pro access with an extended 18-month plan.",
+    aboutThisProduct: "Gemini premium access options with 6-month and 12-month plans, alongside the existing 18-month plan.",
+    whatsIncluded: ["6-month option: redemption link, no card required, 400 GB storage as described","12-month option: 400 GB storage, family sharing up to 5, and 250 Flow credits monthly","12-month activation requires a payment method and India-region activation"],
+    howItWorks: ["For 6 months, open the redemption link, sign in and accept the offer","For 12 months, follow the supplied region and payment setup instructions"],
     logo: "/products/gemini-pro/logo.webp",
     coverImage: "/products/gemini-pro/cover.webp",
     plans: [
@@ -347,6 +396,18 @@ export const products: Product[] = [
         duration: "18 Months",
         price: 650,
       },
+      {
+        id: "gemini-plus-6-months",
+        name: "Gemini Plus - 6 Months",
+        duration: "6 Months",
+        price: 700,
+      },
+      {
+        id: "gemini-plus-12-months",
+        name: "Gemini Plus - 12 Months",
+        duration: "12 Months",
+        price: 900,
+      }
     ],
     features: [
       "18-month access",
@@ -372,6 +433,9 @@ export const products: Product[] = [
     shortDescription: "Muse AI package with 1 billion tokens.",
     description:
       "Get Muse AI access with a 1 billion token package.",
+    aboutThisProduct: "Ready-made Muse AI account with a token package for AI content generation.",
+    whatsIncluded: ["1 Billion or 5 Billion token option","Email and password provided","Mailbox access included","No card required","Instant access"],
+    howItWorks: ["Receive login credentials","Sign in using a supported US or Canada IP address","Access mailbox if needed"],
     logo: "/products/muse-ai/logo.webp",
     coverImage: "/products/muse-ai/cover.webp",
     plans: [
@@ -380,6 +444,11 @@ export const products: Product[] = [
         name: "1 Billion Tokens",
         price: 1100,
       },
+      {
+        id: "5-billion-tokens",
+        name: "5 Billion Tokens",
+        price: 700,
+      }
     ],
     features: [
       "1 billion tokens",
@@ -775,20 +844,24 @@ export const products: Product[] = [
     shortDescription: "Netflix 4K streaming options.",
     description:
       "Choose between a monthly single-screen option or a full 5-screen Netflix account with 4K quality.",
+    aboutThisProduct: "Netflix streaming access with shared and private account options.",
+    whatsIncluded: ["Shared: seller provides an email; request a viewing code when needed","Private: ready-made account with access for up to 5 screens","25-day warranty on both plans"],
+    howItWorks: ["For shared access, request the sign-in code when prompted","For private access, use the supplied account details"],
     logo: "/products/netflix/logo.webp",
     coverImage: "/products/netflix/cover.webp",
     plans: [
       {
-        id: "single-screen-monthly",
-        name: "Single Screen Monthly",
+        id: "shared",
+        name: "Shared Account",
         duration: "1 Month",
         price: 350,
       },
       {
-        id: "full-account-5-screens",
-        name: "Full Account - 5 Screens",
+        id: "private-5-screens",
+        name: "Private Account - 5 Screens",
+        duration: "1 Month",
         price: 1200,
-      },
+      }
     ],
     features: [
       "4K quality",
@@ -1084,14 +1157,17 @@ export const products: Product[] = [
     shortDescription: "Outlook or Hotmail PVA account.",
     description:
       "Outlook / Hotmail PVA digital account available through SastaStore.",
+    aboutThisProduct: "Ready-made Outlook mail account with mail-reader access.",
+    whatsIncluded: ["Email credentials","Refresh token and client ID","Mail reader access","No warranty"],
+    howItWorks: ["Use the supplied details with the seller-provided mail reader instructions"],
     logo: "/products/outlook-hotmail-pva/logo.webp",
     coverImage: "/products/outlook-hotmail-pva/cover.webp",
     plans: [
       {
-        id: "pva",
-        name: "PVA Account",
-        price: 99,
-      },
+        id: "pva-account",
+        name: "Outlook Mail Account",
+        price: 100,
+      }
     ],
     features: [
       "Outlook / Hotmail",
@@ -1180,14 +1256,18 @@ export const products: Product[] = [
     shortDescription: "TikTok UK SIM for live streaming use.",
     description:
       "TikTok UK SIM intended for live-streaming use.",
+    aboutThisProduct: "Non-active UK SIM intended for streaming use, shipped to the supplied address.",
+    whatsIncluded: ["Streaming-only non-active SIM","Delivery charges included in the price","Estimated delivery: 3-5 days"],
+    howItWorks: ["Provide the delivery address when ordering","Receive the SIM by delivery"],
     logo: "/products/tiktok-uk-sim/logo.webp",
     coverImage: "/products/tiktok-uk-sim/cover.webp",
     plans: [
       {
-        id: "live-streaming",
-        name: "Live Streaming Only",
-        price: 3000,
-      },
+        id: "live-streaming-only",
+        name: "UK SIM - Streaming Only",
+        duration: "Delivery in 3-5 Days",
+        price: 4000,
+      }
     ],
     features: [
       "UK SIM",
