@@ -504,20 +504,28 @@ export const products: Product[] = [
   },
 
   {
-    name: "Lovable Lite",
+    name: "Lovable Pro",
     slug: "lovable-lite",
     category: "productivity-business",
-    shortDescription: "Lovable Lite with 12-month access.",
+    shortDescription: "Lovable Pro with monthly 50-credit and 100-credit options.",
     description:
-      "Get Lovable Lite with a full 12-month subscription.",
+      "Choose a 50-credit or 100-credit monthly Lovable Pro plan for building apps and websites."
     logo: "/products/lovable-lite/logo.webp",
     coverImage: "/products/lovable-lite/cover.webp",
     plans: [
       {
-        id: "12-months",
-        name: "12 Months",
-        duration: "12 Months",
-        price: 3000,
+        id: "50-credits",
+        name: "50 Credits",
+        duration: "1 Month",
+        price: 1200,
+        details: ["50 monthly credits", "5 bonus daily credits", "Custom domains", "Build apps and websites", "Change the supplied email and password within 30 minutes"],
+      },
+      {
+        id: "100-credits",
+        name: "100 Credits",
+        duration: "1 Month",
+        price: 1700,
+        details: ["100 monthly credits", "5 bonus daily credits", "Custom domains", "No Lovable badge", "Change the supplied email and password within 30 minutes"],
       },
     ],
     features: [
@@ -530,9 +538,9 @@ export const products: Product[] = [
     whatsappMessage:
       "Hello, I want to order Lovable Lite from SastaStore. Please confirm availability and plan details.",
     seo: {
-      title: "Lovable Lite 12 Months | SastaStore",
+      title: "Lovable Pro Credits | SastaStore",
       description:
-        "Buy Lovable Lite 12-month access from SastaStore.",
+        "Buy Lovable Pro monthly credit plans from SastaStore.",
     },
   },
 
@@ -1176,12 +1184,12 @@ export const products: Product[] = [
   },
 
   {
-    name: "Outlook / Hotmail PVA",
+    name: "Outlook Mail Account",
     slug: "outlook-hotmail-pva",
     category: "accounts-services",
-    shortDescription: "Outlook or Hotmail PVA account.",
+    shortDescription: "Ready-made Outlook mail account with mail-reader access.",
     description:
-      "Outlook / Hotmail PVA digital account available through SastaStore.",
+      "Ready-made Outlook mail account with email credentials and mail-reader access. No warranty is included.";
     aboutThisProduct: "Ready-made Outlook mail account with mail-reader access.",
     whatsIncluded: ["Email credentials","Refresh token and client ID","Mail reader access","No warranty"],
     howItWorks: ["Use the supplied details with the seller-provided mail reader instructions"],
