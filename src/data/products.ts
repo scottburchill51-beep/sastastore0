@@ -722,6 +722,7 @@ export const products: Product[] = [
         name: "12 Months",
         duration: "12 Months",
         price: 650,
+        details: ["Ad-free learning", "Unlimited hearts", "Premium stories and offline learning", "Keep the account signed in while redeeming the offer"],
       },
     ],
     features: [
@@ -788,6 +789,7 @@ export const products: Product[] = [
         name: "1 Year",
         duration: "1 Year",
         price: 1500,
+        details: ["12-month organization premium access", "Private access", "No warranty"],
       },
     ],
     features: [
@@ -821,6 +823,8 @@ export const products: Product[] = [
         name: "1 Year",
         duration: "1 Year",
         price: 500,
+        warranty: "48 hours",
+        details: ["Word, Excel, PowerPoint, OneNote and Forms", "Up to 5 Windows PCs"],
       },
     ],
     features: [
@@ -855,6 +859,8 @@ export const products: Product[] = [
         name: "1 Month",
         duration: "1 Month",
         price: 350,
+        warranty: "20 days",
+        details: ["Private ready-made account", "OTP support"],
         warranty: "20 days",
         details: ["Ad-free YouTube and YouTube Music", "Up to 1 device"],
       },
@@ -1076,12 +1082,16 @@ export const products: Product[] = [
         name: "2 Months - Coupon",
         duration: "2 Months",
         price: 900,
+        warranty: "48 hours",
+        details: ["Coupon activation", "Up to 10 devices", "Global servers"],
       },
       {
         id: "2-month-private",
         name: "2 Months - Private Account",
         duration: "2 Months",
         price: 1200,
+        warranty: "48 hours",
+        details: ["Ready account", "Up to 10 devices", "Global servers"],
       },
     ],
     features: [
