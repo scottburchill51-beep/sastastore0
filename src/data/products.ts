@@ -871,8 +871,6 @@ export const products: Product[] = [
         duration: "1 Month",
         price: 350,
         warranty: "20 days",
-        details: ["Private ready-made account", "OTP support"],
-        warranty: "20 days",
         details: ["Ad-free YouTube and YouTube Music", "Up to 1 device"],
       },
     ],
