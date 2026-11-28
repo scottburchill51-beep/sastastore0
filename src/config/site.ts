@@ -6,8 +6,8 @@ export const siteConfig = {
   url: "https://sastastore.store",
 
   whatsapp: {
-    number: "923136093501",
-    display: "+92 313 6093501",
+    number: "923364208037",
+    display: "+92 336 4208037",
   },
 
   navigation: [
