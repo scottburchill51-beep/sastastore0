@@ -299,10 +299,7 @@ export const products: Product[] = [
       description:
         "Buy Claude Pro premium AI access from SastaStore.",
     },
-  },
-
-,
-
+  }
   {
     name: "Gemini Pro",
     slug: "gemini-pro",
@@ -372,10 +369,7 @@ export const products: Product[] = [
       "title": "Muse AI in Pakistan | SastaStore",
       "description": "Explore Muse AI plans and digital delivery from SastaStore."
     }
-  },
-
-,
-
+  }
   {
     name: "Notion",
     slug: "notion",
@@ -897,10 +891,7 @@ export const products: Product[] = [
       "title": "Surfshark VPN in Pakistan | SastaStore",
       "description": "Explore Surfshark VPN plans and digital delivery from SastaStore."
     }
-  },
-
-,
-
+  }
   {
     "name": "TikTok UK / USA Account",
     "slug": "tiktok-uk-usa-account",
