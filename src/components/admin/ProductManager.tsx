@@ -42,6 +42,9 @@ export function ProductManager() {
   const [form, setForm] = useState<Product>({ ...blank });
   const [plans, setPlans] = useState("[]");
   const [features, setFeatures] = useState("");
+  const [aboutThisProduct, setAboutThisProduct] = useState("");
+  const [whatsIncluded, setWhatsIncluded] = useState("");
+  const [howItWorks, setHowItWorks] = useState("");
   const [message, setMessage] = useState("");
   const [uploading, setUploading] = useState<
     "logo" | "coverImage" | null
@@ -80,6 +83,9 @@ export function ProductManager() {
     });
     setPlans(JSON.stringify(product.plans, null, 2));
     setFeatures(product.features.join("\n"));
+    setAboutThisProduct(product.aboutThisProduct || "");
+    setWhatsIncluded((product.whatsIncluded || []).join("\n"));
+    setHowItWorks((product.howItWorks || []).join("\n"));
     setMessage("");
   }
 
@@ -160,6 +166,9 @@ export function ProductManager() {
         .split("\n")
         .map((value) => value.trim())
         .filter(Boolean),
+      aboutThisProduct: aboutThisProduct.trim(),
+      whatsIncluded: whatsIncluded.split("\n").map((value) => value.trim()).filter(Boolean),
+      howItWorks: howItWorks.split("\n").map((value) => value.trim()).filter(Boolean),
     };
 
     setSaving(true);
@@ -379,6 +388,21 @@ export function ProductManager() {
         {field("category", "Category slug")}
         {field("shortDescription", "Short description")}
         {field("description", "Full description")}
+
+        <label className="my-4 block text-sm font-medium text-slate-700">
+          About this product
+          <textarea rows={5} value={aboutThisProduct} onChange={(event) => setAboutThisProduct(event.target.value)} className="mt-2 block w-full rounded-xl border border-slate-200 bg-white p-3" placeholder="Write the full product-specific explanation..." />
+        </label>
+
+        <label className="my-4 block text-sm font-medium text-slate-700">
+          What's included (one item per line)
+          <textarea rows={5} value={whatsIncluded} onChange={(event) => setWhatsIncluded(event.target.value)} className="mt-2 block w-full rounded-xl border border-slate-200 bg-white p-3" placeholder="Plan features, access, validity, warranty..." />
+        </label>
+
+        <label className="my-4 block text-sm font-medium text-slate-700">
+          How it works (one step per line)
+          <textarea rows={5} value={howItWorks} onChange={(event) => setHowItWorks(event.target.value)} className="mt-2 block w-full rounded-xl border border-slate-200 bg-white p-3" placeholder="Step 1...\nStep 2..." />
+        </label>
 
         {imageField("logo", "Product Logo")}
         {imageField("coverImage", "Product Cover Image")}
