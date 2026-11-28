@@ -351,7 +351,7 @@ export const products: Product[] = [
       {
         "id": "5-billion-tokens",
         "name": "5 Billion Tokens",
-        "price": 0
+        "price": 750
       }
     ],
     "features": [
@@ -712,7 +712,7 @@ export const products: Product[] = [
       {
         "id": "private-5-screens",
         "name": "Private Account - 5 Screens",
-        "price": 0
+        "price": 1200
       }
     ],
     "features": [
@@ -904,7 +904,7 @@ export const products: Product[] = [
       {
         "id": "on-demand",
         "name": "Created on Demand",
-        "price": 0
+        "price": 1000
       }
     ],
     "features": [
@@ -1086,7 +1086,7 @@ export const products: Product[] = [
         "id": "1-month",
         "name": "1 Month",
         "duration": "1 Month",
-        "price": 0
+        "price": 750
       }
     ],
     "features": [
@@ -1117,7 +1117,7 @@ export const products: Product[] = [
         "id": "12-months",
         "name": "12 Months",
         "duration": "12 Months",
-        "price": 0
+        "price": 8000
       }
     ],
     "features": [
@@ -1147,7 +1147,7 @@ export const products: Product[] = [
       {
         "id": "lifetime-100-invites",
         "name": "Lifetime Panel - 100 Invites",
-        "price": 0
+        "price": 3500
       }
     ],
     "features": [
@@ -1178,7 +1178,7 @@ export const products: Product[] = [
         "id": "2-months",
         "name": "2 Months",
         "duration": "2 Months",
-        "price": 0
+        "price": 800
       }
     ],
     "features": [
@@ -1248,7 +1248,7 @@ export const products: Product[] = [
       {
         "id": "account",
         "name": "Mail Account",
-        "price": 0
+        "price": 100
       }
     ],
     "features": [
@@ -1405,13 +1405,13 @@ export const products: Product[] = [
         "id": "6-months",
         "name": "6 Months",
         "duration": "6 Months",
-        "price": 0
+        "price": 700
       },
       {
         "id": "12-months",
         "name": "12 Months",
         "duration": "12 Months",
-        "price": 0
+        "price": 900
       }
     ],
     "features": [
