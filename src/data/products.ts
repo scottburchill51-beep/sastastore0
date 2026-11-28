@@ -312,7 +312,22 @@ export const products: Product[] = [
         name: "Claude Pro",
         price: 5500,
       },
+      {
+        id: "claude-api-100-credit",
+        name: "Claude API - $100 Credit",
+        duration: "30 Days",
+        price: 1500,
+      },
+      {
+        id: "claude-api-500-credit",
+        name: "Claude API - $500 Credit",
+        duration: "30 Days",
+        price: 2000,
+      },
     ],
+    aboutThisProduct: "Claude Pro access and Claude API credit options for supported API tools and integrations.",
+    whatsIncluded: ["Claude Pro premium access","API credit options: $100 or $500","30-day validity for API credit plans","API plans include a 48-hour warranty","Compatible with supported API clients such as 9Router, Claude Code, Cursor and custom API integrations"],
+    howItWorks: ["For Claude Pro, receive the account access details","For API credit plans, redeem the supplied balance using the provided instructions","Create and use your own API key in a supported client"],
     features: [
       "Premium Claude access",
       "Digital delivery",
@@ -1053,40 +1068,7 @@ export const products: Product[] = [
     },
   },
 
-  {
-    name: "iCloud 2TB Slot",
-    slug: "icloud-2tb-slot",
-    category: "vpn-cloud",
-    shortDescription: "iCloud 2TB storage slot with monthly access.",
-    description:
-      "Get an iCloud 2TB storage slot with a monthly plan.",
-    logo: "/products/icloud-2tb-slot/logo.webp",
-    coverImage: "/products/icloud-2tb-slot/cover.webp",
-    plans: [
-      {
-        id: "monthly",
-        name: "Monthly",
-        duration: "1 Month",
-        price: 2600,
-      },
-    ],
-    features: [
-      "2TB storage slot",
-      "Monthly access",
-      "Digital delivery",
-    ],
-    availability: "available",
-    deliveryInfo: "Delivery details will be confirmed on WhatsApp.",
-    whatsappMessage:
-      "Hello, I want to order iCloud 2TB Slot from SastaStore. Please confirm availability and plan details.",
-    seo: {
-      title: "iCloud 2TB Slot Pakistan | SastaStore",
-      description:
-        "Buy monthly iCloud 2TB storage slot access from SastaStore.",
-    },
-  },
-
-  {
+{
     name: "TikTok UK / USA Account",
     slug: "tiktok-uk-usa-account",
     category: "accounts-services",
