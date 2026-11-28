@@ -119,7 +119,7 @@ export const products: Product[] = [
         "duration": "1 Year",
         "price": 700
       }
-    ]
+    ],
     "features": [
       "Access provided through invite",
       "Choose a 1-month, 6-month or 1-year plan",
