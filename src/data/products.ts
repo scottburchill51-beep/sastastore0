@@ -435,12 +435,14 @@ export const products: Product[] = [
         name: "Gemini Plus - 6 Months",
         duration: "6 Months",
         price: 700,
+        details: ["Direct Google redemption link", "No payment card required", "400 GB storage as described in the offer"],
       },
       {
         id: "gemini-plus-12-months",
         name: "Gemini Plus - 12 Months",
         duration: "12 Months",
         price: 900,
+        details: ["400 GB storage", "Family sharing for up to 5", "250 Flow credits monthly", "Activation requires payment method and India-region setup"],
       }
     ],
     features: [
@@ -481,7 +483,8 @@ export const products: Product[] = [
       {
         id: "5-billion-tokens",
         name: "5 Billion Tokens",
-        price: 700,
+        price: 750,
+        details: ["Ready-made account", "Email and password provided", "Mailbox access included", "No card required", "US or Canada IP required"],
       }
     ],
     features: [
@@ -852,6 +855,8 @@ export const products: Product[] = [
         name: "1 Month",
         duration: "1 Month",
         price: 350,
+        warranty: "20 days",
+        details: ["Ad-free YouTube and YouTube Music", "Up to 1 device"],
       },
     ],
     features: [
@@ -968,6 +973,8 @@ export const products: Product[] = [
         name: "3 Months",
         duration: "3 Months",
         price: 900,
+        warranty: "10 days",
+        details: ["Ready-made account", "Ad-free listening", "Offline playback and high sound quality"],
       },
     ],
     features: [
@@ -1034,6 +1041,8 @@ export const products: Product[] = [
         name: "3 Months",
         duration: "3 Months",
         price: 1500,
+        warranty: "20 days",
+        details: ["Global server access", "Compatible with major devices"],
       },
     ],
     features: [
